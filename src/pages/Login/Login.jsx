@@ -15,6 +15,7 @@ import { Auth } from "../../Services/api/Auth";
 import { useAuth } from "../../hooks/useAuth";
 import { toastService } from "../../utils/toast";
 import { useNavigate } from "react-router";
+import logo from "../../../public/logo2.png"
 
 export default function Login() {
     const { login } = useAuth();
@@ -117,7 +118,7 @@ export default function Login() {
                     <Box
                         w="60px"
                         h="60px"
-                        bg="blue.500"
+                        bg="white"
                         rounded="full"
                         display="flex"
                         alignItems="center"
@@ -126,7 +127,7 @@ export default function Login() {
                         fontWeight="bold"
                         fontSize="md"
                     >
-                        JEK
+                        <Image src={logo} alt="" /> 
                     </Box>
                 </Flex>
 

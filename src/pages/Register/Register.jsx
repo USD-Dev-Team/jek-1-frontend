@@ -11,13 +11,15 @@ import {
     FormErrorMessage,
     Link,
     Select,
+    Image,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { Auth } from "../../Services/api/Auth";
 import { useAuth } from "../../hooks/useAuth";
 import { toastService } from "../../utils/toast";
+// import { mahallas } from "../../Services/api/mahallas.json";
 import { useNavigate } from "react-router";
-
+import logo from "../../../public/logo2.png"
 export default function Login() {
     const { login } = useAuth();
     const navigate = useNavigate();
@@ -26,6 +28,7 @@ export default function Login() {
 
     const passInput = useRef("");
     const logInput = useRef("");
+    const confirmPassword = useRef("");
 
     const [errors, setErrors] = useState({ login: "", password: "" });
 
@@ -108,7 +111,7 @@ export default function Login() {
             <Box
                 as="form"
                 onSubmit={(e) => handleSubmit(e)}
-                w={{ base: "100%", sm: "400px" }}
+                w={{ base: "100%", sm: "700px" }}
                 bg="surface"
                 p={8}
                 rounded="xl"
@@ -119,7 +122,7 @@ export default function Login() {
                     <Box
                         w="60px"
                         h="60px"
-                        bg="blue.500"
+                        bg="white"
                         rounded="full"
                         display="flex"
                         alignItems="center"
@@ -128,7 +131,7 @@ export default function Login() {
                         fontWeight="bold"
                         fontSize="md"
                     >
-                        JEK
+                        <Image src={logo} alt=""/>
                     </Box>
                 </Flex>
 
@@ -173,11 +176,20 @@ export default function Login() {
 
                 <Flex justify={'flex-end'} mb={2}>
                     <FormControl isInvalid={!!errors.phone}>
-                        <FormLabel color="text">Telefon raqami</FormLabel>
-                        <Select placeholder="Tumanni tanlang">
-                            <option>+998 (UZ)</option>
-                            <option>+7 (RU)</option>
-                        </Select>
+                        <Flex justifyContent={'space-between'}>
+                            <Flex flexWrap={'wrap'}>
+                                <FormLabel color="text">Tumanni tanlang</FormLabel>
+                                <Select placeholder="Tumanni tanlang">
+
+                                </Select>
+                            </Flex>
+                            <Flex flexWrap={'wrap'}>
+                                <FormLabel color="text">Mahalani tanlang</FormLabel>
+                                <Select placeholder="Mahalani tanlang">
+
+                                </Select>
+                            </Flex>
+                        </Flex>
                         <FormErrorMessage>{errors.phone}</FormErrorMessage>
                     </FormControl>
                 </Flex>
@@ -199,7 +211,7 @@ export default function Login() {
                 <FormControl mb={2} isInvalid={!!errors.confirmPassword}>
                     <FormLabel color="text">Parolni tasdiqlash</FormLabel>
                     <Input
-                        ref={passInput}
+                        ref={confirmPassword}
                         type="password"
                         placeholder="Parolni tasdiqlang"
                         onChange={() => clearError("confirmPassword")}
