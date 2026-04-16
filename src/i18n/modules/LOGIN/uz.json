@@ -1,0 +1,32 @@
+{
+  "login": {
+    "title": "Shaxsni tasdiqlash",
+    "subtitle": "Tizimga kirish uchun ma'lumotlarni kiriting",
+    "phone": "Telefon raqam",
+    "password": "Parol",
+    "phone_placeholder": "+998901234567",
+    "password_placeholder": "Parolni kiriting",
+    "button": "Kirish",
+    "register": "Ro'yxatdan o'tish",
+
+    "errors": {
+      "phone_required": "Telefon raqam kiritilmadi",
+      "password_required": "Parol kiritilmadi"
+    },
+
+    "success": "Muvaffaqiyatli kirdingiz",
+    "fail": "Login xatolik",
+    "system_error": "Tizim xatosi"
+  },
+
+  "common": {
+    "login": "Kirish",
+    "logout": "Chiqish"
+  },
+
+  "title": {
+    "super_admin": "Xush kelibsiz, USD Boss",
+    "admin": "Administrator paneli",
+    "user": "Foydalanuvchi bo‘limi"
+  }
+}

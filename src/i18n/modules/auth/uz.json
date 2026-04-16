@@ -1,0 +1,11 @@
+{
+  "login": "Kirish",
+  "logout": "Chiqish",
+  "username": "Foydalanuvchi nomi",
+  "password": "Parol",
+  "title": {
+    "super_admin": "Xush kelibsiz, USD Boss",
+    "admin": "Administrator paneli",
+    "user": "Foydalanuvchi bo‘limi"
+  }
+}

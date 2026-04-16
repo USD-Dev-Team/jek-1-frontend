@@ -1,0 +1,47 @@
+{
+  "register": {
+    "title": "Ro'yxatdan o'tish",
+    "subtitle": "Tizimga kirish uchun ma’lumotlarni kiriting",
+
+    "first_name": "Ism",
+    "first_name_placeholder": "Ali",
+
+    "last_name": "Familiya",
+    "last_name_placeholder": "Aliyev",
+
+    "phone": "Telefon raqam",
+    "phone_placeholder": "+998901234567",
+
+    "tuman": "Tuman",
+
+    "password": "Parol",
+    "password_placeholder": "Parolni kiriting",
+
+    "confirm_password": "Parolni tasdiqlang",
+    "confirm_password_placeholder": "Parolni qayta kiriting",
+
+    "login": "Shaxsni tasdiqlash",
+    "button": "Ro'yxatdan o'tish",
+
+    "errors": {
+      "first_name_required": "Ism kiritilmadi",
+      "first_name_invalid": "Ism faqat harflardan iborat",
+
+      "last_name_required": "Familiya kiritilmadi",
+
+      "phone_required": "Telefon kiritilmadi",
+      "phone_invalid": "Telefon noto‘g‘ri",
+
+      "tuman_required": "Tuman tanlanmadi",
+
+      "password_required": "Parol kiritilmadi",
+      "password_invalid": "Parol kamida 8 ta, harf va son bo‘lishi kerak",
+
+      "password_confirm_required": "Parolni tasdiqlang",
+      "password_mismatch": "Parollar mos emas"
+    },
+
+    "success": "Ro'yxatdan o'tdingiz",
+    "fail": "Xatolik yuz berdi"
+  }
+}

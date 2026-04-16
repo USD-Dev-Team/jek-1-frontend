@@ -1,0 +1,39 @@
+import { Outlet } from "react-router";
+import Sidebar from "../components/common/Sidebar";
+import { Box } from "@chakra-ui/react";
+import { useUIStore } from "../store/useUIStore";
+import { BookDashed, EqualApproximatelyIcon, MessageCircle, User2Icon } from "lucide-react";
+import { useTranslation } from "react-i18next";
+
+export default function InLayout() {
+  const { t } = useTranslation();
+  const { collapsed } = useUIStore();
+
+  const links = [
+   
+    {
+      label: t("jek.sidebar.murojat"),
+      to: "/inseksiya/murojat",
+      icon: MessageCircle,
+    },
+     {
+      label: "Hodimlar",
+      to: "/inseksiya/hodim",
+      icon: User2Icon,
+    },
+  ];
+
+  return (
+    <Box>
+      <Sidebar collapsed={collapsed} links={links} />
+
+      <Box
+        pl={collapsed ? "80px" : "250px"}
+        transition="0.25s ease"
+        minH="100vh"
+      >
+        <Outlet />
+      </Box>
+    </Box>
+  );
+}

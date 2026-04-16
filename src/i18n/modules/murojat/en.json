@@ -1,0 +1,62 @@
+{
+  "title": "Requests",
+  "search_placeholder": "Search...",
+
+  "status": {
+    "pending": "Pending",
+    "in_progress": "In progress",
+    "completed": "Completed",
+    "rejected": "Rejected",
+    "jek_completed": "Completed by JEK"
+  },
+
+  "table": {
+    "id": "ID",
+    "user": "User",
+    "date": "Date",
+    "status": "Status",
+    "actions": "Actions",
+    "empty": "No data found",
+    "all": "All"
+  },
+
+  "buttons": {
+    "start": "Start",
+    "finish": "Finish",
+    "view": "View",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "submit": "Submit"
+  },
+
+  "pagination": {
+    "prev": "Previous",
+    "next": "Next"
+  },
+
+  "modals": {
+    "start_title": "Start request",
+    "start_text": "Do you want to take this request?",
+    "finish_title": "Complete request"
+  },
+
+  "upload": {
+    "placeholder": "📸 Click to upload image"
+  },
+
+  "ariza": {
+    "malumotlari": "Request details",
+    "raqami": "Request number"
+  },
+
+  "foydalanuvchi": "User",
+  "telefon": "Phone",
+  "tuman": "District",
+  "mahalla": "Neighborhood",
+  "uy": "House",
+  "muammo": "Problem",
+  "izoh": "Note",
+
+  "close": "Close",
+  "qaytadan": "Restart"
+}

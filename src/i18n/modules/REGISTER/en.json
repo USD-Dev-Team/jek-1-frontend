@@ -1,0 +1,47 @@
+{
+  "register": {
+    "title": "Register",
+    "subtitle": "Enter your details to access the system",
+
+    "first_name": "First Name",
+    "first_name_placeholder": "Ali",
+
+    "last_name": "Last Name",
+    "last_name_placeholder": "Aliyev",
+
+    "phone": "Phone Number",
+    "phone_placeholder": "+998901234567",
+
+    "tuman": "District",
+
+    "password": "Password",
+    "password_placeholder": "Enter your password",
+
+    "confirm_password": "Confirm Password",
+    "confirm_password_placeholder": "Re-enter your password",
+
+    "login": "Login",
+    "button": "Register",
+
+    "errors": {
+      "first_name_required": "First name is required",
+      "first_name_invalid": "Only letters are allowed",
+
+      "last_name_required": "Last name is required",
+
+      "phone_required": "Phone number is required",
+      "phone_invalid": "Invalid phone number",
+
+      "tuman_required": "Please select a district",
+
+      "password_required": "Password is required",
+      "password_invalid": "Password must be at least 8 characters",
+
+      "password_confirm_required": "Confirm your password",
+      "password_mismatch": "Passwords do not match"
+    },
+
+    "success": "Registration successful",
+    "fail": "Something went wrong"
+  }
+}

@@ -1,10 +1,11 @@
-import Admins from "../pages/SuperAdmin/Admins/Admins";
+
 
 const superAdminRoutes = [
     {
-        name:"sp admins",
+        name:"jek",
         path:'admins',
-        element:<Admins/>
+        element:<div>Ok sp admins</div>
     },
+    
 ];
 export default superAdminRoutes

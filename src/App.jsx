@@ -1,29 +1,55 @@
-import { Route, Routes } from 'react-router'
+import { Route, Routes } from 'react-router-dom'
 import './App.css'
-import RequireAuth from './auth/RequireAuth'
+
 import { Toaster } from 'react-hot-toast'
 import ErrorPage from './pages/ErrorPage'
-import SuperAdminLayout from './layouts/SuperAdminLayout'
-import superAdminRoutes from './routes/superAdminRoutes'
+
+import './i18n'
 import Login from './pages/Login/Login'
-import Register from './pages/Register/Register'
+import JekLayout from './layouts/JekLayout'
+import Register from './pages/Refister/Register'
+import { Navigate } from "react-router-dom";
+import jekRoute from './routes/jekRoute'
+import GvLayout from './layouts/GvLayout'
+import gvRoute from './routes/gvRoutes'
+import InLayout from './layouts/InLayout'
+import inRoute from './routes/inRoute'
 
 function App() {
   return (
     <>
       <Routes>
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
-        <Route element={<RequireAuth role="SUPER_ADMIN" />} >{/* */}
-          <Route  path='/' element={<SuperAdminLayout />}>
-            {superAdminRoutes.map((r) => {
+        <Route path='/register' element={<Register /> } />
+
+       <Route path="/" element={<Navigate to="/login" />} />
+       <Route path='/login' element={<Login />} />
+        <Route >
+          <Route path='/jek' element={<JekLayout />} >
+            {jekRoute.map((r) => {
               return (
                 <Route key={r.name} path={r.path} element={r.element} />
               )
             })}
           </Route>
         </Route>
-        
+        <Route >
+          <Route path='/government' element={<GvLayout />} >
+            {gvRoute.map((r) => {
+              return (
+                <Route key={r.name} path={r.path} element={r.element} />
+              )
+            })}
+          </Route>
+        </Route>
+        <Route >
+          <Route path='/inseksiya' element={<InLayout />} >
+            {inRoute.map((r) => {
+              return (
+                <Route key={r.name} path={r.path} element={r.element} />
+              )
+            })}
+          </Route>
+        </Route>
         
         <Route path='*' element={<ErrorPage />} />
       </Routes>

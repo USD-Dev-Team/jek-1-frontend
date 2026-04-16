@@ -6,8 +6,8 @@ export const useAuth = () => {
     const logoutFromStore = useAuthStore((s) => s.logout);
 
     // LOGIN
-    const login = ({ token, refreshToken, user }) => {
-        loginToStore({ token, refreshToken, user });
+    const login = ({ token, refreshToken, userId, role, first_name, last_name, district, neighborhood }) => {
+        loginToStore({ token, refreshToken, userId, role, first_name, last_name, district, neighborhood });
     };
 
     // LOGOUT

@@ -6,7 +6,7 @@ import { toastService } from "../../utils/toast";
 import handleApiError from "./handleError";
 
 
-export const BASE_URL = "https://dev.ithubs.uz/erp/api/v1";
+export const BASE_URL = "https://api.usdsoft.uz/jek";
 
 export const $api = axios.create({
     baseURL: `${BASE_URL}`,
@@ -19,7 +19,6 @@ export const $api = axios.create({
 $api.interceptors.request.use(
     (config) => {
         const token = Cookies.get("token");
-
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -54,25 +53,27 @@ $api.interceptors.response.use(
 
             try {
                 const refreshToken = Cookies.get("refresh_token");
-                const userId = Cookies.get("user_id");
+                const userId = Cookies.get("userId");
 
                 if (!refreshToken || !userId) {
                     throw new Error("Refresh token yoki user ID topilmadi");
                 }
 
                 // ---- Refresh request ----
-                const res = await axios.post(`${BASE_URL}/auth/refresh`, {
+                const res = await axios.post(`${BASE_URL}/auth/jek/refresh`, {
                     refreshToken,
-                    userId,
+                
                 });
 
-                const newAccess = res.data.access_token;
-                const newRefresh = res.data.refresh_token;
+                const newAccess = res.data.accessToken;
+                const newRefresh = res.data.refreshToken;
+               
 
                 // ---- Save new tokens ----
                 store.setTokens({
                     token: newAccess,
                     refreshToken: newRefresh,
+                   
                 });
 
                 // ---- Retry original request ----
