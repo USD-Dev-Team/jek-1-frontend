@@ -1,13 +1,8 @@
 {
-  "home": "Bosh sahifa",
-  "categories": "Kategoriyalar",
-  "subcategories": "Subkategoriyalar",
-  "minicategories": "Minikategoriyalar",
-  "products": "Mahsulotlar",
-  "language": "Til",
-  "uzbek": "O‘zbekcha",
-  "russian": "Ruscha",
-  "english": "Inglizcha",
   "theme": "Mavzu",
-  "logout": "Chiqish"
+  "logout": "Chiqish",
+  "logout_title": "Chiqish",
+  "logout_text": "Tizimdan chiqmoqchimisiz?",
+  "cancel": "Bekor qilish",
+  "confirm": "Ha, chiqaman"
 }

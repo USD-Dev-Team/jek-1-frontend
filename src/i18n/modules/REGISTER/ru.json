@@ -1,47 +1,32 @@
 {
-  "register": {
-    "title": "Регистрация",
-    "subtitle": "Введите данные для входа в систему",
+  "register": "Регистрация",
+  "firstName": "Имя",
+  "lastName": "Фамилия",
+  "phone": "Телефон",
+  "district": "Район",
+  "neighborhood": "Махалля",
+  "select": "Выберите",
+  "selectNeighborhood": "Выберите махаллю",
+  "password": "Пароль",
+  "confirmPassword": "Подтвердите пароль",
 
-    "first_name": "Имя",
-    "first_name_placeholder": "Али",
+  "errors": {
+    "firstNameRequired": "Имя обязательно",
+    "firstNameInvalid": "Имя должно содержать только буквы",
+    "lastNameRequired": "Фамилия обязательна",
+    "lastNameInvalid": "Фамилия должна содержать только буквы",
+    "phoneRequired": "Телефон обязателен",
+    "phoneInvalid": "Неверный номер телефона",
+    "districtRequired": "Район не выбран",
+    "neighborhoodRequired": "Махалля не выбрана",
+    "passwordRequired": "Пароль обязателен",
+    "passwordLength": "Минимум 8 символов",
+    "passwordLetter": "Должна быть хотя бы 1 буква",
+    "passwordNumber": "Должна быть хотя бы 1 цифра",
+    "confirmRequired": "Подтверждение обязательно",
+    "passwordMismatch": "Пароли не совпадают"
+  },
 
-    "last_name": "Фамилия",
-    "last_name_placeholder": "Алиев",
-
-    "phone": "Номер телефона",
-    "phone_placeholder": "+998901234567",
-
-    "tuman": "Район",
-
-    "password": "Пароль",
-    "password_placeholder": "Введите пароль",
-
-    "confirm_password": "Подтвердите пароль",
-    "confirm_password_placeholder": "Введите пароль ещё раз",
-
-    "login": "Войти",
-    "button": "Зарегистрироваться",
-
-    "errors": {
-      "first_name_required": "Введите имя",
-      "first_name_invalid": "Имя должно содержать только буквы",
-
-      "last_name_required": "Введите фамилию",
-
-      "phone_required": "Введите номер телефона",
-      "phone_invalid": "Неверный номер телефона",
-
-      "tuman_required": "Выберите район",
-
-      "password_required": "Введите пароль",
-      "password_invalid": "Пароль должен содержать минимум 8 символов",
-
-      "password_confirm_required": "Подтвердите пароль",
-      "password_mismatch": "Пароли не совпадают"
-    },
-
-    "success": "Вы успешно зарегистрировались",
-    "fail": "Произошла ошибка"
-  }
+  "success": "Регистрация успешна",
+  "error": "Произошла ошибка"
 }

@@ -1,13 +1,10 @@
 {
-  "home": "Home",
-  "categories": "Categories",
-  "subcategories": "Subcategories",
-  "minicategories": "Minicategories",
-  "products": "Products",
-  "language": "Language",
-  "uzbek": "Uzbek",
-  "russian": "Russian",
-  "english": "English",
-  "theme": "Theme",
-  "logout": "Logout"
+
+    "theme": "Theme",
+    "logout": "Logout",
+    "logout_title": "Logout",
+    "logout_text": "Do you want to log out?",
+    "cancel": "Cancel",
+    "confirm": "Yes, logout"
+  
 }

@@ -47,7 +47,7 @@ export default function Murojat() {
   const [jek, setJek] = useState([]);
   const [debouncedQwery, setDebouncedQwery] = useState("");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit, setLimit] = useState(15);
 
   const hoverBg = useColorModeValue("neutral.100", "neutral.700");
 
@@ -464,129 +464,158 @@ const openImage = (url) => {
 
       {/* viewModal*/}
 
-      <Modal isOpen={viewModal.isOpen} onClose={viewModal.onClose} size="lg">
-        <ModalOverlay />
-        <ModalContent borderRadius="md">
-          <ModalHeader borderBottom="1px solid" borderColor="gray.200">
-          {t("murojat.ariza.malumotlari")}
-          </ModalHeader>
+     <Modal isOpen={viewModal.isOpen} onClose={viewModal.onClose} size="lg">
+  <ModalOverlay bg="blackAlpha.500" backdropFilter="blur(4px)" />
 
-          <ModalBody py={4}>
-            <VStack align="stretch" spacing={3}>
-              <Flex justify="space-between">
-                <Text color="gray.500">{t("murojat.ariza.raqami")}</Text>
-                <Text fontWeight="500">{selected?.request_number}</Text>
-              </Flex>
-
-              <Flex justify="space-between">
-                <Text color="gray.500">{t("murojat.foydalanuvchi")}</Text>
-                <Text>{selected?.user?.full_name}</Text>
-              </Flex>
-
-              <Flex justify="space-between">
-                <Text color="gray.500">{t("murojat.telefon")}</Text>
-                <Text>{selected?.user?.phoneNumber}</Text>
-              </Flex>
-
-              <Flex justify="space-between">
-                <Text color="gray.500">{t("murojat.tuman")}</Text>
-                <Text>{selected?.address?.district}</Text>
-              </Flex>
-
-              <Flex justify="space-between">
-                <Text color="gray.500">{t("Murojat.mahalla")}</Text>
-                <Text>{selected?.address?.neighborhood}</Text>
-              </Flex>
-
-              <Flex justify="space-between">
-                <Text color="gray.500">{t("murojat.uy")}</Text>
-                <Text>
-                  {selected?.address?.building_number} /{" "}
-                  {selected?.address?.apartment_number}
-                </Text>
-              </Flex>
-
-              <Box>
-                <Text color="gray.500" mb={1}>
-                  {t("murojat.muammo")}
-                </Text>
-                <Text>{selected?.description}</Text>
-              </Box>
-
-              <Box>
-                <Text color="gray.500" mb={1}>
-                  {t("murojat.izoh")}
-                </Text>
-                <Box
-                  border="1px solid"
-                  borderColor="gray.200"
-                  p={2}
-                  borderRadius="sm"
-                >
-                  {selected?.note || "-"}
-                </Box>
-              </Box>
-
-              
-
-              <Flex gap={2} wrap="wrap">
-                {selected?.requestPhotos?.map((img) => (
-                  <Box
-                    key={img.id}
-                    w="200px"
-                    h="200px"
-                    borderRadius="12px"
-                    overflow="hidden"
-                    border="1px solid"
-                    borderColor="gray.200"
-                    cursor="pointer"
-                    transition="0.2s"
-                    _hover={{
-                      transform: "scale(1.05)",
-                      boxShadow: "lg",
-                    }}
-                  >
-                   <Image
-  src={`${FILE_BASE}${img.file_url}`}
-  w="100%"
-  h="100%"
-  objectFit="cover"
-  onClick={() => openImage(`${FILE_BASE}${img.file_url}`)}
-/>
-  
-                  </Box>
-                ))}
-              </Flex>
-            </VStack>
-          </ModalBody>
-
-          <ModalFooter gap={4} borderTop="1px solid" borderColor="gray.200">
-            <Button size="sm" onClick={viewModal.onClose}>
-              {t("murojat.close")}
-            </Button>
-             {selected?.status?.toLowerCase() === "pending" && (
-  <Button
-    size="sm"
-    colorScheme="green"
-    onClick={() => getStartRequest(selected?.id)}
+  <ModalContent
+    borderRadius="lg"
+    bg="surface"
+    color="gray.800"
+    boxShadow="xl"
   >
-    {t("murojat.buttons.start")}
-  </Button>
+    {/* HEADER */}
+    <ModalHeader
+      borderBottom="1px solid"
+      borderColor="gray.200"
+      fontWeight="600"
+      fontSize="lg"
+    >
+      {t("murojat.ariza.malumotlari")}
+    </ModalHeader>
 
+    {/* BODY */}
+    <ModalBody py={5}>
+      <VStack align="stretch" spacing={4}>
 
-)}
-            {selected?.status?.toLowerCase().includes("rejected") && (
-              <Button
-                size="sm"
-                colorScheme="blue"
-                onClick={() => getStartRequest(selected?.id)}
-              >
-                {t("murojat.qaytadan")}
-              </Button>
-            )}
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+        {/* ROW */}
+        <Flex justify="space-between">
+          <Text color="gray.500" fontSize="sm">
+            {t("murojat.ariza.raqami")}
+          </Text>
+          <Text color={"gray.200"} fontWeight="500">{selected?.request_number}</Text>
+        </Flex>
+
+        <Flex justify="space-between">
+          <Text color="gray.500" fontSize="sm">
+            {t("murojat.foydalanuvchi")}
+          </Text>
+          <Text color={"gray.200"}>{selected?.user?.full_name}</Text>
+        </Flex>
+
+        <Flex justify="space-between">
+          <Text color="gray.500" fontSize="sm">
+            {t("murojat.telefon")}
+          </Text>
+          <Text color={"gray.200"}>{selected?.user?.phoneNumber}</Text>
+        </Flex>
+
+        <Flex justify="space-between">
+          <Text color="gray.500" fontSize="sm">
+            {t("murojat.tuman")}
+          </Text>
+          <Text color={"gray.200"}>{selected?.address?.district}</Text>
+        </Flex>
+
+        <Flex justify="space-between">
+          <Text color="gray.500" fontSize="sm">
+            {t("murojat.mahalla")}
+          </Text>
+          <Text color={"gray.200"}>{selected?.address?.neighborhood}</Text>
+        </Flex>
+
+        <Flex justify="space-between">
+          <Text color="gray.500" fontSize="sm">
+            {t("murojat.uy")}
+          </Text>
+          <Text color={"gray.200"}>
+            {selected?.address?.building_number} /{" "}
+            {selected?.address?.apartment_number}
+          </Text>
+        </Flex>
+
+        {/* DESCRIPTION */}
+        <Box pt={2}>
+          <Text color="gray.500" fontSize="sm" mb={1}>
+            {t("murojat.muammo")}
+          </Text>
+          <Text color={"gray.200"} lineHeight="1.5">
+            {selected?.description}
+          </Text>
+        </Box>
+
+        {/* NOTE */}
+        <Box>
+          <Text color="gray.500" fontSize="sm" mb={1}>
+            {t("murojat.izoh")}
+          </Text>
+         
+            <Text color={"gray.200"} lineHeight="1.5">
+            {selected?.note || "-"}
+            </Text>
+
+        </Box>
+
+        {/* IMAGES */}
+        <Flex gap={3} wrap="wrap" pt={2}>
+          {selected?.requestPhotos?.map((img) => (
+            <Box
+              key={img.id}
+              w="140px"
+              h="140px"
+              borderRadius="md"
+              overflow="hidden"
+              border="1px solid"
+              borderColor="gray.200"
+              cursor="pointer"
+              _hover={{ opacity: 0.9 }}
+            >
+              <Image
+                src={`${FILE_BASE}${img.file_url}`}
+                w="100%"
+                h="100%"
+                objectFit="cover"
+                onClick={() =>
+                  openImage(`${FILE_BASE}${img.file_url}`)
+                }
+              />
+            </Box>
+          ))}
+        </Flex>
+      </VStack>
+    </ModalBody>
+
+    {/* FOOTER */}
+    <ModalFooter
+      borderTop="1px solid"
+      borderColor="gray.200"
+      gap={3}
+    >
+      <Button size="sm" variant="outline" onClick={viewModal.onClose}>
+        {t("murojat.close")}
+      </Button>
+
+      {selected?.status?.toLowerCase() === "pending" && (
+        <Button
+          size="sm"
+          colorScheme="green"
+          onClick={() => getStartRequest(selected?.id)}
+        >
+          {t("murojat.buttons.start")}
+        </Button>
+      )}
+
+      {selected?.status?.toLowerCase().includes("rejected") && (
+        <Button
+          size="sm"
+          colorScheme="blue"
+          onClick={() => getStartRequest(selected?.id)}
+        >
+          {t("murojat.qaytadan")}
+        </Button>
+      )}
+    </ModalFooter>
+  </ModalContent>
+</Modal>
 
       {/*open Image */}
     <Modal

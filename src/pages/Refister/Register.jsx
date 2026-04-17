@@ -2,13 +2,11 @@ import {
   Box,
   Flex,
   Heading,
-  Text,
   Input,
   Button,
   FormControl,
   FormLabel,
   FormErrorMessage,
-  HStack,
   Select,
   InputGroup,
   InputRightElement,
@@ -35,8 +33,7 @@ export default function Register() {
   const [show, setShow] = useState(false);
 
   const phoneRegex = /^\+998\d{9}$/;
-  const nameRegex = /^[A-Za-z]+$/;
-  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+  const nameRegex = /^[A-Za-z\s'-]+$/;
 
   const ism = useRef("");
   const fam = useRef("");
@@ -49,9 +46,6 @@ export default function Register() {
 
   const [selectedTuman, setSelectedTuman] = useState("");
   const [selectedMahalla, setSelectedMahalla] = useState("");
- 
-
-
 
   const [errors, setErrors] = useState({
     ism: "",
@@ -83,24 +77,38 @@ export default function Register() {
 
     let newErrors = {};
 
-    if (!ismVal) newErrors.ism = "Ism majburiy";
-    else if (!nameRegex.test(ismVal)) newErrors.ism = "Ism noto‘g‘ri";
+    if (!ismVal) newErrors.ism = t("reg.errors.firstNameRequired");
+    else if (!nameRegex.test(ismVal)) newErrors.ism = t("reg.errors.firstNameInvalid");
 
-    if (!famVal) newErrors.fam = "Familiya majburiy";
+    if (!famVal) newErrors.fam = t("reg.errors.lastNameRequired");
+    else if (!nameRegex.test(famVal)) newErrors.fam = t("reg.errors.lastNameInvalid");
 
-    if (!phoneRegex.test(raqamVal))
-      newErrors.raqam = "Telefon noto‘g‘ri";
+    if (!raqamVal) {
+      newErrors.raqam = t("reg.errors.phoneRequired");
+    } else if (!phoneRegex.test(raqamVal)) {
+      newErrors.raqam = t("reg.errors.phoneInvalid");
+    }
 
-    if (!selectedTuman) newErrors.tuman = "Tuman tanlanmagan";
-    if (!selectedMahalla) newErrors.mahalla = "Mahalla tanlanmagan";
+    if (!selectedTuman) newErrors.tuman = t("reg.errors.districtRequired");
+    if (!selectedMahalla) newErrors.mahalla = t("reg.errors.neighborhoodRequired");
 
-    if (!parolVal) newErrors.parol = "Parol majburiy";
-    else if (!passwordRegex.test(parolVal))
-      newErrors.parol = "Parol kuchsiz";
+    // PASSWORD
+    if (!parolVal) {
+      newErrors.parol = t("reg.errors.passwordRequired");
+    } else if (parolVal.length < 8) {
+      newErrors.parol = t("reg.errors.passwordLength");
+    } else if (!/[A-Za-z]/.test(parolVal)) {
+      newErrors.parol = t("reg.errors.passwordLetter");
+    } else if (!/\d/.test(parolVal)) {
+      newErrors.parol = t("reg.errors.passwordNumber");
+    }
 
-    if (!tasVal) newErrors.tas = "Tasdiqlash majburiy";
-    else if (parolVal !== tasVal)
-      newErrors.tas = "Parollar mos emas";
+    // CONFIRM PASSWORD
+    if (!tasVal) {
+      newErrors.tas = t("reg.errors.confirmRequired");
+    } else if (parolVal !== tasVal) {
+      newErrors.tas = t("reg.errors.passwordMismatch");
+    }
 
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
@@ -122,39 +130,24 @@ export default function Register() {
         ],
       };
 
-   
-
       await Auth.Register(payload);
 
-      toastService.success("Muvaffaqiyatli ro‘yxatdan o‘tildi");
+      toastService.success(t("reg.success"));
       navigate("/login");
     } catch (err) {
       console.log(err);
-      toastService.error("Xatolik yuz berdi");
+      toastService.error(t("reg.error"));
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Flex
-      minH="100vh"
-      align="center"
-      justify="center"
-      bg="bg"
-      px={4}
-      position="relative"
-    >
-      {/* 🌐 LANGUAGE */}
+    <Flex minH="100vh" align="center" justify="center" bg="bg" px={4} position="relative">
+      
+      {/* LANGUAGE */}
       <Menu>
-        <MenuButton
-          position="absolute"
-          top="20px"
-          right="20px"
-          as={Button}
-          size="sm"
-          variant="ghost"
-        >
+        <MenuButton position="absolute" top="20px" right="20px" as={Button} size="sm" variant="ghost">
           <Flex align="center" gap={1}>
             <Globe size={16} />
             {i18n.language.toUpperCase()}
@@ -168,91 +161,97 @@ export default function Register() {
         </MenuList>
       </Menu>
 
-      <Box
-        as="form"
-        onSubmit={handleSubmit}
-        w={{ base: "100%", sm: "400px" }}
-        bg="surface"
-        p={8}
-        rounded="xl"
-        shadow="lg"
-      >
+      <Box as="form" onSubmit={handleSubmit} w={{ base: "100%", sm: "400px" }} bg="surface" p={8} rounded="xl" shadow="lg">
+        
         <Heading textAlign="center" size="lg" mb={6}>
-          Ro‘yxatdan o‘tish
+          {t("reg.register")}
         </Heading>
 
         {/* ISM */}
         <FormControl mb={3} isInvalid={!!errors.ism}>
-          <FormLabel>Ism</FormLabel>
+          <FormLabel>{t("reg.firstName")}</FormLabel>
           <Input ref={ism} onChange={() => clearError("ism")} />
           <FormErrorMessage>{errors.ism}</FormErrorMessage>
         </FormControl>
 
         {/* FAMILIYA */}
         <FormControl mb={3} isInvalid={!!errors.fam}>
-          <FormLabel>Familiya</FormLabel>
+          <FormLabel>{t("reg.lastName")}</FormLabel>
           <Input ref={fam} onChange={() => clearError("fam")} />
           <FormErrorMessage>{errors.fam}</FormErrorMessage>
         </FormControl>
 
         {/* PHONE */}
         <FormControl mb={3} isInvalid={!!errors.raqam}>
-          <FormLabel>Telefon</FormLabel>
-          <Input ref={raqam} placeholder="+998..." />
+          <FormLabel>{t("reg.phone")}</FormLabel>
+          <Input ref={raqam} placeholder="+998901234567" />
           <FormErrorMessage>{errors.raqam}</FormErrorMessage>
         </FormControl>
 
         {/* TUMAN */}
         <FormControl mb={3} isInvalid={!!errors.tuman}>
-          <FormLabel>Tuman</FormLabel>
+          <FormLabel>{t("reg.district")}</FormLabel>
           <Select
             value={selectedTuman}
             onChange={(e) => {
               setSelectedTuman(e.target.value);
-              clearError("tuman");
+              clearError("reg.tuman");
             }}
           >
-            <option value="">Tanlang</option>
-              {tuman.map((t)=>{
-                return (
-
-                       
-              <option key={t} value={t}>
-                {t}
-              </option>
-                )
-})}
+            <option value="">{t("select")}</option>
+            {tuman.map((t) => (
+              <option key={t} value={t}>{t}</option>
+            ))}
           </Select>
           <FormErrorMessage>{errors.tuman}</FormErrorMessage>
         </FormControl>
 
         {/* MAHALLA */}
-      <FormControl isInvalid={!!errors.mahalla} isDisabled={!selectedTuman} mb={4} >
-                        <FormLabel color="text">Mahalla</FormLabel>
-                        <Select
-                            value={selectedMahalla}
-                            placeholder='Mahallani tanlang'
-                            onChange={(w) => {
-                                setSelectedMahalla(w.target.value)
-                                clearError("mahalla")
-                            }}
-                        >
-                            {mahalla[selectedTuman]?.map((m) => {
-                                return (
-                                    <option value={m} key={m}>{m}</option>
-                                )
-                            })}
-                        </Select>
-                        <FormErrorMessage>{errors.mahalla}</FormErrorMessage>
-                    </FormControl>
+        <FormControl isInvalid={!!errors.mahalla} isDisabled={!selectedTuman} mb={4}>
+          <FormLabel>{t("reg.neighborhood")}</FormLabel>
+          <Select
+            value={selectedMahalla}
+            placeholder={t("reg.selectNeighborhood")}
+            onChange={(w) => {
+              setSelectedMahalla(w.target.value);
+              clearError("mahalla");
+            }}
+          >
+            {mahalla[selectedTuman]?.map((m) => (
+              <option value={m} key={m}>{m}</option>
+            ))}
+          </Select>
+          <FormErrorMessage>{errors.mahalla}</FormErrorMessage>
+        </FormControl>
 
         {/* PASSWORD */}
         <FormControl mb={3} isInvalid={!!errors.parol}>
-          <FormLabel>Parol</FormLabel>
+          <FormLabel>{t("reg.password")}</FormLabel>
           <InputGroup>
             <Input
               ref={parol}
               type={show ? "text" : "password"}
+              onChange={(e) => {
+                const val = e.target.value;
+
+                if (val.length < 8)
+                  setErrors(prev => ({ ...prev, parol: t("reg.errors.passwordLength") }));
+                else if (!/[A-Za-z]/.test(val))
+                  setErrors(prev => ({ ...prev, parol: t("reg.errors.passwordLetter") }));
+                else if (!/\d/.test(val))
+                  setErrors(prev => ({ ...prev, parol: t("reg.errors.passwordNumber") }));
+                else clearError("parol");
+
+                const confirmVal = tas.current.value;
+
+                if (!confirmVal) return;
+
+                if (confirmVal !== val) {
+                  setErrors(prev => ({ ...prev, tas: t("reg.errors.passwordMismatch") }));
+                } else {
+                  clearError("tas");
+                }
+              }}
             />
             <InputRightElement>
               <IconButton
@@ -267,8 +266,19 @@ export default function Register() {
 
         {/* CONFIRM */}
         <FormControl mb={4} isInvalid={!!errors.tas}>
-          <FormLabel>Parolni tasdiqlash</FormLabel>
-          <Input ref={tas} type="password" />
+          <FormLabel>{t("reg.confirmPassword")}</FormLabel>
+          <Input
+            ref={tas}
+            type="password"
+            onChange={(e) => {
+              const val = e.target.value;
+              const pass = parol.current.value;
+
+              if (!val) setErrors(prev => ({ ...prev, tas: t("reg.errors.confirmRequired") }));
+              else if (val !== pass) setErrors(prev => ({ ...prev, tas: t("reg.errors.passwordMismatch") }));
+              else clearError("tas");
+            }}
+          />
           <FormErrorMessage>{errors.tas}</FormErrorMessage>
         </FormControl>
 
@@ -277,8 +287,9 @@ export default function Register() {
           type="submit"
           w="100%"
           isLoading={loading}
+          isDisabled={Object.values(errors).some(e => e)}
         >
-          Ro‘yxatdan o‘tish
+          {t("register")}
         </Button>
       </Box>
     </Flex>

@@ -1,47 +1,32 @@
 {
-  "register": {
-    "title": "Ro'yxatdan o'tish",
-    "subtitle": "Tizimga kirish uchun ma’lumotlarni kiriting",
+  "register": "Ro‘yxatdan o‘tish",
+  "firstName": "Ism",
+  "lastName": "Familiya",
+  "phone": "Telefon",
+  "district": "Tuman",
+  "neighborhood": "Mahalla",
+  "select": "Tanlang",
+  "selectNeighborhood": "Mahallani tanlang",
+  "password": "Parol",
+  "confirmPassword": "Parolni tasdiqlash",
 
-    "first_name": "Ism",
-    "first_name_placeholder": "Ali",
+  "errors": {
+    "firstNameRequired": "Ism majburiy",
+    "firstNameInvalid": "Ism faqat harflardan iborat bo‘lishi kerak",
+    "lastNameRequired": "Familiya majburiy",
+    "lastNameInvalid": "Familiya faqat harflardan iborat bo‘lishi kerak",
+    "phoneRequired": "Telefon raqami majburiy",
+    "phoneInvalid": "Telefon raqami noto‘g‘ri",
+    "districtRequired": "Tuman tanlanmagan",
+    "neighborhoodRequired": "Mahalla tanlanmagan",
+    "passwordRequired": "Parol majburiy",
+    "passwordLength": "Kamida 8 ta belgi bo‘lishi kerak",
+    "passwordLetter": "Kamida 1 ta harf bo‘lishi kerak",
+    "passwordNumber": "Kamida 1 ta raqam bo‘lishi kerak",
+    "confirmRequired": "Tasdiqlash majburiy",
+    "passwordMismatch": "Parollar mos emas"
+  },
 
-    "last_name": "Familiya",
-    "last_name_placeholder": "Aliyev",
-
-    "phone": "Telefon raqam",
-    "phone_placeholder": "+998901234567",
-
-    "tuman": "Tuman",
-
-    "password": "Parol",
-    "password_placeholder": "Parolni kiriting",
-
-    "confirm_password": "Parolni tasdiqlang",
-    "confirm_password_placeholder": "Parolni qayta kiriting",
-
-    "login": "Shaxsni tasdiqlash",
-    "button": "Ro'yxatdan o'tish",
-
-    "errors": {
-      "first_name_required": "Ism kiritilmadi",
-      "first_name_invalid": "Ism faqat harflardan iborat",
-
-      "last_name_required": "Familiya kiritilmadi",
-
-      "phone_required": "Telefon kiritilmadi",
-      "phone_invalid": "Telefon noto‘g‘ri",
-
-      "tuman_required": "Tuman tanlanmadi",
-
-      "password_required": "Parol kiritilmadi",
-      "password_invalid": "Parol kamida 8 ta, harf va son bo‘lishi kerak",
-
-      "password_confirm_required": "Parolni tasdiqlang",
-      "password_mismatch": "Parollar mos emas"
-    },
-
-    "success": "Ro'yxatdan o'tdingiz",
-    "fail": "Xatolik yuz berdi"
-  }
+  "success": "Muvaffaqiyatli ro‘yxatdan o‘tildi",
+  "error": "Xatolik yuz berdi"
 }

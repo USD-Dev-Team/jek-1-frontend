@@ -113,11 +113,8 @@ const barData = [
   { month: "Iyn", current: 35, prev: 25 },
 ];
 
-const pieData = [
-  { name: "Bajarilgan", value: 245, color: "#48BB78" },
-  { name: "Jarayonda", value: 58, color: "#4299E1" },
-  { name: "Rad etilgan", value: 37, color: "#FC8181" },
-];
+
+
 
 const topCategories = [
   { name: "Suv ta'minoti", count: 124, pct: 88 },
@@ -203,6 +200,29 @@ export default function Dashboard() {
 
   const inProgress =
     stats?.totalRequests - (completed + jekCompleted + rejected);
+
+
+    const dynamicPieData = [
+  {
+    name: "Bajarilgan",
+    value: completed + jekCompleted,
+    color: "#48BB78",
+  },
+  {
+    name: "Jarayonda",
+    value: inProgress,
+    color: "#4299E1",
+  },
+  {
+    name: "Rad etilgan",
+    value: rejected,
+    color: "#FC8181",
+  },
+];
+
+const efficiency = stats?.totalRequests
+  ? Math.round(((completed + jekCompleted) / stats.totalRequests) * 100)
+  : 0;
 
   return (
     <Box bg="bg" minH="100vh" p={6}>
@@ -338,7 +358,7 @@ export default function Dashboard() {
           <ResponsiveContainer width="100%" height={160}>
             <PieChart>
               <Pie
-                data={pieData}
+                data={dynamicPieData}
                 cx="50%"
                 cy="50%"
                 innerRadius={48}
@@ -346,15 +366,16 @@ export default function Dashboard() {
                 paddingAngle={3}
                 dataKey="value"
               >
-                {pieData.map((entry, i) => (
+                {dynamicPieData.map((entry, i) => (
                   <Cell key={i} fill={entry.color} />
+
                 ))}
               </Pie>
               <Tooltip content={<CustomTooltip />} />
             </PieChart>
           </ResponsiveContainer>
           <Flex direction="column" gap={2} mt={3}>
-            {pieData.map((d, i) => (
+            {dynamicPieData.map((d, i) => (
               <Flex key={i} align="center" justify="space-between">
                 <Flex align="center" gap={2}>
                   <Box w={2} h={2} borderRadius="full" bg={d.color} />
@@ -464,142 +485,15 @@ export default function Dashboard() {
           </Box>
 
           {/* O'rtacha bajarish vaqti */}
-          <Box
-            bg="surface"
-            borderRadius="xl"
-            border="1px solid"
-            borderColor="border"
-            p={5}
-            flex={1}
-          >
-            <Flex align="center" gap={2} mb={3}>
-              <Icon as={Zap} color="primary" boxSize={4} />
-              <Text fontWeight="700" color="text" fontSize="sm">
-                O'rtacha bajarish vaqti
-              </Text>
-            </Flex>
-            <Flex align="baseline" gap={1} mb={2}>
-              <Text fontSize="2xl" fontWeight="800" color="primary">
-                <AnimatedCounter value={3} />
-              </Text>
-              <Text fontSize="sm" color="textSecondary">
-                kun
-              </Text>
-            </Flex>
-            <Progress
-              value={65}
-              size="sm"
-              borderRadius="full"
-              colorScheme="blue"
-              bg="border"
-            />
-            <Text fontSize="xs" color="textSecondary" mt={1}>
-              Maqsad: 5 kun ichida
-            </Text>
-          </Box>
+         
         </Flex>
       </Grid>
 
       <Grid templateColumns="1fr 1fr 1fr" gap={4}>
-        <Box
-          bg="surface"
-          borderRadius="xl"
-          border="1px solid"
-          borderColor="border"
-          p={5}
-        >
-          <Flex align="center" gap={2} mb={4}>
-            <Icon as={Award} color="warning" boxSize={4} />
-            <Text fontWeight="700" color="text" fontSize="sm">
-              Eng ko'p murojaat turlari
-            </Text>
-          </Flex>
-          <Flex direction="column" gap={3}>
-            {topCategories.map((cat, i) => (
-              <Box key={i}>
-                <Flex justify="space-between" mb={1}>
-                  <Flex align="center" gap={2}>
-                    <Text
-                      fontSize="xs"
-                      fontWeight="700"
-                      color="textSecondary"
-                      w={4}
-                    >
-                      {i + 1}.
-                    </Text>
-                    <Text fontSize="xs" color="text">
-                      {cat.name}
-                    </Text>
-                  </Flex>
-                  <Text fontSize="xs" fontWeight="600" color="text">
-                    {cat.count}
-                  </Text>
-                </Flex>
-                <Progress
-                  value={cat.pct}
-                  size="xs"
-                  borderRadius="full"
-                  colorScheme={i === 0 ? "green" : i === 1 ? "blue" : "orange"}
-                  bg="border"
-                />
-              </Box>
-            ))}
-          </Flex>
-        </Box>
+      
 
         {/* Haftalik faollik sparkline */}
-        <Box
-          bg="surface"
-          borderRadius="xl"
-          border="1px solid"
-          borderColor="border"
-          p={5}
-        >
-          <Flex align="center" gap={2} mb={4}>
-            <Icon as={Activity} color="info" boxSize={4} />
-            <Text fontWeight="700" color="text" fontSize="sm">
-              Haftalik ish faoliyati
-            </Text>
-          </Flex>
-          <Text fontSize="xs" color="textSecondary" mb={4}>
-            Bu hafta jami: <strong>50 ta</strong> murojaat bajarildi
-          </Text>
-          <Flex align="flex-end" gap={2} h="80px">
-            {weeklyActivity.map((val, i) => {
-              const maxVal = Math.max(...weeklyActivity);
-              const heightPct = (val / maxVal) * 100;
-              const isToday = i === 6;
-              return (
-                <Flex
-                  key={i}
-                  direction="column"
-                  align="center"
-                  flex={1}
-                  gap={1}
-                  h="100%"
-                  justify="flex-end"
-                >
-                  <Box
-                    w="100%"
-                    bg={isToday ? "primary" : "infoBg"}
-                    borderRadius="sm"
-                    h={`${heightPct}%`}
-                    transition="height 0.5s ease"
-                    _hover={{ opacity: 0.8 }}
-                    title={`${val} ta`}
-                  />
-                  <Text
-                    fontSize="9px"
-                    color={isToday ? "primary" : "textSecondary"}
-                    fontWeight={isToday ? "700" : "400"}
-                  >
-                    {weekDays[i]}
-                  </Text>
-                </Flex>
-              );
-            })}
-          </Flex>
-        </Box>
+       
 
         <Box
           bg="surface"
@@ -636,7 +530,7 @@ export default function Dashboard() {
                   fill="none"
                   stroke="var(--chakra-colors-success)"
                   strokeWidth="10"
-                  strokeDasharray={`${(87 / 100) * 251} 251`}
+            strokeDasharray={`${(efficiency / 100) * 251} 251`}
                   strokeLinecap="round"
                   transform="rotate(-90 50 50)"
                   style={{ transition: "stroke-dasharray 1s ease" }}
@@ -658,7 +552,7 @@ export default function Dashboard() {
                   color="success"
                   lineHeight={1}
                 >
-                  87%
+              {efficiency}%
                 </Text>
                 <Text fontSize="8px" color="textSecondary">
                   samarali
@@ -671,7 +565,7 @@ export default function Dashboard() {
           <Flex justify="space-between">
             <Box textAlign="center">
               <Text fontSize="lg" fontWeight="700" color="success">
-                <AnimatedCounter value={245} />
+                <AnimatedCounter value={completed + jekCompleted} />
               </Text>
               <Text fontSize="xs" color="textSecondary">
                 Bajarilgan
@@ -679,7 +573,7 @@ export default function Dashboard() {
             </Box>
             <Box textAlign="center">
               <Text fontSize="lg" fontWeight="700" color="danger">
-                <AnimatedCounter value={37} />
+                <AnimatedCounter value={+ rejected} />
               </Text>
               <Text fontSize="xs" color="textSecondary">
                 Rad etilgan

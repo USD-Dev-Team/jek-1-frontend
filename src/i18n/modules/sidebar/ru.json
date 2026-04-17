@@ -1,13 +1,8 @@
-{
-  "home": "Главная",
-  "categories": "Категории",
-  "subcategories": "Подкатегории",
-  "minicategories": "Миникатегории",
-  "products": "Товары",
-  "language": "Язык",
-  "uzbek": "Узбекский",
-  "russian": "Русский",
-  "english": "Английский",
-  "theme": "Тема",
-  "logout": "Выход"
-}
+ {
+    "theme": "Тема",
+    "logout": "Выйти",
+    "logout_title": "Выход",
+    "logout_text": "Вы действительно хотите выйти?",
+    "cancel": "Отмена",
+    "confirm": "Да, выйти"
+  }

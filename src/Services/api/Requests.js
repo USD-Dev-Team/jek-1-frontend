@@ -23,7 +23,7 @@ class Requests {
 
     return response;
   };
-  static getEmploye = async ({ isActive, district, neighborhood, first_name, last_name, phoneNumber,
+  static getEmploye = async ({ isActive, district, neighborhood, first_name, last_name, phoneNumber, role, limit, page
   }) => {
     const response = await $api.get(`${BASE_URL}/admins/filter-list`, {
       params: {
@@ -33,6 +33,9 @@ class Requests {
         isActive,
         district,
         neighborhood,
+        role,
+        limit,
+        page
       },
     });
 
@@ -55,6 +58,18 @@ class Requests {
         year:year,
         district:district,
         adminId:adminId,
+        neighborhood:neighborhood
+      }
+    }
+    
+    )
+    return response
+  }
+  static getDashboardAll = async (year,district,  neighborhood)=> {
+    const response = await $api.get(`${BASE_URL}/statistics/general`,{
+      params:{
+        year:year,
+        district:district,
         neighborhood:neighborhood
       }
     }

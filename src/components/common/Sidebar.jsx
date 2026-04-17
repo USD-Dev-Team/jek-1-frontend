@@ -31,16 +31,12 @@ import {
   Globe,
   LucideLogOut,
   SunMoon,
-
 } from "lucide-react";
 
 import { useAuth } from "../../hooks/useAuth";
-
 import { useUIStore } from "../../store/useUIStore";
 import { useTranslation } from "react-i18next";
 import Cookies from "js-cookie";
-
-
 
 export default function Sidebar({ links = [] }) {
   const { toggleColorMode } = useColorMode();
@@ -49,30 +45,22 @@ export default function Sidebar({ links = [] }) {
 
   const { logout } = useAuth();
   const navigate = useNavigate();
-  const  {onOpen, onClose, isOpen} = useDisclosure();
+  const { onOpen, onClose, isOpen } = useDisclosure();
 
-
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const changeLang = (lng) => {
     i18n.changeLanguage(lng);
     localStorage.setItem("lang", lng);
   };
 
-
-
-
-
-
   return (
     <>
-      {/* 🔝 TOP RIGHT */}
+      {/* TOP RIGHT */}
       <Flex position="fixed" top="15px" right="20px" gap={2} zIndex={2000}>
-       
-
-        <Menu >
+        <Menu>
           <MenuButton mr={3} as={Button} size="sm" variant="solidPrimary">
-            <Flex align="center"  gap={1}>
+            <Flex align="center" gap={1}>
               <Globe size={16} />
               {i18n.language.toUpperCase()}
             </Flex>
@@ -120,7 +108,7 @@ export default function Sidebar({ links = [] }) {
             </Flex>
           )}
 
-          {/*  LINKS */}
+          {/* LINKS */}
           <VStack align="stretch" spacing={1}>
             {links.map((item) => (
               <NavLink key={item.to} to={item.to}>
@@ -137,7 +125,6 @@ export default function Sidebar({ links = [] }) {
                       color={isActive ? "white" : "text"}
                       _hover={{ bg: "secondary", color: "white" }}
                     >
-                
                       <Icon as={item.icon} boxSize={5} />
 
                       {!collapsed && (
@@ -168,7 +155,7 @@ export default function Sidebar({ links = [] }) {
             onClick={toggleColorMode}
           >
             <SunMoon size={18} />
-            {!collapsed && <Text fontSize="sm">Theme</Text>}
+            {!collapsed && <Text fontSize="sm">{t("sidebar.theme")}</Text>}
           </Flex>
 
           {/* PROFILE */}
@@ -181,20 +168,13 @@ export default function Sidebar({ links = [] }) {
             borderColor="border"
           >
             <Flex align="center" gap={2}>
-              <Avatar
-                size="sm"
-                name={Cookies.get('first_name')}
-              />
+              <Avatar size="sm" name={Cookies.get("first_name")} />
 
               {!collapsed && (
-                <Box >
-                  <HStack  fontSize="sm" fontWeight="600">
-                    <Text>
-                    {Cookies.get('first_name')}
-                    </Text>
-                    <Text>
-                    {Cookies.get('last_name')}
-                    </Text>
+                <Box>
+                  <HStack fontSize="sm" fontWeight="600">
+                    <Text>{Cookies.get("first_name")}</Text>
+                    <Text>{Cookies.get("last_name")}</Text>
                   </HStack>
                   <Text fontSize="xs" color="textSecondary">
                     {Cookies.get("role")}
@@ -204,11 +184,7 @@ export default function Sidebar({ links = [] }) {
             </Flex>
 
             {!collapsed && (
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={onOpen}
-              >
+              <Button size="sm" variant="ghost" onClick={onOpen}>
                 <LucideLogOut size={16} />
               </Button>
             )}
@@ -230,29 +206,29 @@ export default function Sidebar({ links = [] }) {
           )}
         </VStack>
 
-
+        {/* MODAL */}
         <Modal isCentered isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
           <ModalContent>
-            <ModalHeader >
-              <Text>Chiqish</Text>
+            <ModalHeader>
+              <Text>{t("sidebar.logout")}</Text>
             </ModalHeader>
             <ModalBody>
-              <Text>Tizimdan chiqmoqchimsz ?</Text>
+              <Text>{t("sidebar.logout_text")}</Text>
             </ModalBody>
             <ModalFooter>
               <Button variant="ghost" onClick={onClose}>
-        Bekor qilish
-      </Button>
-      <Button
-        colorScheme="red"
-        onClick={() => {
-          logout();
-          navigate("/login");
-        }}
-      >
-        Ha, chiqaman
-      </Button>
+                {t("sidebar.cancel")}
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={() => {
+                  logout();
+                  navigate("/login");
+                }}
+              >
+                {t("sidebar.confirm")}
+              </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>

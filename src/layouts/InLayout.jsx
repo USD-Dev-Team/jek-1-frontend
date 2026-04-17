@@ -21,6 +21,11 @@ export default function InLayout() {
       to: "/inseksiya/hodim",
       icon: User2Icon,
     },
+     {
+      label: "Boshqaruv paneli",
+      to: "/inseksiya/dashboard",
+      icon: EqualApproximatelyIcon,
+    },
   ];
 
   return (

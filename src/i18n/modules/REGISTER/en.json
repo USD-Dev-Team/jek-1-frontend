@@ -1,47 +1,32 @@
 {
-  "register": {
-    "title": "Register",
-    "subtitle": "Enter your details to access the system",
+  "register": "Register",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "phone": "Phone",
+  "district": "District",
+  "neighborhood": "Neighborhood",
+  "select": "Select",
+  "selectNeighborhood": "Select neighborhood",
+  "password": "Password",
+  "confirmPassword": "Confirm Password",
 
-    "first_name": "First Name",
-    "first_name_placeholder": "Ali",
+  "errors": {
+    "firstNameRequired": "First name is required",
+    "firstNameInvalid": "Only letters allowed",
+    "lastNameRequired": "Last name is required",
+    "lastNameInvalid": "Only letters allowed",
+    "phoneRequired": "Phone is required",
+    "phoneInvalid": "Invalid phone number",
+    "districtRequired": "District not selected",
+    "neighborhoodRequired": "Neighborhood not selected",
+    "passwordRequired": "Password is required",
+    "passwordLength": "At least 8 characters",
+    "passwordLetter": "At least 1 letter required",
+    "passwordNumber": "At least 1 number required",
+    "confirmRequired": "Confirmation required",
+    "passwordMismatch": "Passwords do not match"
+  },
 
-    "last_name": "Last Name",
-    "last_name_placeholder": "Aliyev",
-
-    "phone": "Phone Number",
-    "phone_placeholder": "+998901234567",
-
-    "tuman": "District",
-
-    "password": "Password",
-    "password_placeholder": "Enter your password",
-
-    "confirm_password": "Confirm Password",
-    "confirm_password_placeholder": "Re-enter your password",
-
-    "login": "Login",
-    "button": "Register",
-
-    "errors": {
-      "first_name_required": "First name is required",
-      "first_name_invalid": "Only letters are allowed",
-
-      "last_name_required": "Last name is required",
-
-      "phone_required": "Phone number is required",
-      "phone_invalid": "Invalid phone number",
-
-      "tuman_required": "Please select a district",
-
-      "password_required": "Password is required",
-      "password_invalid": "Password must be at least 8 characters",
-
-      "password_confirm_required": "Confirm your password",
-      "password_mismatch": "Passwords do not match"
-    },
-
-    "success": "Registration successful",
-    "fail": "Something went wrong"
-  }
+  "success": "Successfully registered",
+  "error": "Something went wrong"
 }
