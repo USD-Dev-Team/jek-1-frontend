@@ -18,7 +18,7 @@ export default function GvLayout() {
     // },
     {
       label: t("jek.sidebar.murojat"),
-      to: "/government/murojat",
+      to: "/hokim/dashboard",
       icon: MessageCircle,
       end: true
     },

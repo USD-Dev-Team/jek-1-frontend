@@ -31,7 +31,7 @@ const months = [
   "Iyl","Avg","Sen","Okt","Noy","Dek"
 ];
 
-export default function InspectionDashboard() {
+export default function DashboardGv() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -79,7 +79,7 @@ export default function InspectionDashboard() {
   const tumanlar = manzil?.uz?.addresses || [];
   const mahallalar = manzil?.uz?.mahallas || {};
 
-  // 🚀 FETCH
+  // FETCH
   useEffect(() => {
     const getDashboard = async () => {
       setLoading(true);

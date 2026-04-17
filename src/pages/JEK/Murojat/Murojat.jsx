@@ -48,6 +48,7 @@ export default function Murojat() {
   const [debouncedQwery, setDebouncedQwery] = useState("");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(15);
+  const [files, setFiles] = useState([]);
 
   const hoverBg = useColorModeValue("neutral.100", "neutral.700");
 
@@ -90,11 +91,11 @@ export default function Murojat() {
       bg: "dangerBg",
       color: "danger",
     },
-     jek_completed: {
-    label: t("murojat.status.jek_completed"),
-    bg: "green.700",
-    color: "green.200",
-  },
+    jek_completed: {
+      label: t("murojat.status.jek_completed"),
+      bg: "green.700",
+      color: "green.200",
+    },
   };
 
   const getStatus = (status) => {
@@ -108,8 +109,8 @@ export default function Murojat() {
   };
 
   const [form, setForm] = useState({
-    startData: new Date().toISOString().split("T")[0],
-    endData: new Date().toISOString().split("T")[0],
+    startData: "" || null,
+    endData: "" || null,
     status: "" || null,
     search: "",
   });
@@ -118,8 +119,8 @@ export default function Murojat() {
     try {
       setLoading(true);
       const res = await Requests.getFilteredRequest(
-        form.startData,
-        form.endData,
+        null,
+        null,
         jek?.addresses?.[0]?.district || "",
         jek?.addresses?.[0]?.neighborhood || "",
         form.status,
@@ -129,11 +130,8 @@ export default function Murojat() {
       );
 
       setData(res.data.data);
-
-    }finally {
+    } finally {
       setLoading(false);
-    
-
     }
   };
 
@@ -144,13 +142,11 @@ export default function Murojat() {
     return () => clearTimeout(time);
   }, [form.search]);
 
-useEffect(() => {
-  if (!form.startData || !form.endData) return;
-
-  if (jek?.addresses?.length > 0) {
-    getData(debouncedQwery);
-  }
-}, [
+  useEffect(() => {
+    if (jek?.addresses?.length > 0) {
+      getData(debouncedQwery);
+    }
+  }, [
     jek,
     form.startData,
     form.endData,
@@ -159,23 +155,27 @@ useEffect(() => {
     page,
     limit,
   ]);
-const openImage = (url) => {
-  setPreviewImg(url);
-};
-
-  const complete = async () => {
-    try {
-      setLoading(true);
-      await Requests.Complete(selected?.id, reason);
-      finishModal.onClose();
-      setReason("");
-      getData();
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
+  const openImage = (url) => {
+    setPreviewImg(url);
   };
+
+ const complete = async () => {
+  try {
+    setLoading(true);
+
+    await Requests.Complete(selected?.id, reason, files);
+
+    finishModal.onClose();
+    setReason("");
+    setFiles([]); 
+
+    getData();
+  } catch (err) {
+    toastService.error(err?.response?.data?.message || "Xatolik yuz berdi");
+  } finally {
+    setLoading(false);
+  }
+};
 
   const getStartRequest = async (id) => {
     try {
@@ -186,13 +186,24 @@ const openImage = (url) => {
       viewModal.onClose();
       startModal.onClose();
       getData();
-    } catch(err){
-      toastService.error( err?.response?.data?.message || "Xatolik yuz berdi")
-    }finally {
+    } catch (err) {
+      toastService.error(err?.response?.data?.message || "Xatolik yuz berdi");
+    } finally {
       setLoading(false);
-   
     }
   };
+
+  const filteredData = data.filter((item) => {
+    if (!form.startData || !form.endData) return true;
+
+    const itemDate = new Date(item.createdAt);
+    const start = new Date(form.startData);
+    const end = new Date(form.endData);
+
+    end.setHours(23, 59, 59, 999);
+
+    return itemDate >= start && itemDate <= end;
+  });
 
   return (
     <Box bg="bg" minH="100vh" p={6}>
@@ -219,10 +230,12 @@ const openImage = (url) => {
             }
           >
             <option value="">{t("murojat.table.all")}</option>
-          <option value="PENDING">{t("murojat.status.pending")}</option>
-           <option value="IN_PROGRESS">{t("murojat.status.in_progress")}</option>
-          <option value="COMPLETED">{t("murojat.status.completed")}</option>
-           <option value="REJECTED">{t("murojat.status.rejected")}</option>
+            <option value="PENDING">{t("murojat.status.pending")}</option>
+            <option value="IN_PROGRESS">
+              {t("murojat.status.in_progress")}
+            </option>
+            <option value="COMPLETED">{t("murojat.status.completed")}</option>
+            <option value="REJECTED">{t("murojat.status.rejected")}</option>
           </Select>
 
           <Input
@@ -254,13 +267,12 @@ const openImage = (url) => {
         <Table>
           <Thead>
             <Tr>
-               <Th>#</Th>
-            <Th>{t("murojat.table.id")}</Th>
-             <Th>{t("murojat.table.user")}</Th>
-            <Th>{t("murojat.table.date")}</Th>
-          <Th>{t("murojat.table.status")}</Th>
-             <Th>{t("murojat.table.actions")}</Th>
-            
+              <Th>#</Th>
+              <Th>{t("murojat.table.id")}</Th>
+              <Th>{t("murojat.table.user")}</Th>
+              <Th>{t("murojat.table.date")}</Th>
+              <Th>{t("murojat.table.status")}</Th>
+              <Th>{t("murojat.table.actions")}</Th>
             </Tr>
           </Thead>
 
@@ -270,16 +282,16 @@ const openImage = (url) => {
             ) : data.length === 0 ? (
               <Tr>
                 <Td colSpan={5} textAlign="center" py={10} color="gray.500">
-              {t("murojat.table.empty")}
+                  {t("murojat.table.empty")}
                 </Td>
               </Tr>
             ) : (
-              data.map((item, index) => {
+              filteredData.map((item, index) => {
                 const status = getStatus(item.status);
 
                 return (
                   <Tr key={item.id} _hover={{ bg: hoverBg }}>
-                    <Td>{index+1}</Td>
+                    <Td>{index + 1}</Td>
                     <Td fontWeight="600">{item.request_number}</Td>
 
                     <Td>
@@ -297,8 +309,8 @@ const openImage = (url) => {
                       </Badge>
                     </Td>
 
-                    <Td textAlign="right">
-                      <Flex justify="flex-end" gap={2}>
+                    <Td textAlign="start" >
+                      <Flex justify="flex-center" gap={2}>
                         {item.status?.toLowerCase() === "pending" && (
                           <Button
                             size="sm"
@@ -307,7 +319,10 @@ const openImage = (url) => {
                               setSelected(item);
                               viewModal.onOpen();
                             }}
-                          > {t("murojat.buttons.view")}</Button>
+                          >
+                            {" "}
+                            {t("murojat.buttons.view")}
+                          </Button>
                         )}
 
                         {item.status?.toLowerCase() === "in_progress" && (
@@ -320,7 +335,7 @@ const openImage = (url) => {
                               finishModal.onOpen();
                             }}
                           >
-                          {t("murojat.buttons.finish")}
+                            {t("murojat.buttons.finish")}
                           </Button>
                         )}
 
@@ -335,7 +350,7 @@ const openImage = (url) => {
                               viewModal.onOpen();
                             }}
                           >
-                          {t("murojat.buttons.view")}
+                            {t("murojat.buttons.view")}
                           </Button>
                         )}
                       </Flex>
@@ -375,9 +390,9 @@ const openImage = (url) => {
           size="sm"
           variant="outline"
           onClick={() => setPage((p) => p + 1)}
-        isDisabled={data.length < limit}
+          isDisabled={filteredData.length < limit}
         >
-        {t("murojat.pagination.next")} →
+          {t("murojat.pagination.next")} →
         </Button>
       </Flex>
 
@@ -421,13 +436,15 @@ const openImage = (url) => {
                 }}
               >
                 <Text fontSize="sm" color="gray.400">
-             {t("murojat.upload.placeholder")}
+                  {files.length > 0
+                    ? files.map((f) => f.name).join(", ")
+                    : t("murojat.upload.placeholder")}
                 </Text>
-
                 <Input
                   type="file"
                   multiple
                   opacity={0}
+                  onChange={(e) => setFiles([...e.target.files])}
                   position="absolute"
                   left={0}
                   top={0}
@@ -464,179 +481,175 @@ const openImage = (url) => {
 
       {/* viewModal*/}
 
-     <Modal isOpen={viewModal.isOpen} onClose={viewModal.onClose} size="lg">
-  <ModalOverlay bg="blackAlpha.500" backdropFilter="blur(4px)" />
+      <Modal isOpen={viewModal.isOpen} onClose={viewModal.onClose} size="lg">
+        <ModalOverlay bg="blackAlpha.500" backdropFilter="blur(4px)" />
 
-  <ModalContent
-    borderRadius="lg"
-    bg="surface"
-    color="gray.800"
-    boxShadow="xl"
-  >
-    {/* HEADER */}
-    <ModalHeader
-      borderBottom="1px solid"
-      borderColor="gray.200"
-      fontWeight="600"
-      fontSize="lg"
-    >
-      {t("murojat.ariza.malumotlari")}
-    </ModalHeader>
-
-    {/* BODY */}
-    <ModalBody py={5}>
-      <VStack align="stretch" spacing={4}>
-
-        {/* ROW */}
-        <Flex justify="space-between">
-          <Text color="gray.500" fontSize="sm">
-            {t("murojat.ariza.raqami")}
-          </Text>
-          <Text color={"gray.200"} fontWeight="500">{selected?.request_number}</Text>
-        </Flex>
-
-        <Flex justify="space-between">
-          <Text color="gray.500" fontSize="sm">
-            {t("murojat.foydalanuvchi")}
-          </Text>
-          <Text color={"gray.200"}>{selected?.user?.full_name}</Text>
-        </Flex>
-
-        <Flex justify="space-between">
-          <Text color="gray.500" fontSize="sm">
-            {t("murojat.telefon")}
-          </Text>
-          <Text color={"gray.200"}>{selected?.user?.phoneNumber}</Text>
-        </Flex>
-
-        <Flex justify="space-between">
-          <Text color="gray.500" fontSize="sm">
-            {t("murojat.tuman")}
-          </Text>
-          <Text color={"gray.200"}>{selected?.address?.district}</Text>
-        </Flex>
-
-        <Flex justify="space-between">
-          <Text color="gray.500" fontSize="sm">
-            {t("murojat.mahalla")}
-          </Text>
-          <Text color={"gray.200"}>{selected?.address?.neighborhood}</Text>
-        </Flex>
-
-        <Flex justify="space-between">
-          <Text color="gray.500" fontSize="sm">
-            {t("murojat.uy")}
-          </Text>
-          <Text color={"gray.200"}>
-            {selected?.address?.building_number} /{" "}
-            {selected?.address?.apartment_number}
-          </Text>
-        </Flex>
-
-        {/* DESCRIPTION */}
-        <Box pt={2}>
-          <Text color="gray.500" fontSize="sm" mb={1}>
-            {t("murojat.muammo")}
-          </Text>
-          <Text color={"gray.200"} lineHeight="1.5">
-            {selected?.description}
-          </Text>
-        </Box>
-
-        {/* NOTE */}
-        <Box>
-          <Text color="gray.500" fontSize="sm" mb={1}>
-            {t("murojat.izoh")}
-          </Text>
-         
-            <Text color={"gray.200"} lineHeight="1.5">
-            {selected?.note || "-"}
-            </Text>
-
-        </Box>
-
-        {/* IMAGES */}
-        <Flex gap={3} wrap="wrap" pt={2}>
-          {selected?.requestPhotos?.map((img) => (
-            <Box
-              key={img.id}
-              w="140px"
-              h="140px"
-              borderRadius="md"
-              overflow="hidden"
-              border="1px solid"
-              borderColor="gray.200"
-              cursor="pointer"
-              _hover={{ opacity: 0.9 }}
-            >
-              <Image
-                src={`${FILE_BASE}${img.file_url}`}
-                w="100%"
-                h="100%"
-                objectFit="cover"
-                onClick={() =>
-                  openImage(`${FILE_BASE}${img.file_url}`)
-                }
-              />
-            </Box>
-          ))}
-        </Flex>
-      </VStack>
-    </ModalBody>
-
-    {/* FOOTER */}
-    <ModalFooter
-      borderTop="1px solid"
-      borderColor="gray.200"
-      gap={3}
-    >
-      <Button size="sm" variant="outline" onClick={viewModal.onClose}>
-        {t("murojat.close")}
-      </Button>
-
-      {selected?.status?.toLowerCase() === "pending" && (
-        <Button
-          size="sm"
-          colorScheme="green"
-          onClick={() => getStartRequest(selected?.id)}
+        <ModalContent
+          borderRadius="lg"
+          bg="surface"
+          color="gray.800"
+          boxShadow="xl"
         >
-          {t("murojat.buttons.start")}
-        </Button>
-      )}
+          {/* HEADER */}
+          <ModalHeader
+            borderBottom="1px solid"
+            borderColor="gray.200"
+            fontWeight="600"
+            fontSize="lg"
+          >
+            {t("murojat.ariza.malumotlari")}
+          </ModalHeader>
 
-      {selected?.status?.toLowerCase().includes("rejected") && (
-        <Button
-          size="sm"
-          colorScheme="blue"
-          onClick={() => getStartRequest(selected?.id)}
-        >
-          {t("murojat.qaytadan")}
-        </Button>
-      )}
-    </ModalFooter>
-  </ModalContent>
-</Modal>
+          {/* BODY */}
+          <ModalBody py={5}>
+            <VStack align="stretch" spacing={4}>
+              {/* ROW */}
+              <Flex justify="space-between">
+                <Text color="gray.500" fontSize="sm">
+                  {t("murojat.ariza.raqami")}
+                </Text>
+                <Text color={"gray.200"} fontWeight="500">
+                  {selected?.request_number}
+                </Text>
+              </Flex>
+
+              <Flex justify="space-between">
+                <Text color="gray.500" fontSize="sm">
+                  {t("murojat.foydalanuvchi")}
+                </Text>
+                <Text color={"gray.200"}>{selected?.user?.full_name}</Text>
+              </Flex>
+
+              <Flex justify="space-between">
+                <Text color="gray.500" fontSize="sm">
+                  {t("murojat.telefon")}
+                </Text>
+                <Text color={"gray.200"}>{selected?.user?.phoneNumber}</Text>
+              </Flex>
+
+              <Flex justify="space-between">
+                <Text color="gray.500" fontSize="sm">
+                  {t("murojat.tuman")}
+                </Text>
+                <Text color={"gray.200"}>{selected?.address?.district}</Text>
+              </Flex>
+
+              <Flex justify="space-between">
+                <Text color="gray.500" fontSize="sm">
+                  {t("murojat.mahalla")}
+                </Text>
+                <Text color={"gray.200"}>
+                  {selected?.address?.neighborhood}
+                </Text>
+              </Flex>
+
+              <Flex justify="space-between">
+                <Text color="gray.500" fontSize="sm">
+                  {t("murojat.uy")}
+                </Text>
+                <Text color={"gray.200"}>
+                  {selected?.address?.building_number} /{" "}
+                  {selected?.address?.apartment_number}
+                </Text>
+              </Flex>
+
+              {/* DESCRIPTION */}
+              <Box pt={2}>
+                <Text color="gray.500" fontSize="sm" mb={1}>
+                  {t("murojat.muammo")}
+                </Text>
+                <Text color={"gray.200"} lineHeight="1.5">
+                  {selected?.description}
+                </Text>
+              </Box>
+
+              {/* NOTE */}
+              <Box>
+                <Text color="gray.500" fontSize="sm" mb={1}>
+                  {t("murojat.izoh")}
+                </Text>
+
+                <Text color={"gray.200"} lineHeight="1.5">
+                  {selected?.note || "-"}
+                </Text>
+              </Box>
+
+              {/* IMAGES */}
+              <Flex gap={3} wrap="wrap" pt={2}>
+                {selected?.requestPhotos?.map((img) => (
+                  <Box
+                    key={img.id}
+                    w="140px"
+                    h="140px"
+                    borderRadius="md"
+                    overflow="hidden"
+                    border="1px solid"
+                    borderColor="gray.200"
+                    cursor="pointer"
+                    _hover={{ opacity: 0.9 }}
+                  >
+                    <Image
+                      src={`${FILE_BASE}${img.file_url}`}
+                      w="100%"
+                      h="100%"
+                      objectFit="cover"
+                      onClick={() => openImage(`${FILE_BASE}${img.file_url}`)}
+                    />
+                  </Box>
+                ))}
+              </Flex>
+            </VStack>
+          </ModalBody>
+
+          {/* FOOTER */}
+          <ModalFooter borderTop="1px solid" borderColor="gray.200" gap={3}>
+            <Button size="sm" variant="outline" onClick={viewModal.onClose}>
+              {t("murojat.close")}
+            </Button>
+
+            {selected?.status?.toLowerCase() === "pending" && (
+              <Button
+                size="sm"
+                colorScheme="green"
+                onClick={() => getStartRequest(selected?.id)}
+              >
+                {t("murojat.buttons.start")}
+              </Button>
+            )}
+
+            {selected?.status?.toLowerCase().includes("rejected") && (
+              <Button
+                size="sm"
+                colorScheme="blue"
+                onClick={() => getStartRequest(selected?.id)}
+              >
+                {t("murojat.qaytadan")}
+              </Button>
+            )}
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
 
       {/*open Image */}
-    <Modal
-  isOpen={!!previewImg}
-  onClose={() => setPreviewImg(null)}
-  size="xl"
-  isCentered
->
-  <ModalOverlay bg="blackAlpha.800" backdropFilter="blur(6px)" />
+      <Modal
+        isOpen={!!previewImg}
+        onClose={() => setPreviewImg(null)}
+        size="xl"
+        isCentered
+      >
+        <ModalOverlay bg="blackAlpha.800" backdropFilter="blur(6px)" />
 
-  <ModalContent bg="transparent" boxShadow="none">
-    <ModalBody display="flex" justifyContent="center">
-      <Image
-        src={previewImg}
-        maxH="80vh"
-        borderRadius="12px"
-        objectFit="contain"
-      />
-    </ModalBody>
-  </ModalContent>
-</Modal>
+        <ModalContent bg="transparent" boxShadow="none">
+          <ModalBody display="flex" justifyContent="center">
+            <Image
+              src={previewImg}
+              maxH="80vh"
+              borderRadius="12px"
+              objectFit="contain"
+            />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </Box>
   );
 }

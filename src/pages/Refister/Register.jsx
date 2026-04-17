@@ -161,7 +161,7 @@ export default function Register() {
         </MenuList>
       </Menu>
 
-      <Box as="form" onSubmit={handleSubmit} w={{ base: "100%", sm: "400px" }} bg="surface" p={8} rounded="xl" shadow="lg">
+      <Box as="form" onSubmit={handleSubmit} w={{ base: "100%", sm: "450px" }} bg="surface" p={8} rounded="xl" shadow="lg">
         
         <Heading textAlign="center" size="lg" mb={6}>
           {t("reg.register")}

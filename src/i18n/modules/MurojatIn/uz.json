@@ -1,0 +1,44 @@
+ {
+    "title": "Murojaatlar (Inspection)",
+    "search": "Qidirish...",
+    "all": "Hammasi",
+
+    "user": "Foydalanuvchi",
+    "region": "Hudud",
+    "date": "Sana",
+    "duration": "Davomiylik",
+    "status_label": "Status",
+    "action": "Amallar",
+
+    "empty": "Ma'lumot topilmadi",
+    "view": "Ko‘rish",
+
+    "prev": "Oldingi",
+    "next": "Keyingi",
+
+    "modal": {
+      "title": "Ariza ma'lumotlari"
+    },
+
+    "fields": {
+      "request_number": "Ariza raqami",
+      "user": "Foydalanuvchi",
+      "phone": "Telefon",
+      "district": "Tuman",
+      "neighborhood": "Mahalla",
+      "house": "Uy",
+      "problem": "Muammo",
+      "note": "Izoh"
+    },
+
+    "close": "Yopish",
+    "restart": "Qaytadan boshlash",
+
+    "status": {
+      "pending": "Kutilmoqda",
+      "in_progress": "Jarayonda",
+      "completed": "Bajarildi",
+      "rejected": "Rad etilgan",
+      "jek_completed": "JEK tomonidan bajarilgan"
+    }
+  }

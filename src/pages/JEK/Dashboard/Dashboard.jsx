@@ -156,10 +156,11 @@ import Cookies from "js-cookie";
 import { Requests } from "../../../Services/api/Requests";
 
 export default function Dashboard() {
-  const { t } = useTranslation();
+
   const gridLine = useColorModeValue("#E2E8F0", "#2D3748");
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
+    const { t, i18n } = useTranslation();
 
   const district = Cookies.get("district");
   const neighborhood = Cookies.get("neighborhood");
@@ -199,22 +200,22 @@ export default function Dashboard() {
     stats?.statuses?.find((s) => s.status === "REJECTED")?._count?.id || 0;
 
   const inProgress =
-    stats?.totalRequests - (completed + jekCompleted + rejected);
+    stats?.totalRequests - (completed + jekCompleted + rejected) || 0;
 
 
     const dynamicPieData = [
   {
-    name: "Bajarilgan",
+ name: t("dashboard.done"),
     value: completed + jekCompleted,
     color: "#48BB78",
   },
   {
-    name: "Jarayonda",
+    name: t("dashboard.processing"),
     value: inProgress,
     color: "#4299E1",
   },
   {
-    name: "Rad etilgan",
+   name: t("dashboard.rejected_short"),
     value: rejected,
     color: "#FC8181",
   },
@@ -233,10 +234,10 @@ const efficiency = stats?.totalRequests
         </Circle>
         <Box>
           <Text fontSize="xl" fontWeight="700" color="text">
-            Dashboard
+            {t("dashboard.title")}
           </Text>
           <Text fontSize="xs" color="textSecondary">
-            Hududiy murojaatlar umumiy holati
+              {t("dashboard.subtitle")}
           </Text>
         </Box>
       </Flex>
@@ -244,7 +245,7 @@ const efficiency = stats?.totalRequests
       {/* ── TOP STAT CARDS ── */}
       <Grid templateColumns="repeat(4, 1fr)" gap={4} mb={6}>
         <StatCard
-          label="Jami murojaatlar"
+          label={t("dashboard.total_requests")}
           value={stats?.totalRequests || 0}
           icon={FileText}
           iconBg="infoBg"
@@ -252,7 +253,7 @@ const efficiency = stats?.totalRequests
           accent="info"
         />
         <StatCard
-          label="Bajarilgan"
+          label={t("dashboard.completed")}
           icon={CheckCircle}
           iconBg="successBg"
           iconColor="success"
@@ -260,7 +261,7 @@ const efficiency = stats?.totalRequests
           value={completed + jekCompleted}
         />
         <StatCard
-          label="Jarayonda"
+         label={t("dashboard.in_progress")}
           icon={Clock}
           iconBg="warningBg"
           iconColor="warning"
@@ -268,7 +269,7 @@ const efficiency = stats?.totalRequests
           value={inProgress}
         />
         <StatCard
-          label="Rad etilgan"
+         label={t("dashboard.rejected")}
          value={rejected}
           icon={XCircle}
           iconBg="dangerBg"
@@ -277,9 +278,9 @@ const efficiency = stats?.totalRequests
         />
       </Grid>
 
-      {/* ── ROW 1: Line Chart + Pie Chart ── */}
+
       <Grid templateColumns="2fr 1fr" gap={4} mb={4}>
-        {/* Line Chart */}
+
         <Box
           bg="surface"
           borderRadius="xl"
@@ -290,10 +291,10 @@ const efficiency = stats?.totalRequests
           <Flex justify="space-between" align="center" mb={5}>
             <Box>
               <Text fontWeight="700" color="text">
-                Yillik o'sish dinamikasi
+                {t("dashboard.yearly_growth")}
               </Text>
               <Text fontSize="xs" color="textSecondary">
-                Oylar bo'yicha murojaatlar soni
+                {t("dashboard.monthly_requests")}
               </Text>
             </Box>
             <Flex gap={4}>
@@ -331,7 +332,7 @@ const efficiency = stats?.totalRequests
                 type="monotone"
                 dataKey="current"
                 name="2025"
-                stroke="var(--chakra-colors-border)"
+                stroke="var(--chakra-colors-primary)"
                 strokeWidth={2}
                 dot={false}
                 strokeDasharray="4 4"
@@ -350,10 +351,10 @@ const efficiency = stats?.totalRequests
           p={5}
         >
           <Text fontWeight="700" color="text" mb={1}>
-            Status taqsimoti
+          {t("dashboard.status_distribution")}
           </Text>
           <Text fontSize="xs" color="textSecondary" mb={4}>
-            Barcha murojaatlar nisbati
+           {t("dashboard.all_requests_ratio")}
           </Text>
           <ResponsiveContainer width="100%" height={160}>
             <PieChart>
@@ -405,10 +406,10 @@ const efficiency = stats?.totalRequests
           <Flex justify="space-between" align="center" mb={5}>
             <Box>
               <Text fontWeight="700" color="text">
-                Oylik taqqoslash
+                {t("dashboard.monthly_comparison")}
               </Text>
               <Text fontSize="xs" color="textSecondary">
-                Joriy yil vs o'tgan yil
+               {t("dashboard.current_vs_prev")}
               </Text>
             </Box>
           </Flex>
@@ -447,7 +448,7 @@ const efficiency = stats?.totalRequests
           </ResponsiveContainer>
         </Box>
 
-        {/* Extra: Bugungi kun + O'rtacha vaqt */}
+
         <Flex direction="column" gap={4}>
           {/* Bugungi kun aktivligi */}
           <Box
@@ -461,7 +462,7 @@ const efficiency = stats?.totalRequests
             <Flex align="center" gap={2} mb={3}>
               <Icon as={Sun} color="warning" boxSize={4} />
               <Text fontWeight="700" color="text" fontSize="sm">
-                Bugungi faollik
+              {t("dashboard.today_activity")}
               </Text>
             </Flex>
             <Grid templateColumns="1fr 1fr" gap={3}>
@@ -470,7 +471,7 @@ const efficiency = stats?.totalRequests
                   <AnimatedCounter value={stats?.todayActivity?.received || 0} />
                 </Text>
                 <Text fontSize="xs" color="textSecondary">
-                  Qabul qilindi
+               {t("dashboard.received")}
                 </Text>
               </Box>
               <Box bg="successBg" borderRadius="lg" p={3} textAlign="center">
@@ -478,7 +479,7 @@ const efficiency = stats?.totalRequests
                   <AnimatedCounter value={stats?.todayActivity.finished || 0} />
                 </Text>
                 <Text fontSize="xs" color="textSecondary">
-                  Tugatildi
+                {t("dashboard.finished")}
                 </Text>
               </Box>
             </Grid>
@@ -505,11 +506,11 @@ const efficiency = stats?.totalRequests
           <Flex align="center" gap={2} mb={4}>
             <Icon as={TrendingUp} color="success" boxSize={4} />
             <Text fontWeight="700" color="text" fontSize="sm">
-              Samaradorlik indikatori
+             {t("dashboard.efficiency")}
             </Text>
           </Flex>
           <Text fontSize="xs" color="textSecondary" mb={5}>
-            Oxirgi 30 kundagi bajarilgan/rad nisbati
+           {t("dashboard.last_30_days")}
           </Text>
 
           <Flex justify="center" mb={4}>
@@ -555,7 +556,7 @@ const efficiency = stats?.totalRequests
               {efficiency}%
                 </Text>
                 <Text fontSize="8px" color="textSecondary">
-                  samarali
+                  {t("dashboard.efficient")}
                 </Text>
               </Flex>
             </Box>
@@ -568,7 +569,7 @@ const efficiency = stats?.totalRequests
                 <AnimatedCounter value={completed + jekCompleted} />
               </Text>
               <Text fontSize="xs" color="textSecondary">
-                Bajarilgan
+               {t("dashboard.completed")}
               </Text>
             </Box>
             <Box textAlign="center">
@@ -576,7 +577,7 @@ const efficiency = stats?.totalRequests
                 <AnimatedCounter value={+ rejected} />
               </Text>
               <Text fontSize="xs" color="textSecondary">
-                Rad etilgan
+               {t("dashboard.rejected")}
               </Text>
             </Box>
           </Flex>

@@ -10,12 +10,27 @@ class Requests {
     const response = await $api.patch(`${BASE_URL}/requests/assign/${id}`);
     return response;
   };
-  static Complete = async (id, note) => {
-    const response = await $api.patch(`${BASE_URL}/requests/complete/${id}`, {
-      note: note,
-    });
-    return response;
-  };
+ static Complete = async (id, note, files) => {
+  const formData = new FormData();
+
+  formData.append("note", note);
+
+  files.forEach((file) => {
+    formData.append("photos", file); 
+  });
+
+  const response = await $api.patch(
+    `${BASE_URL}/requests/complete/${id}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+
+  return response;
+};
   static getFilteredRequest = async ( start, end, tuman, mahalla, status, search, page, limit,) => {
     const response = await $api.get(`${BASE_URL}/requests/universal-search`, {
       params: {  startDate: start,  endDate: end,  district: tuman,  neighborhood: mahalla,  status: status,  search: search,  page: page,  limit: limit, },

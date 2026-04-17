@@ -1,5 +1,6 @@
 
-import MurojatGv from "../pages/GOVERENMENT/MurojatGv";
+import DashboardGv from "../pages/GOVERENMENT/DashboardGv";
+import MurojatGv from "../pages/GOVERENMENT/DashboardGv";
 
 const gvRoute = [
     // {
@@ -8,9 +9,9 @@ const gvRoute = [
     //     element:<Dashboard />
     // },
     {
-        name:"Murojatlar",
-        path:'murojat',
-        element:<MurojatGv />
+        name:"Dashboard",
+        path:'dashboard',
+        element:<DashboardGv />
     },
     // {
     //     name:"Jek Hodimlari",

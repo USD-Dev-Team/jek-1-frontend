@@ -33,7 +33,7 @@ function App() {
           </Route>
         </Route>
         <Route >
-          <Route path='/government' element={<GvLayout />} >
+          <Route path='/hokim' element={<GvLayout />} >
             {gvRoute.map((r) => {
               return (
                 <Route key={r.name} path={r.path} element={r.element} />

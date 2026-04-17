@@ -99,7 +99,7 @@ export default function Login() {
           navigate("/jek/dashboard");
           toastService.success("JEK panelga xush kelibsiz");
         } else if (data.role === "GOVERNMENT") {
-          navigate("/hokim");
+          navigate("/hokim/dashboardgv");
           toastService.success("Government panelga xush kelibsiz");
         } else if (data.role === "INSPECTION") {
         

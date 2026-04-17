@@ -31,6 +31,16 @@ import sidebarUz from "./modules/sidebar/uz.json";
 import sidebarRu from "./modules/sidebar/ru.json";
 import sidebarEn from "./modules/sidebar/en.json";
 
+//Dashboard
+import dashboardUz from "./modules/DashboardJek/uz.json";
+import dashboardRu from "./modules/DashboardJek/ru.json";
+import dashboardEn from "./modules/DashboardJek/en.json";
+//MurojatIn
+import inspectionUz  from "./modules/MurojatIn/uz.json";
+import inspectionRu from "./modules/MurojatIn/ru.json";
+import inspectionEn from "./modules/MurojatIn/en.json";
+
+
 // === RESOURCES ===
 const resources = {
   uz: {
@@ -41,6 +51,8 @@ const resources = {
       murojat: murUz,
       hodim: hdUz,
       sidebar: sidebarUz, 
+      dashboard: dashboardUz,
+      inspection: inspectionUz
     },
   },
   ru: {
@@ -50,7 +62,10 @@ const resources = {
       jek: jekRu,
       murojat: murRu,
       hodim: hdRu,
-      sidebar: sidebarRu, 
+      sidebar: sidebarRu,
+      dashboard: dashboardRu,
+      inspection: inspectionRu
+
     },
   },
   en: {
@@ -61,6 +76,8 @@ const resources = {
       murojat: murEn,
       hodim: hdEn,
       sidebar: sidebarEn, 
+      dashboard: dashboardEn,
+      inspection: inspectionEn
     },
   },
 };
