@@ -28,6 +28,10 @@
     "confirm": "Confirm",
     "submit": "Submit"
   },
+  
+  "murojat": {
+    "total": "Total: {{count}} requests"
+  },
 
   "pagination": {
     "prev": "Previous",

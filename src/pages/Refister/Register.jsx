@@ -198,7 +198,7 @@ export default function Register() {
               clearError("reg.tuman");
             }}
           >
-            <option value="">{t("select")}</option>
+            <option value="">{t("Tuman tanlang")}</option>
             {tuman.map((t) => (
               <option key={t} value={t}>{t}</option>
             ))}
@@ -287,7 +287,7 @@ export default function Register() {
           type="submit"
           w="100%"
           isLoading={loading}
-          isDisabled={Object.values(errors).some(e => e)}
+         
         >
           {t("register")}
         </Button>

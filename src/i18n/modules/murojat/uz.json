@@ -43,6 +43,12 @@
   "upload": {
     "placeholder": "📸 Rasm yuklash uchun bosing"
   },
+  
+  
+  "murojat": {
+    "total": "Jami: {{count}} ta murojaat"
+  },
+
 
 
   "ariza": {

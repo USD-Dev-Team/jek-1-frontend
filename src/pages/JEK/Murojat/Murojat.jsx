@@ -43,11 +43,12 @@ export default function Murojat() {
   const [selected, setSelected] = useState(null);
   const [reason, setReason] = useState("");
   const [data, setData] = useState([]);
-  // const totalPages = data?.pagination?.totalPages
+
   const [jek, setJek] = useState([]);
   const [debouncedQwery, setDebouncedQwery] = useState("");
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(15);
+  const [meta, setMeta] = useState({});
   const [files, setFiles] = useState([]);
 
   const hoverBg = useColorModeValue("neutral.100", "neutral.700");
@@ -125,11 +126,12 @@ export default function Murojat() {
         jek?.addresses?.[0]?.neighborhood || "",
         form.status,
         text,
-        page - 1,
+        page ,
         limit,
       );
 
       setData(res.data.data);
+      setMeta(res.data.meta);
     } finally {
       setLoading(false);
     }
@@ -264,6 +266,9 @@ export default function Murojat() {
         p={5}
         mr={3}
       >
+       <Text fontFamily="mono" mb={3}>
+ {t("murojat.murojat.total", { count: meta?.total || 0 })}
+</Text>
         <Table>
           <Thead>
             <Tr>
@@ -369,7 +374,8 @@ export default function Murojat() {
           size="sm"
           variant="outline"
           onClick={() => setPage((p) => Math.max(p - 1, 1))}
-          isDisabled={page === 1}
+             isDisabled={!meta?.hasPreviousPage}
+        
         >
           ← {t("murojat.pagination.prev")}
         </Button>
@@ -383,14 +389,15 @@ export default function Murojat() {
           fontSize="sm"
           fontWeight="600"
         >
-          {page}
+          {meta.page } / {meta.totalPages}
         </Box>
 
         <Button
           size="sm"
           variant="outline"
           onClick={() => setPage((p) => p + 1)}
-          isDisabled={filteredData.length < limit}
+            isDisabled={!meta?.hasNextPage}
+       
         >
           {t("murojat.pagination.next")} →
         </Button>

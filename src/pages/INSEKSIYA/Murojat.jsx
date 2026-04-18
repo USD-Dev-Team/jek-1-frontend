@@ -49,11 +49,11 @@ export default function Murojat() {
   const viewModal = useDisclosure();
 
   const [form, setForm] = useState({
-    startData: new Date().toISOString().split("T")[0],
-    endData: new Date().toISOString().split("T")[0],
+    startData: null,
+    endData: null,
     status: "",
     district: "",
-
+      neighborhood: "",
     search: "",
   });
 
@@ -130,7 +130,7 @@ const openImage = (url) => {
         form.startData,
         form.endData,
         form.district,
-        null,
+         form.neighborhood,
         form.status,
         text,
         page - 1,
