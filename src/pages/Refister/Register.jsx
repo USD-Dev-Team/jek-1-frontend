@@ -184,7 +184,7 @@ export default function Register() {
         {/* PHONE */}
         <FormControl mb={3} isInvalid={!!errors.raqam}>
           <FormLabel>{t("reg.phone")}</FormLabel>
-          <Input ref={raqam} placeholder="+998901234567" />
+          <Input defaultValue={"+998"} ref={raqam} placeholder="+998901234567" />
           <FormErrorMessage>{errors.raqam}</FormErrorMessage>
         </FormControl>
 

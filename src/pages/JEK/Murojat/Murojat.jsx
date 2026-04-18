@@ -24,6 +24,7 @@ import {
   Select,
   VStack,
   Image,
+  Icon,
 } from "@chakra-ui/react";
 
 import { useEffect, useState } from "react";
@@ -33,6 +34,7 @@ import { Requests } from "../../../Services/api/Requests";
 import { formatDateTime } from "../../../utils/tools/formatDateTime";
 import { SelfData } from "../../../Services/api/SelfData";
 import { toastService } from "../../../utils/toast";
+import { Trash } from "lucide-react";
 
 export default function Murojat() {
   const { t } = useTranslation();
@@ -207,6 +209,17 @@ export default function Murojat() {
     return itemDate >= start && itemDate <= end;
   });
 
+  const clearFilters = () => {
+  setForm({
+    startData: null,
+    endData: null,
+    status: "",
+    search: "",
+  });
+
+  setPage(1); // pagination ham reset
+};
+
   return (
     <Box bg="bg" minH="100vh" p={6}>
       <Heading fontSize={25}>{t("murojat.title")}</Heading>
@@ -253,6 +266,13 @@ export default function Murojat() {
             value={form.endData}
             onChange={(e) => setForm({ ...form, endData: e.target.value })}
           />
+          <Button
+  minW="120px"
+  variant="outline"
+  onClick={clearFilters}
+>
+ <Icon as={Trash} boxSize={4} />
+</Button>
         </Flex>
       </Box>
 
@@ -561,50 +581,75 @@ export default function Murojat() {
               </Flex>
 
               {/* DESCRIPTION */}
-              <Box pt={2}>
-                <Text color="gray.500" fontSize="sm" mb={1}>
-                  {t("murojat.muammo")}
-                </Text>
-                <Text color={"gray.200"} lineHeight="1.5">
-                  {selected?.description}
-                </Text>
-              </Box>
+            <Box pt={2}>
+  <Text color="gray.500" fontSize="sm" mb={1}>
+    {t("murojat.muammo")}
+  </Text>
+
+  <Box
+    maxH="150px"
+    overflowY="auto"
+    p={2}
+   
+    borderRadius="md"
+  >
+    <Text color="gray.200" lineHeight="1.5" whiteSpace="pre-wrap">
+      {selected?.description || "-"}
+    </Text>
+  </Box>
+</Box>
 
               {/* NOTE */}
-              <Box>
-                <Text color="gray.500" fontSize="sm" mb={1}>
-                  {t("murojat.izoh")}
-                </Text>
+             {selected?.note && (
+  <Box>
+    <Text color="gray.500" fontSize="sm" mb={1}>
+      {t("murojat.izoh")}
+    </Text>
 
-                <Text color={"gray.200"} lineHeight="1.5">
-                  {selected?.note || "-"}
-                </Text>
-              </Box>
+    <Box
+      maxH="120px"
+      overflowY="auto"
+      p={2}
+     
+      borderRadius="md"
+    >
+      <Text color="gray.200" lineHeight="1.5" whiteSpace="pre-wrap">
+        {selected.note}
+      </Text>
+    </Box>
+  </Box>
+)}
 
               {/* IMAGES */}
               <Flex gap={3} wrap="wrap" pt={2}>
-                {selected?.requestPhotos?.map((img) => (
-                  <Box
-                    key={img.id}
-                    w="140px"
-                    h="140px"
-                    borderRadius="md"
-                    overflow="hidden"
-                    border="1px solid"
-                    borderColor="gray.200"
-                    cursor="pointer"
-                    _hover={{ opacity: 0.9 }}
-                  >
-                    <Image
-                      src={`${FILE_BASE}${img.file_url}`}
-                      w="100%"
-                      h="100%"
-                      objectFit="cover"
-                      onClick={() => openImage(`${FILE_BASE}${img.file_url}`)}
-                    />
-                  </Box>
-                ))}
-              </Flex>
+  {selected?.requestPhotos?.length > 0 ? (
+    selected.requestPhotos.map((img) => (
+      <Box
+        key={img.id}
+        w="140px"
+        h="140px"
+        borderRadius="md"
+        overflow="hidden"
+        border="1px solid"
+        borderColor="gray.200"
+        cursor="pointer"
+        _hover={{ opacity: 0.9 }}
+      >
+        <Image
+          src={`${FILE_BASE}${img.file_url}`}
+          w="100%"
+          h="100%"
+          objectFit="cover"
+          onClick={() => openImage(`${FILE_BASE}${img.file_url}`)}
+        />
+      </Box>
+    ))
+  ) : (
+    <Text color="gray.400" fontSize="sm">
+      Rasm mavjud emas
+    </Text>
+  )}
+</Flex>
             </VStack>
           </ModalBody>
 
