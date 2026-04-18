@@ -1,0 +1,69 @@
+{
+  "title": "Murojaatlar",
+  "search_placeholder": "Qidirish...",
+
+  "status": {
+    "pending": "Kutilmoqda",
+    "in_progress": "Jarayonda",
+    "completed": "Bajarildi",
+    "rejected": "Rad etilgan",
+      "jek_completed": "JEK tomonidan bajarildi"
+  },
+
+  "table": {
+    "id": "ID",
+    "user": "Foydalanuvchi",
+    "date": "Sana",
+    "status": "Holat",
+    "actions": "Amallar",
+    "empty": "Ma'lumot topilmadi",
+    "all": "Barchasi"
+  },
+
+  "buttons": {
+    "start": "Boshlash",
+    "finish": "Tugatish",
+    "view": "Ko‘rish",
+    "cancel": "Bekor qilish",
+    "confirm": "Tasdiqlash",
+    "submit": "Yuborish"
+  },
+
+  "pagination": {
+    "prev": "Oldingi",
+    "next": "Keyingi"
+  },
+
+  "modals": {
+    "start_title": "Ishni boshlash",
+    "start_text": "Siz ushbu murojaatni o'z zimmangizga olmoqchimisiz?",
+    "finish_title": "Murojaatni yakunlash"
+  },
+
+  "upload": {
+    "placeholder": "📸 Rasm yuklash uchun bosing"
+  },
+  
+  
+  "murojat": {
+    "total": "Jami: {{count}} ta murojaat"
+  },
+
+
+
+  "ariza": {
+    "malumotlari": "Ariza ma'lumotlari",
+    "raqami": "Ariza raqami"
+  },
+
+  "foydalanuvchi": "Foydalanuvchi",
+  "telefon": "Telefon",
+  "tuman": "Tuman",
+  "mahalla": "Mahalla",
+  "uy": "Uy",
+  "muammo": "Muammo",
+  "izoh": "Izoh",
+
+  "close": "Yopish",
+  "qaytadan": "Qaytadan boshlash"
+}

@@ -1,0 +1,33 @@
+{
+  "hodim": {
+    "hodimlar": "Hodimlar",
+    "hodimlarningumumiyishholati": "Hodimlarning umumiy ish holati",
+
+    "bajarilgan": "Bajarilgan",
+    "jami": "Jami",
+
+    "barchahududlar": "Barcha hududlar",
+    "barcha": {
+      "mahallalar": "Barcha mahallalar",
+      "holat": "Barcha holatlar"
+    },
+
+    "aktiv": "Aktiv",
+    "nofaol": "Nofaol",
+
+    "jami_label": "Jami",
+    "hodim": "hodim",
+
+    "natijatopilmadi": "Natija topilmadi",
+
+    "bekorqilish": "Bekor qilish",
+
+    "modal": {
+      "disable_title": "Hodimni nofaol qilish",
+      "enable_title": "Hodimni faollashtirish",
+
+      "disable_text": "Tasdiqlasangiz, hodim tizimga kira olmaydi. Ma'lumotlari saqlanib qoladi.",
+      "enable_text": "Tasdiqlasangiz, hodim tizimga qayta kira oladi."
+    }
+  }
+}

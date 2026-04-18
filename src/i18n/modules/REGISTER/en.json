@@ -1,0 +1,32 @@
+{
+  "register": "Register",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "phone": "Phone",
+  "district": "District",
+  "neighborhood": "Neighborhood",
+  "select": "Select",
+  "selectNeighborhood": "Select neighborhood",
+  "password": "Password",
+  "confirmPassword": "Confirm Password",
+
+  "errors": {
+    "firstNameRequired": "First name is required",
+    "firstNameInvalid": "Only letters allowed",
+    "lastNameRequired": "Last name is required",
+    "lastNameInvalid": "Only letters allowed",
+    "phoneRequired": "Phone is required",
+    "phoneInvalid": "Invalid phone number",
+    "districtRequired": "District not selected",
+    "neighborhoodRequired": "Neighborhood not selected",
+    "passwordRequired": "Password is required",
+    "passwordLength": "At least 8 characters",
+    "passwordLetter": "At least 1 letter required",
+    "passwordNumber": "At least 1 number required",
+    "confirmRequired": "Confirmation required",
+    "passwordMismatch": "Passwords do not match"
+  },
+
+  "success": "Successfully registered",
+  "error": "Something went wrong"
+}

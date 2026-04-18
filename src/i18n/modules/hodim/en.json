@@ -1,0 +1,33 @@
+{
+  "hodim": {
+    "hodimlar": "Employees",
+    "hodimlarningumumiyishholati": "Overall employee status",
+
+    "bajarilgan": "Completed",
+    "jami": "Total",
+
+    "barchahududlar": "All districts",
+    "barcha": {
+      "mahallalar": "All neighborhoods",
+      "holat": "All statuses"
+    },
+
+    "aktiv": "Active",
+    "nofaol": "Inactive",
+
+    "jami_label": "Total",
+    "hodim": "employee",
+
+    "natijatopilmadi": "No results found",
+
+    "bekorqilish": "Cancel",
+
+    "modal": {
+      "disable_title": "Deactivate employee",
+      "enable_title": "Activate employee",
+
+      "disable_text": "After confirmation, the employee will not be able to log in. Data will be محفوظ.",
+      "enable_text": "After confirmation, the employee will be able to log in again."
+    }
+  }
+}

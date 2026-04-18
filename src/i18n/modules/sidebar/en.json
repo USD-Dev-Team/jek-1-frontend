@@ -1,0 +1,10 @@
+{
+
+    "theme": "Theme",
+    "logout": "Logout",
+    "logout_title": "Logout",
+    "logout_text": "Do you want to log out?",
+    "cancel": "Cancel",
+    "confirm": "Yes, logout"
+  
+}

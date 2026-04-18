@@ -1,0 +1,32 @@
+{
+  "register": "Ro‘yxatdan o‘tish",
+  "firstName": "Ism",
+  "lastName": "Familiya",
+  "phone": "Telefon",
+  "district": "Tuman",
+  "neighborhood": "Mahalla",
+  "select": "Tanlang",
+  "selectNeighborhood": "Mahallani tanlang",
+  "password": "Parol",
+  "confirmPassword": "Parolni tasdiqlash",
+
+  "errors": {
+    "firstNameRequired": "Ism majburiy",
+    "firstNameInvalid": "Ism faqat harflardan iborat bo‘lishi kerak",
+    "lastNameRequired": "Familiya majburiy",
+    "lastNameInvalid": "Familiya faqat harflardan iborat bo‘lishi kerak",
+    "phoneRequired": "Telefon raqami majburiy",
+    "phoneInvalid": "Telefon raqami noto‘g‘ri",
+    "districtRequired": "Tuman tanlanmagan",
+    "neighborhoodRequired": "Mahalla tanlanmagan",
+    "passwordRequired": "Parol majburiy",
+    "passwordLength": "Kamida 8 ta belgi bo‘lishi kerak",
+    "passwordLetter": "Kamida 1 ta harf bo‘lishi kerak",
+    "passwordNumber": "Kamida 1 ta raqam bo‘lishi kerak",
+    "confirmRequired": "Tasdiqlash majburiy",
+    "passwordMismatch": "Parollar mos emas"
+  },
+
+  "success": "Muvaffaqiyatli ro‘yxatdan o‘tildi",
+  "error": "Xatolik yuz berdi"
+}

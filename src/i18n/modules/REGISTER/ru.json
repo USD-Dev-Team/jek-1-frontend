@@ -1,0 +1,32 @@
+{
+  "register": "Регистрация",
+  "firstName": "Имя",
+  "lastName": "Фамилия",
+  "phone": "Телефон",
+  "district": "Район",
+  "neighborhood": "Махалля",
+  "select": "Выберите",
+  "selectNeighborhood": "Выберите махаллю",
+  "password": "Пароль",
+  "confirmPassword": "Подтвердите пароль",
+
+  "errors": {
+    "firstNameRequired": "Имя обязательно",
+    "firstNameInvalid": "Имя должно содержать только буквы",
+    "lastNameRequired": "Фамилия обязательна",
+    "lastNameInvalid": "Фамилия должна содержать только буквы",
+    "phoneRequired": "Телефон обязателен",
+    "phoneInvalid": "Неверный номер телефона",
+    "districtRequired": "Район не выбран",
+    "neighborhoodRequired": "Махалля не выбрана",
+    "passwordRequired": "Пароль обязателен",
+    "passwordLength": "Минимум 8 символов",
+    "passwordLetter": "Должна быть хотя бы 1 буква",
+    "passwordNumber": "Должна быть хотя бы 1 цифра",
+    "confirmRequired": "Подтверждение обязательно",
+    "passwordMismatch": "Пароли не совпадают"
+  },
+
+  "success": "Регистрация успешна",
+  "error": "Произошла ошибка"
+}

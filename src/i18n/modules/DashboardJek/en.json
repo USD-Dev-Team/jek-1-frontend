@@ -1,0 +1,30 @@
+ {
+    "title": "Dashboard",
+    "subtitle": "Overall regional request status",
+
+    "total_requests": "Total Requests",
+    "completed": "Completed",
+    "in_progress": "In Progress",
+    "rejected": "Rejected",
+
+    "yearly_growth": "Yearly Growth Dynamics",
+    "monthly_requests": "Monthly Requests Count",
+
+    "status_distribution": "Status Distribution",
+    "all_requests_ratio": "All Requests Ratio",
+
+    "done": "Completed",
+    "processing": "Processing",
+    "rejected_short": "Rejected",
+
+    "monthly_comparison": "Monthly Comparison",
+    "current_vs_prev": "Current Year vs Previous Year",
+
+    "today_activity": "Today's Activity",
+    "received": "Received",
+    "finished": "Finished",
+
+    "efficiency": "Efficiency Indicator",
+    "last_30_days": "Completed vs Rejected (last 30 days)",
+    "efficient": "efficient"
+  }

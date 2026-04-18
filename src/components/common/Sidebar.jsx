@@ -1,213 +1,238 @@
 import {
-    Box,
-    Flex,
-    Text,
-    Icon,
-    VStack,
-    Avatar,
-    Menu,
-    MenuButton,
-    MenuList,
-    MenuItem,
-    Button,
-    Tooltip,
-    useColorMode,
+  Box,
+  Flex,
+  Text,
+  Icon,
+  VStack,
+  Avatar,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Button,
+  Tooltip,
+  useColorMode,
+  Image,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  HStack,
 } from "@chakra-ui/react";
+
 import { NavLink, useNavigate } from "react-router-dom";
+
 import {
-    ChevronLeft,
-    ChevronRight,
-    LucideLogOut,
-    Globe,
-    SunMoon,
-    UserCog2,
+  ChevronLeft,
+  ChevronRight,
+  Globe,
+  LucideLogOut,
+  SunMoon,
 } from "lucide-react";
 
-
 import { useAuth } from "../../hooks/useAuth";
-import { useAuthStore } from "../../store/authStore";
 import { useUIStore } from "../../store/useUIStore";
 import { useTranslation } from "react-i18next";
-import LogoutModal from "./LogoutModal";
+import Cookies from "js-cookie";
 
+export default function Sidebar({ links = [] }) {
+  const { toggleColorMode } = useColorMode();
+  const collapsed = useUIStore((s) => s.collapsed);
+  const toggleSidebar = useUIStore((s) => s.toggleSidebar);
 
-export default function Sidebar({ collapsed, links = [], role, end = false }) {
-    const { toggleColorMode } = useColorMode()
-    const setCollapsed = useUIStore((s) => s.toggleSidebar);
-    const { logout } = useAuth();
-    const { user } = useAuthStore();
-    const navigate = useNavigate()
-    return (
-        <Flex
-            position="fixed"
-            w={collapsed ? "70px" : "220px"}
-            minH="100vh"
-            bg="surface"
-            color="text"
-            direction="column"
-            justify="space-between"
-            p={3}
-            transition="0.25s ease"
-            boxShadow="lg"
-            left={0}
-            top={0}
-            zIndex={1000}
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  const { onOpen, onClose, isOpen } = useDisclosure();
+
+  const { t, i18n } = useTranslation();
+
+  const changeLang = (lng) => {
+    i18n.changeLanguage(lng);
+    localStorage.setItem("lang", lng);
+  };
+
+  return (
+    <>
+      {/* TOP RIGHT */}
+      <Flex position="fixed" top="15px" right="20px" gap={2} zIndex={2000}>
+        <Menu>
+          <MenuButton mr={3} as={Button} size="sm" variant="solidPrimary">
+            <Flex align="center" gap={1}>
+              <Globe size={16} />
+              {i18n.language.toUpperCase()}
+            </Flex>
+          </MenuButton>
+
+          <MenuList>
+            <MenuItem onClick={() => changeLang("uz")}>🇺🇿 Uzbek</MenuItem>
+            <MenuItem onClick={() => changeLang("ru")}>🇷🇺 Русский</MenuItem>
+            <MenuItem onClick={() => changeLang("en")}>🇬🇧 English</MenuItem>
+          </MenuList>
+        </Menu>
+      </Flex>
+
+      {/* SIDEBAR */}
+      <Flex
+        position="fixed"
+        w={collapsed ? "72px" : "240px"}
+        minH="100vh"
+        bg="surface"
+        color="text"
+        direction="column"
+        justify="space-between"
+        px={2}
+        py={4}
+      >
+        {/* COLLAPSE */}
+        <Button
+          position="absolute"
+          right="0"
+          top="15px"
+          size="sm"
+          borderRadius="full"
+          borderRightRadius={0}
+          onClick={toggleSidebar}
+          variant="ghost"
         >
-            {/* COLLAPSE TOGGLE BUTTON */}
-            <Button
-                position="absolute"
-                right="0px"
-                top="15px"
-                size="sm"
-                borderRadius="full"
-                borderRightRadius={0}
-                onClick={() => setCollapsed()}
-                bg="surface"
-                _hover={{ bg: "gray.500", color: "surface" }}
-                color={"text"}
-            >
-                {collapsed ? <ChevronRight /> : <ChevronLeft />}
-            </Button>
+          {collapsed ? <ChevronRight /> : <ChevronLeft />}
+        </Button>
 
-            {/* TOP LINKS */}
-            <VStack align="stretch" spacing={1} mt={10}>
-                {links.map((item) => (
-                    <NavLink key={item.to} to={item.to} style={{ textDecoration: "none" }} end={item.end}>
-                        {({ isActive }) => (
-                            <Tooltip label={collapsed ? item.label : ""} placement="right">
-                                <Flex
-                                    align="center"
-                                    gap={2}
-                                    p={3}
-                                    borderRadius="lg"
-                                    bg={isActive ? "secondary" : "transparent"}
-                                    _hover={{ bg: "secondary", color: "white" }}
-                                    cursor="pointer"
-                                    transition="0.2s"
-                                    color={isActive ? "white" : "text"}
-                                >
-                                    <Icon as={item.icon} w={5} h={5} />
-                                    {!collapsed && (
-                                        <Text fontWeight="medium">{item.label}</Text>
-                                    )}
-                                </Flex>
-                            </Tooltip>
-                        )}
-                    </NavLink>
-                ))}
-            </VStack>
-            <VStack align="stretch">
-                <VStack spacing={1} py={3} align="stretch">
-                    {/* Language Switch */}
-                    {/* {(role !== "SUPER_ADMIN") &&
-                        <Menu>
-                            <MenuButton
-                                color={"text"}
-                                borderRadius={"md"}
-                                _hover={{ bg: "secondary", color: "white" }}
-                            >
-                                <Flex
-                                    align="center"
-                                    gap={collapsed ? 0 : 2}
-                                    p={2}
-                                    borderRadius="md"
-                                >
-                                    <UserCog2 size={20} />
-                                    {!collapsed && <Text>Role</Text>}
-                                </Flex>
-                            </MenuButton>
-                            <MenuList bg="surface" borderColor="gray.700">
-                                <MenuItem color={role === "ombor" ? "green" : "text"} onClick={() => {
-                                    navigate('/ombor')
-                                }}>Ombor</MenuItem>
-                                <MenuItem color={role === "seller" ? "green" : "text"} onClick={() => {
-                                    navigate('/cafe')
-                                }}>Cafe</MenuItem>
-                                <MenuItem color={role === "admin" ? "green" : "text"} onClick={() => {
-                                    navigate('/')
-                                }}>Admin</MenuItem>
-                            </MenuList>
-                        </Menu>} */}
+        {/* TOP */}
+        <VStack align="stretch" mt="40px" spacing={3}>
+          {!collapsed && (
+            <Flex justify="center">
+              <Image src="/logo.png" sizes="30px" />
+            </Flex>
+          )}
 
-                    {/* Theme Switch */}
+          {/* LINKS */}
+          <VStack align="stretch" spacing={1}>
+            {links.map((item) => (
+              <NavLink key={item.to} to={item.to}>
+                {({ isActive }) => (
+                  <Tooltip label={collapsed ? item.label : ""}>
                     <Flex
-                        align="center"
-                        gap={collapsed ? 0 : 2}
-                        p={2}
-                        borderRadius="md"
-                        _hover={{ bg: "secondary", color: "white" }}
-                        onClick={() => toggleColorMode()}
-                        cursor="pointer"
+                      align="center"
+                      justify={collapsed ? "center" : "flex-start"}
+                      gap={3}
+                      px={3}
+                      py={2}
+                      borderRadius="md"
+                      bg={isActive ? "secondary" : "transparent"}
+                      color={isActive ? "white" : "text"}
+                      _hover={{ bg: "secondary", color: "white" }}
                     >
-                        <SunMoon size={20} />
-                        {!collapsed && <Text>Theme</Text>}
+                      <Icon as={item.icon} boxSize={5} />
+
+                      {!collapsed && (
+                        <Text color={isActive ? "white" : "text"}>
+                          {item.label}
+                        </Text>
+                      )}
                     </Flex>
-                </VStack>
-                {/* BOTTOM USER SECTION */}
-                <Menu placement="right">
-                    <Tooltip
-                        label={collapsed ? user?.full_name : ""}
-                        placement="right"
-                        openDelay={200}
-                    >
-                        <Flex alignItems={"center"}>
-                            <MenuButton onClick={()=> {
-                                const path = role === "admin" ? "/account" : role === "seller" ? "/cafe/account" : "/ombor/account"
-                                navigate(path)
-                            }} w="100%" cursor={collapsed ? "pointer" : "default"} >
-                                <Flex
-                                    align="center"
-                                    gap={3}
-                                    p={3}
-                                    borderRadius="lg"
-                                    _hover={{ bg: "gray.700" }}
-                                    transition="0.2s"
-                                >
-                                    <Avatar
-                                        name={user?.full_name}
-                                        size="sm"
-                                        bg="blue.500"
-                                        color="white"
-                                    />
+                  </Tooltip>
+                )}
+              </NavLink>
+            ))}
+          </VStack>
+        </VStack>
 
-                                    {!collapsed && (
-                                        <Flex width={"100%"} alignItems={"center"} justifyContent={"space-between"}>
-                                            <Box>
-                                                <Text fontSize="sm" fontWeight="bold" lineHeight={1} >
-                                                    {user?.full_name}
-                                                </Text>
-                                                <Text fontSize="xs" color="gray.400">
-                                                    {user?.role}
-                                                </Text>
-                                            </Box>
-                                        </Flex>
-                                    )}
-                                </Flex>
-                            </MenuButton>
-                            {!collapsed ?
-                                <LogoutModal />
-                                : <noscript></noscript>
-                            }
-                        </Flex>
-                    </Tooltip>
+        {/* BOTTOM */}
+        <VStack align="stretch" spacing={2}>
+          {/* THEME */}
+          <Flex
+            align="center"
+            justify={collapsed ? "center" : "flex-start"}
+            gap={2}
+            px={collapsed ? 0 : 3}
+            py={2}
+            borderRadius="md"
+            _hover={{ bg: "secondary", color: "white" }}
+            cursor="pointer"
+            onClick={toggleColorMode}
+          >
+            <SunMoon size={18} />
+            {!collapsed && <Text fontSize="sm">{t("sidebar.theme")}</Text>}
+          </Flex>
 
-                    {/* HOVER MENU */}
-                    {collapsed ?
-                        <MenuList bg="surface" borderColor="border">
-                            <MenuItem
-                                icon={<LucideLogOut />}
-                                bg="surface"
-                                _hover={{ bg: "red.300", color: "red" }}
-                                onClick={logout}
-                            >
-                                Logout
-                            </MenuItem>
-                        </MenuList>
-                        : <noscript></noscript>
-                    }
-                </Menu>
-            </VStack>
+          {/* PROFILE */}
+          <Flex
+            align="center"
+            justify={collapsed ? "center" : "space-between"}
+            px={collapsed ? 0 : 3}
+            py={2}
+            borderTop="1px solid"
+            borderColor="border"
+          >
+            <Flex align="center" gap={2}>
+              <Avatar size="sm" name={Cookies.get("first_name")} />
 
-        </Flex>
-    );
+              {!collapsed && (
+                <Box>
+                  <HStack fontSize="sm" fontWeight="600">
+                    <Text>{Cookies.get("first_name")}</Text>
+                    <Text>{Cookies.get("last_name")}</Text>
+                  </HStack>
+                  <Text fontSize="xs" color="textSecondary">
+                    {Cookies.get("role")}
+                  </Text>
+                </Box>
+              )}
+            </Flex>
+
+            {!collapsed && (
+              <Button size="sm" variant="ghost" onClick={onOpen}>
+                <LucideLogOut size={16} />
+              </Button>
+            )}
+          </Flex>
+
+          {/* COLLAPSED LOGOUT */}
+          {collapsed && (
+            <Flex justify="center">
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  logout();
+                  navigate("/login");
+                }}
+              >
+                <LucideLogOut size={18} />
+              </Button>
+            </Flex>
+          )}
+        </VStack>
+
+        {/* MODAL */}
+        <Modal isCentered isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>
+              <Text>{t("sidebar.logout")}</Text>
+            </ModalHeader>
+            <ModalBody>
+              <Text>{t("sidebar.logout_text")}</Text>
+            </ModalBody>
+            <ModalFooter>
+              <Button variant="ghost" onClick={onClose}>
+                {t("sidebar.cancel")}
+              </Button>
+              <Button
+                colorScheme="red"
+                onClick={() => {
+                  logout();
+                  navigate("/login");
+                }}
+              >
+                {t("sidebar.confirm")}
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </Flex>
+    </>
+  );
 }

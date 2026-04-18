@@ -1,0 +1,67 @@
+{
+  "title": "Обращения",
+  "search_placeholder": "Поиск...",
+
+  "status": {
+    "pending": "Ожидается",
+    "in_progress": "В процессе",
+    "completed": "Завершено",
+    "rejected": "Отклонено",
+    "jek_completed": "Выполнено ЖЭКом"
+  },
+
+  "table": {
+    "id": "ID",
+    "user": "Пользователь",
+    "date": "Дата",
+    "status": "Статус",
+    "actions": "Действия",
+    "empty": "Данные не найдены",
+    "all": "Все"
+  },
+
+  
+  "murojat": {
+    "total": "Всего: {{count}} заявок"
+  },
+
+  "buttons": {
+    "start": "Начать",
+    "finish": "Завершить",
+    "view": "Просмотр",
+    "cancel": "Отмена",
+    "confirm": "Подтвердить",
+    "submit": "Отправить"
+  },
+
+  "pagination": {
+    "prev": "Назад",
+    "next": "Вперед"
+  },
+
+  "modals": {
+    "start_title": "Начать работу",
+    "start_text": "Вы хотите взять это обращение?",
+    "finish_title": "Завершить обращение"
+  },
+
+  "upload": {
+    "placeholder": "📸 Нажмите для загрузки фото"
+  },
+
+  "ariza": {
+    "malumotlari": "Данные заявки",
+    "raqami": "Номер заявки"
+  },
+
+  "foydalanuvchi": "Пользователь",
+  "telefon": "Телефон",
+  "tuman": "Район",
+  "mahalla": "Махалля",
+  "uy": "Дом",
+  "muammo": "Проблема",
+  "izoh": "Комментарий",
+
+  "close": "Закрыть",
+  "qaytadan": "Начать заново"
+}

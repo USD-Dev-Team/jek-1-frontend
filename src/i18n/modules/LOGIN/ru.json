@@ -1,0 +1,21 @@
+{
+  "login": {
+    "title": "Подтверждение личности",
+    "subtitle": "Введите данные для входа",
+    "phone": "Номер телефона",
+    "phone_placeholder": "+998901234567",
+    "password": "Пароль",
+    "password_placeholder": "Введите пароль",
+    "button": "Войти",
+    "register": "Регистрация",
+
+    "errors": {
+      "phone_required": "Введите номер телефона",
+      "password_required": "Введите пароль"
+    },
+
+    "success": "Вы успешно вошли",
+    "fail": "Ошибка входа",
+    "system_error": "Системная ошибка"
+  }
+}

@@ -1,0 +1,44 @@
+ {
+    "title": "Requests (Inspection)",
+    "search": "Search...",
+    "all": "All",
+
+    "user": "User",
+    "region": "Region",
+    "date": "Date",
+    "duration": "Duration",
+    "status_label": "Status",
+    "action": "Actions",
+
+    "empty": "No data found",
+    "view": "View",
+
+    "prev": "Previous",
+    "next": "Next",
+
+    "modal": {
+      "title": "Request details"
+    },
+
+    "fields": {
+      "request_number": "Request number",
+      "user": "User",
+      "phone": "Phone",
+      "district": "District",
+      "neighborhood": "Neighborhood",
+      "house": "House",
+      "problem": "Problem",
+      "note": "Note"
+    },
+
+    "close": "Close",
+    "restart": "Restart",
+
+    "status": {
+      "pending": "Pending",
+      "in_progress": "In progress",
+      "completed": "Completed",
+      "rejected": "Rejected",
+      "jek_completed": "Completed by JEK"
+    }
+  }

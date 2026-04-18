@@ -1,192 +1,236 @@
 import {
-    Box,
-    Flex,
-    Heading,
-    Text,
-    Input,
-    Button,
-    FormControl,
-    FormLabel,
-    FormErrorMessage,
-    Link,
+  Box,
+  Flex,
+  Heading,
+  Text,
+  Input,
+  Button,
+  FormControl,
+  FormLabel,
+  FormErrorMessage,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
 import { useRef, useState } from "react";
 import { Auth } from "../../Services/api/Auth";
 import { useAuth } from "../../hooks/useAuth";
 import { toastService } from "../../utils/toast";
+
 import { useNavigate } from "react-router";
-import logo from "../../../public/logo2.png"
+import { InputGroup, InputRightElement, IconButton } from "@chakra-ui/react";
+import { Eye, EyeOff, Globe } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function Login() {
-    const { login } = useAuth();
-    const navigate = useNavigate();
-    // UI states
-    const [loading, setLoading] = useState(false)
+  const { login } = useAuth();
 
-    const passInput = useRef("");
-    const logInput = useRef("");
+  const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
-    const [errors, setErrors] = useState({ login: "", password: "" });
+  const [loading, setLoading] = useState(false);
+  const [show, setShow] = useState(false);
 
-    // ❗ Input o'zgarsa error avtomatik tozalanadi
-    const clearError = (field) => {
-        setErrors((prev) => ({ ...prev, [field]: "" }));
-    };
+  const passInput = useRef("");
+  const logInput = useRef("");
 
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        const loginText = logInput.current.value.trim();
-        const password = passInput.current.value.trim();
+  const [errors, setErrors] = useState({
+    login: "",
+    password: "",
+  });
 
-        let newErrors = {};
+  const clearError = (field) => {
+    setErrors((prev) => ({ ...prev, [field]: "" }));
+  };
 
-        // Login validation
-        if (!loginText) {
-            newErrors.login = "Login kiritilmadi";
+  const changeLang = (lng) => {
+    i18n.changeLanguage(lng);
+    localStorage.setItem("lang", lng);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const loginText = logInput.current.value.trim();
+    const password = passInput.current.value.trim();
+
+    let newErrors = {};
+
+    //  VALIDATION
+    if (!loginText) {
+      newErrors.login = t("auth.login.errors.phone_required");
+    }
+
+    if (!password) {
+      newErrors.password = t("auth.login.errors.password_required");
+    }
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length > 0) return;
+
+    try {
+      setLoading(true);
+
+      const payload = {
+        phoneNumber: String(loginText),
+        password: password,
+      };
+
+      const res = await Auth.Login(payload);
+
+      if (res.status === 200 || res.status === 201) {
+        const data = res.data;
+        //  save auth
+        login({
+          token: data.accessToken,
+          refreshToken: data.refreshToken,
+          role: data.role,
+          userId: data.userId,
+          first_name: data.first_name,
+          last_name: data.last_name,
+          district: data?.addresses?.[0]?.district || '',
+         neighborhood: data?.addresses?.[0]?.neighborhood || "",
+        });
+
+        //  ROLE BO‘YICHA REDIRECT
+        if (data.role === "JEK") {
+          navigate("/jek/dashboard");
+          toastService.success("JEK panelga xush kelibsiz");
+        } else if (data.role === "GOVERNMENT") {
+          navigate("/hokim/dashboardgv");
+          toastService.success("Government panelga xush kelibsiz");
+        } else if (data.role === "INSPECTION") {
+        
+          navigate("/inseksiya/murojat");
+          toastService.success("Inseksiya panelga xush kelibsiz");
+        } else {
+          // } else if (data.role === "WAREHOUSE" || data.role === "warehouse") {
+          //   navigate("/warehouse");
+          //   toastService.success("Warehouse panelga xush kelibsiz");
+          // } else {
+      
+          toastService.error("Role mos kelmadi");
         }
+      } else {
+        toastService.error(res?.data?.message || "Login xato");
+  
 
-        // Password validation
-        if (!password) {
-            newErrors.password = "Parol kiritilmadi";
-        } else if (password.length < 6) {
-            newErrors.password = "Parol kamida 6 belgidan iborat bo'lishi kerak";
-        }
+      }
+    } catch (err) {
+      toastService.error(err?.response?.data?.message || "Tizim xatosi");
 
-        setErrors(newErrors);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-        // Agar hatolik bo'lsa API chaqirilmaydi
-        if (Object.keys(newErrors).length > 0) return;
+  return (
+    <Flex
+      minH="100vh"
+      align="center"
+      justify="center"
+      bg="bg"
+      px={4}
+      position="relative"
+    >
+      {/* 🌐 LANGUAGE SWITCHER */}
+      <Menu>
+        <MenuButton
+          position="absolute"
+          top="20px"
+          right="20px"
+          as={Button}
+          size="sm"
+          variant="solidPrimary"
+        >
+          <Flex align="center" gap={1}>
+            <Globe size={16} />
+            {i18n.language.toUpperCase()}
+          </Flex>
+        </MenuButton>
 
+        <MenuList>
+          <MenuItem onClick={() => changeLang("uz")}>UZ</MenuItem>
+          <MenuItem onClick={() => changeLang("ru")}>RU</MenuItem>
+          <MenuItem onClick={() => changeLang("en")}>EN</MenuItem>
+        </MenuList>
+      </Menu>
 
-        try {
-            const payload = {
-                username: logInput.current.value,
-                password: passInput.current.value
-            }
-            setLoading(true)
-            const res = await Auth.Login(payload);
-            if (res.status == 200 || res.status == 201) {
-                const data = res.data
-                login({
-                    token: data.tokens.access_token,
-                    refreshToken: data.tokens.refresh_token,
-                    user: data.user
-                }
-                );
-                if (data.user.role === "SUPER_ADMIN") {
-                    navigate("/superadmin/admins");
-                    toastService.success("Successfully, Welocome Boss !")
-                } else {
-                    toastService.error("Role mos kelmadi")
-                }
-            } else {
-                toastService.error(res?.data?.message || "ok")
-            }
+      {/* FORM */}
+      <Box
+        as="form"
+        onSubmit={handleSubmit}
+        w={{ base: "100%", sm: "400px" }}
+        bg="surface"
+        p={8}
+        rounded="xl"
+        shadow="lg"
+      >
+        <Heading textAlign="center" size="lg" mb={2}>
+          {t("auth.login.title")}
+        </Heading>
 
-        } catch (err) {
+        <Text textAlign="center" color="gray.500" mb={6}>
+          {t("auth.login.subtitle")}
+        </Text>
 
-            if (err) { toastService.error(err?.response?.data?.message || "Tizim xatosi") }
-        } finally {
-            setLoading(false)
-        }
+        <FormControl mb={4} isInvalid={!!errors.login}>
+          <FormLabel>{t("auth.login.phone")}</FormLabel>
+          <Input
+            type="text"
+            placeholder={t("auth.login.phone_placeholder")}
+            ref={logInput}
+            onChange={() => clearError("login")}
+          />
+          <FormErrorMessage>{errors.login}</FormErrorMessage>
+        </FormControl>
 
-    };
+        <FormControl mb={2} isInvalid={!!errors.password}>
+          <FormLabel>{t("auth.login.password")}</FormLabel>
 
-    return (
-        <Flex minH="100vh" align="center" justify="center" bg="bg" px={4}>
-            {/* Dark/Light toggle button */}
-            {/* <Button
-                position="absolute"
-                top="20px"
-                right="20px"
+          <InputGroup size="sm">
+            <Input
+              ref={passInput}
+              type={show ? "text" : "password"}
+              placeholder={t("auth.login.password_placeholder")}
+              onChange={() => clearError("password")}
+            />
+
+            <InputRightElement>
+              <IconButton
+                variant="ghost"
                 size="sm"
-                onClick={toggleColorMode}
-            >
-                Tema
-            </Button> */}
-            <Box
-                as="form"
-                onSubmit={(e) => handleSubmit(e)}
-                w={{ base: "100%", sm: "400px" }}
-                bg="surface"
-                p={8}
-                rounded="xl"
-                shadow="lg"
-            >
-                {/* Logo */}
-                <Flex justify="center" mb={4}>
-                    <Box
-                        w="60px"
-                        h="60px"
-                        bg="white"
-                        rounded="full"
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="center"
-                        color="white"
-                        fontWeight="bold"
-                        fontSize="md"
-                    >
-                        <Image src={logo} alt="" /> 
-                    </Box>
-                </Flex>
+                onClick={() => setShow(!show)}
+                icon={show ? <EyeOff size={16} /> : <Eye size={16} />}
+              />
+            </InputRightElement>
+          </InputGroup>
 
-                {/* Title */}
-                <Heading textAlign="center" size="lg" mb={2} color="text">
-                    Login
-                </Heading>
+          <FormErrorMessage fontSize="xs">{errors.password}</FormErrorMessage>
+        </FormControl>
 
-                {/* Subtitle */}
-                <Text textAlign="center" color="gray.500" mb={6}>
-                    Tizimga kirish uchun ma’lumotlarni kiriting
-                </Text>
-
-                {/* Login input */}
-                <FormControl mb={4} isInvalid={!!errors.login}>
-                    <FormLabel color="text">Telefon raqami</FormLabel>
-                    <Input
-                        ref={logInput}
-                        placeholder="Telefon raqamigizni kiriting"
-                        onChange={() => clearError("login")}
-                    />
-                    <FormErrorMessage>{errors.login}</FormErrorMessage>
-                </FormControl>
-
-                {/* Password input */}
-                <FormControl mb={2} isInvalid={!!errors.password}>
-                    <FormLabel color="text">Parol</FormLabel>
-                    <Input
-                        ref={passInput}
-                        type="password"
-                        placeholder="Parolni kiriting"
-                        onChange={() => clearError("password")}
-                    />
-                    <FormErrorMessage>{errors.password}</FormErrorMessage>
-                </FormControl>
-
-                {/* Forgot password */}
-                <Flex justifyContent={'space-between'} mb={5}>
-                    <Link color="link" fontSize="sm" href="/register">
-                        Registratsiyadan o'tish.
-                    </Link>
-                    <Link color="link" fontSize="sm" href="#">
-                        Parolni unutdingizmi?
-                    </Link>
-                </Flex>
-
-                {/* Login button */}
-                <Button
-                    type="submit"
-                    style={{ cursor: loading ? "progress" : "pointer" }}
-                    w="100%"
-                    isLoading={loading}
-                    _hover={{ bg: "secondary" }}
-                    loadingText="Loading..."
-                    variant="solidPrimary"
-                >
-                    Kirish
-                </Button>
-            </Box>
+        <Flex justifyContent="end" mb={2}>
+          <Text
+            onClick={() => navigate("/register")}
+            cursor="pointer"
+            color="link"
+          >
+            {t("auth.login.register")}
+          </Text>
         </Flex>
-    );
+
+        <Button
+          variant={"solidPrimary"}
+          mt={2}
+          type="submit"
+          w="100%"
+          isLoading={loading}
+        >
+          {t("auth.login.button")}
+        </Button>
+      </Box>
+    </Flex>
+  );
 }

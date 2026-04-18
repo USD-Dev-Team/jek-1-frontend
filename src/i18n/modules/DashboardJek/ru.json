@@ -1,0 +1,31 @@
+ {
+    "title": "Панель",
+    "subtitle": "Общее состояние обращений по региону",
+
+    "total_requests": "Всего обращений",
+    "completed": "Выполнено",
+    "in_progress": "В процессе",
+    "rejected": "Отклонено",
+
+    "yearly_growth": "Годовая динамика роста",
+    "monthly_requests": "Количество обращений по месяцам",
+
+    "status_distribution": "Распределение статусов",
+    "all_requests_ratio": "Соотношение всех обращений",
+
+    "done": "Выполнено",
+    "processing": "В процессе",
+    "rejected_short": "Отклонено",
+
+    "monthly_comparison": "Месячное сравнение",
+    "current_vs_prev": "Текущий год vs прошлый год",
+
+    "today_activity": "Активность сегодня",
+    "received": "Получено",
+    "finished": "Завершено",
+
+    "efficiency": "Показатель эффективности",
+    "last_30_days": "Соотношение выполненных/отклонённых за 30 дней",
+    "efficient": "эффективно"
+  
+}

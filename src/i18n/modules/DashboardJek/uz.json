@@ -1,0 +1,30 @@
+ {
+    "title": "Dashboard",
+    "subtitle": "Hududiy murojaatlar umumiy holati",
+
+    "total_requests": "Jami murojaatlar",
+    "completed": "Bajarilgan",
+    "in_progress": "Jarayonda",
+    "rejected": "Rad etilgan",
+
+    "yearly_growth": "Yillik o'sish dinamikasi",
+    "monthly_requests": "Oylar bo'yicha murojaatlar soni",
+
+    "status_distribution": "Status taqsimoti",
+    "all_requests_ratio": "Barcha murojaatlar nisbati",
+
+    "done": "Bajarilgan",
+    "processing": "Jarayonda",
+    "rejected_short": "Rad etilgan",
+
+    "monthly_comparison": "Oylik taqqoslash",
+    "current_vs_prev": "Joriy yil vs o'tgan yil",
+
+    "today_activity": "Bugungi faollik",
+    "received": "Qabul qilindi",
+    "finished": "Tugatildi",
+
+    "efficiency": "Samaradorlik indikatori",
+    "last_30_days": "Oxirgi 30 kundagi bajarilgan/rad nisbati",
+    "efficient": "samarali"
+  }
