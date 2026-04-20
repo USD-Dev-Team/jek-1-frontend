@@ -179,6 +179,7 @@ export default function Login() {
         <FormControl mb={4} isInvalid={!!errors.login}>
           <FormLabel>{t("auth.login.phone")}</FormLabel>
           <Input
+             defaultValue={"+998"}
             type="text"
             placeholder={t("auth.login.phone_placeholder")}
             ref={logInput}

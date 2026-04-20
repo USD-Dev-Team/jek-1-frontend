@@ -92,6 +92,10 @@ class Requests {
     )
     return response
   }
+  static getById = async (id) => {
+  const response = await $api.get(`${BASE_URL}/requests/${id}`);
+  return response;
+};
 }
 
 export { Requests }
