@@ -22,7 +22,9 @@ import {
   Heading,
   Select,
   VStack,
-  Image
+  Image,
+  IconButton,
+  Icon
 } from "@chakra-ui/react";
 
 import { useEffect, useState } from "react";
@@ -30,6 +32,8 @@ import TableSkeleton from "../../components/ui/TableSkeleton";
 import { Requests } from "../../Services/api/Requests";
 import { formatDateTime } from "../../utils/tools/formatDateTime";
 import { useTranslation } from "react-i18next";
+import { Trash } from "lucide-react";
+import regions from "../../constants/mahallas.json";
 
 export default function Murojat() {
   const FILE_BASE = "https://api.usdsoft.uz/jek";
@@ -40,6 +44,7 @@ export default function Murojat() {
   const [data, setData] = useState([]);
   const [debouncedQwery, setDebouncedQwery] = useState("");
   const [page, setPage] = useState(1);
+  const [meta, setMeta] = useState({});
   const  [workers, setWorkers] = useState([])
   const [previewImg, setPreviewImg] = useState(null);
 
@@ -131,6 +136,7 @@ const openImage = (url) => {
         form.endData,
         form.district,
          form.neighborhood,
+         
         form.status,
         text,
         page - 1,
@@ -138,6 +144,7 @@ const openImage = (url) => {
       );
 
       setData(res.data.data);
+      setMeta(res.data.meta)
    
       
     } finally {
@@ -157,8 +164,27 @@ const openImage = (url) => {
 
   useEffect(() => {
     getData(debouncedQwery);
-  }, [form.startData, form.endData, form.status, form.district, debouncedQwery, page]);
+  }, [form.startData, form.endData, form.status, form.district, debouncedQwery,   form.neighborhood,  page]);
 
+
+  const shortText = (text, limit = 30) => {
+  if (!text) return "-";
+  return text.length > limit ? text.slice(0, limit) + "..." : text;
+};
+
+
+const clearFilters = () => {
+  setForm({
+    startData: null,
+    endData: null,
+    status: "",
+    district: "",
+    neighborhood: "",
+    search: "",
+  });
+
+  setPage(1);
+};
   return (
     <Box bg="bg" minH="100vh" p={6}>
      <Heading fontSize={25}>{t("inspection.title")}</Heading>
@@ -182,27 +208,39 @@ const openImage = (url) => {
     />
 
     <Select
-      minW="160px"
-     placeholder={t("inspection.all")}
-      onChange={(e) =>
-        setForm({ ...form, status: e.target.value })
-      }
-    >
-     <option value="PENDING">{t("inspection.status.pending")}</option>
-      <option value="IN_PROGRESS">{t("inspection.status.in_progress")}</option>
-     <option value="COMPLETED">{t("inspection.status.completed")}</option>
-     <option value="REJECTED">{t("inspection.status.rejected")}</option>
-    </Select>
+  minW="160px"
+  placeholder={t("inspection.all")}
+  value={form.district}
+  onChange={(e) =>
+    setForm({
+      ...form,
+      district: e.target.value,
+      neighborhood: "" // reset
+    })
+  }
+>
+  {regions.uz.addresses.map((d) => (
+    <option key={d} value={d}>
+      {d}
+    </option>
+  ))}
+</Select>
 
-    <Select
-      minW="160px"
-    placeholder={t("inspection.all")}
-      onChange={(e) =>
-        setForm({ ...form, district: e.target.value })
-      }
-    >
- 
-    </Select>
+  <Select
+  minW="160px"
+  placeholder={t("inspection.all")}
+  value={form.neighborhood}
+  onChange={(e) =>
+    setForm({ ...form, neighborhood: e.target.value })
+  }
+  isDisabled={!form.district}
+>
+  {regions.uz.mahallas[form.district]?.map((m) => (
+    <option key={m} value={m}>
+      {m}
+    </option>
+  ))}
+</Select>
 
     <Input
       type="date"
@@ -221,6 +259,13 @@ const openImage = (url) => {
         setForm({ ...form, endData: e.target.value })
       }
     />
+    <Button
+  minW="120px"
+  variant="outline"
+  onClick={clearFilters}
+>
+     <Icon as={Trash} boxSize={4} />
+</Button>
 
   </Flex>
 </Box>
@@ -229,7 +274,9 @@ const openImage = (url) => {
       <Box bg="surface" borderRadius="xl" border="1px solid" borderColor="border" p={5}>
         <Table>
           <Thead>
+            <Text>Jami : {meta?.total || 0} </Text>
             <Tr>
+              <Th w="80px">№</Th>
               <Th>ID</Th>
              <Th>{t("inspection.user")}</Th>
 <Th>{t("inspection.region")}</Th>
@@ -250,7 +297,7 @@ const openImage = (url) => {
       </Td>
     </Tr>
   ) : (
-    data.map((item) => {
+    data.map((item, index) => {
       const status = getStatus(item.status);
 
       const days =
@@ -262,6 +309,7 @@ const openImage = (url) => {
 
       return (
         <Tr key={item.id} _hover={{ bg: hoverBg }}>
+          <Td>{index + 1}</Td>
           
           {/* ID */}
           <Td>{item.request_number}</Td>
@@ -317,20 +365,22 @@ const openImage = (url) => {
 
       <Flex mt={6} justify="center" gap={3}>
         <Button
-          size="sm"
-          onClick={() => setPage((p) => Math.max(p - 1, 1))}
-        >
-          ← {t("inspection.prev")}
-        </Button>
+  size="sm"
+  onClick={() => setPage((p) => Math.max(p - 1, 1))}
+  isDisabled={!meta?.hasPreviousPage}
+>
+  ← {t("inspection.prev")}
+</Button>
 
-        <Box px={4}>{page}</Box>
+        <Box px={4}>{meta?.page} / {meta?.totalPages}</Box>
 
-        <Button
-          size="sm"
-          onClick={() => setPage((p) => p + 1)}
-        >
-          {t("inspection.next")}→
-        </Button>
+       <Button
+  size="sm"
+  onClick={() => setPage((p) => p + 1)}
+  isDisabled={!meta?.hasNextPage}
+>
+  {t("inspection.next")} →
+</Button>
       </Flex>
 
       {/* VIEW MODAL */}
@@ -375,59 +425,60 @@ const openImage = (url) => {
                   {selected?.address?.apartment_number}
                 </Text>
               </Flex>
+               <Text color="gray.500" mb={1}>
+    {t("inspection.fields.problem")}
+  </Text>
+             <Box maxH="100px" overflowY="auto">
+ 
+  <Text>{selected?.description}</Text>
+</Box><Box>
+  <Text color="gray.500" mb={1}>
+    {t("inspection.fields.note")}
+  </Text>
 
-              <Box>
-                <Text color="gray.500" mb={1}>
-                {t("inspection.fields.problem")}
-                </Text>
-                <Text>{selected?.description}</Text>
-              </Box>
+  <Box
+   
+    p={2}
+    borderRadius="sm"
+    maxH="100px"
+    overflowY="auto"
+  >
+    {selected?.note || "-"}
+  </Box>
+</Box>
 
-              <Box>
-                <Text color="gray.500" mb={1}>
-             {t("inspection.fields.note")}
-                </Text>
-                <Box
-                  border="1px solid"
-                  borderColor="gray.200"
-                  p={2}
-                  borderRadius="sm"
-                >
-                  {selected?.note || "-"}
-                </Box>
-              </Box>
-
-              <Flex gap={2} wrap="wrap">
-                {selected?.requestPhotos?.map((img) => (
-                  <Box
-                    key={img.id}
-                    w="200px"
-                    h="200px"
-                    borderRadius="12px"
-                    overflow="hidden"
-                    border="1px solid"
-                    borderColor="gray.200"
-                    cursor="pointer"
-                    transition="0.2s"
-                    _hover={{
-                      transform: "scale(1.05)",
-                      boxShadow: "lg",
-                    }}
-                  >
-                   <Image
-  src={previewImg}
+             <Flex gap={2} wrap="wrap">
+  {selected?.requestPhotos?.length > 0 ? (
+    selected.requestPhotos.map((img) => (
+      <Box
+        key={img.id}
+        w="200px"
+        h="200px"
+        borderRadius="12px"
+        overflow="hidden"
+        border="1px solid"
+        borderColor="gray.200"
+        cursor="pointer"
+        _hover={{
+          transform: "scale(1.05)",
+          boxShadow: "lg",
+        }}
+      >
+      <Image
+  src={`${FILE_BASE}${img.file_url}`}
   w="100%"
   h="100%"
   objectFit="cover"
   onClick={() => openImage(`${FILE_BASE}${img.file_url}`)}
 />
-                  </Box>
-                ))}
-                <Image
-                
-                src=""/>
-              
-              </Flex>
+      </Box>
+    ))
+  ) : (
+    <Text color="gray.400" fontSize="sm">
+      Rasm mavjud emas
+    </Text>
+  )}
+</Flex>
             </VStack>
           </ModalBody>
 
@@ -447,6 +498,26 @@ const openImage = (url) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      <Modal
+  isOpen={!!previewImg}
+  onClose={() => setPreviewImg(null)}
+  size="xl"
+  isCentered
+>
+  <ModalOverlay bg="blackAlpha.800" backdropFilter="blur(6px)" />
+
+  <ModalContent bg="transparent" boxShadow="none">
+    <ModalBody display="flex" justifyContent="center">
+      <Image
+        src={previewImg}
+        maxH="80vh"
+        borderRadius="12px"
+        objectFit="contain"
+      />
+    </ModalBody>
+  </ModalContent>
+</Modal>
 
     </Box>
   );

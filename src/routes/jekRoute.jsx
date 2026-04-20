@@ -1,6 +1,9 @@
+
 import Dashboard from "../pages/JEK/Dashboard/Dashboard";
 
 import Murojat from "../pages/JEK/Murojat/Murojat";
+import Problem from "../pages/JEK/Murojat/Problem";
+
 
 
 const jekRoute = [
@@ -18,6 +21,11 @@ const jekRoute = [
         name:"Murojat",
         path:'murojat',
         element:<Murojat />
+    },
+    {
+        name:"Problem",
+        path:`murojat/:id`,
+        element:<Problem />
     },
     
 ];

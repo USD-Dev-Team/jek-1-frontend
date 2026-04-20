@@ -219,41 +219,44 @@ const jamiCount = meta.total || 0;
         </Box>
       </Flex>
 
-      <Flex gap={3} mb={5} flexWrap="wrap">
-        {[
-          { label: "Aktiv hodimlar", val: aktivCount, color: "green.400" },
-          { label: "Nofaol hodimlar", val: nofaolCount, color: "red.400" },
-          { label: "Jami ro'yxatda", val: jamiCount, color: "blue.400" },
-        ].map((p, i) => (
-          <Flex
-            key={i}
-            align="center"
-            gap={3}
-            bg="whiteAlpha.50"
-            border="1px solid"
-            borderColor="border"
-            borderRadius="10px"
-            px={4}
-            py={3}
-          >
-            <Box w="8px" h="8px" borderRadius="full" bg={p.color} />
-            <Box>
-              <Text
-                fontFamily="mono"
-                fontSize="18px"
-                fontWeight="700"
-                color={p.color}
-                lineHeight="1"
-              >
-                {p.val}
-              </Text>
-              <Text fontSize="11px" color="gray.500" mt="2px">
-                {p.label}
-              </Text>
-            </Box>
-          </Flex>
-        ))}
-      </Flex>
+     <Box mb={5} mr={6}>
+  <Flex gap={3} w="100%">
+    {[
+      { label: "Aktiv hodimlar", val: aktivCount, color: "green.400" },
+      { label: "Nofaol hodimlar", val: nofaolCount, color: "red.400" },
+      { label: "Jami ro'yxatda", val: jamiCount, color: "blue.400" },
+    ].map((p, i) => (
+      <Box
+        key={i}
+        flex="1"  
+        bg="whiteAlpha.50"
+        border="1px solid"
+        borderColor="border"
+        borderRadius="10px"
+        px={4}
+        py={3}
+      >
+        <Flex align="center" gap={3}>
+          <Box w="8px" h="8px" borderRadius="full" bg={p.color} />
+          <Box>
+            <Text
+              fontFamily="mono"
+              fontSize="18px"
+              fontWeight="700"
+              color={p.color}
+              lineHeight="1"
+            >
+              {p.val}
+            </Text>
+            <Text fontSize="11px" color="gray.500" mt="2px">
+              {p.label}
+            </Text>
+          </Box>
+        </Flex>
+      </Box>
+    ))}
+  </Flex>
+</Box>
 
       {/* FILTER  */}
       <Flex
@@ -261,28 +264,43 @@ const jamiCount = meta.total || 0;
         gap={3}
         mb={5}
         flexWrap="wrap"
-        align="center"
+        alignItems="center"
         bg="whiteAlpha.50"
         border="1px solid"
         borderColor="border"
         borderRadius="12px"
+        justifyContent={"space-between"}
         p={3}
       >
         {/* SEARCH */}
-        <InputGroup maxW="280px">
-          <InputLeftElement pointerEvents="none">
-            <Icon as={Search} color="gray.500" boxSize={4} />
-          </InputLeftElement>
-          <Input
-            placeholder="Qidirish..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            bg="transparent"
-            border="none"
-            _focus={{ boxShadow: "none" }}
-            fontSize="13px"
-          />
-        </InputGroup>
+       <InputGroup
+  maxW="280px"
+  bg="whiteAlpha.50"
+  border="1px solid"
+  borderColor="whiteAlpha.200"
+  borderRadius="10px"
+  _focusWithin={{
+    borderColor: "blue.400",
+    boxShadow: "0 0 0 1px rgba(66,153,225,0.6)",
+  }}
+>
+  <InputLeftElement pointerEvents="none">
+    <Icon as={Search} color="gray.400" boxSize={4} />
+  </InputLeftElement>
+
+  <Input
+    placeholder="Qidirish..."
+    value={search}
+    onChange={(e) => setSearch(e.target.value)}
+    bg="transparent"
+    border="none"
+    color="white"
+    pl="36px"
+    _placeholder={{ color: "gray.500" }}
+    _focus={{ boxShadow: "none" }}
+    fontSize="13px"
+  />
+</InputGroup>
 
         {/* HUDUD */}
         <Select
@@ -344,14 +362,7 @@ const jamiCount = meta.total || 0;
         </Select>
 
         {/* COUNT */}
-        <Flex ml="auto" align="center">
-          <Text fontSize="12px" color="gray.500">
-            {t("hodim.jami")}
-          </Text>
-          <Text fontSize="12px" fontWeight="600">
-            {meta.total} {t("hodim.hodim")}
-          </Text>
-        </Flex>
+       
       </Flex>
 
       {/* JADVAL */}
@@ -375,8 +386,7 @@ const jamiCount = meta.total || 0;
                 "Hodim",
                 "Hudud",
                 "Holat",
-                "Bajarilgan",
-                "Sana",
+             
                 "Aktiv/Nofaol",
                 "",
               ].map((h, i) => (
@@ -396,7 +406,7 @@ const jamiCount = meta.total || 0;
             </Tr>
           </Thead>
           <Tbody>
-            {hodimlar.map((h, idx) => (
+           {filtered.map((h, idx) => (
               <>
                 <Tr
                   key={h.id}
@@ -460,17 +470,7 @@ const jamiCount = meta.total || 0;
                     </Badge>
                   </Td>
 
-                  {/* Bajarilgan */}
-                  <Td px={4} py={3}>
-                    <MiniBar value={h.bajarilgan} />
-                  </Td>
-
-                  {/* Sana */}
-                  <Td px={4} py={3}>
-                    <Text fontSize="12px" color="gray.500">
-                      {h.sana}
-                    </Text>
-                  </Td>
+              
 
                   {/* Toggle */}
                   <Td px={4} py={3}>
@@ -580,26 +580,9 @@ const jamiCount = meta.total || 0;
                               </Badge>
                             </Box>
 
-                            <Box>
-                              <Text fontSize="11px" color="gray.500" mb={1}>
-                                ID
-                              </Text>
-                              <Text
-                                fontSize="11px"
-                                color="gray.400"
-                                fontFamily="mono"
-                              >
-                                {h.id}
-                              </Text>
-                            </Box>
+                           
                           </Flex>
-                          <Flex align="center" ml="auto">
-                            <EffRing
-                              value={h.bajarilgan || 0}
-                              color="green"
-                              t={t}
-                            />
-                          </Flex>
+                        
                         </Box>
                       </Flex>
                     </Collapse>

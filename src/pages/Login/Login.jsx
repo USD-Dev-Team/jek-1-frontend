@@ -99,11 +99,11 @@ export default function Login() {
           navigate("/jek/dashboard");
           toastService.success("JEK panelga xush kelibsiz");
         } else if (data.role === "GOVERNMENT") {
-          navigate("/hokim/dashboardgv");
+          navigate("/hokim/dashboard");
           toastService.success("Government panelga xush kelibsiz");
         } else if (data.role === "INSPECTION") {
         
-          navigate("/inseksiya/murojat");
+          navigate("/inseksiya/dashboard");
           toastService.success("Inseksiya panelga xush kelibsiz");
         } else {
           // } else if (data.role === "WAREHOUSE" || data.role === "warehouse") {
@@ -179,6 +179,7 @@ export default function Login() {
         <FormControl mb={4} isInvalid={!!errors.login}>
           <FormLabel>{t("auth.login.phone")}</FormLabel>
           <Input
+             defaultValue={"+998"}
             type="text"
             placeholder={t("auth.login.phone_placeholder")}
             ref={logInput}
