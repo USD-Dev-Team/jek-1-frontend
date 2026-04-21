@@ -46,7 +46,7 @@ class Requests {
           "Content-Type": "multipart/form-data",
         },
 
-      }
+      
 
       },
     );
@@ -59,7 +59,12 @@ class Requests {
   }
   static getFilteredRequest = async (start, end, tuman, mahalla, status, search, page, limit,) => {
     const response = await $api.get(`${BASE_URL}/requests/universal-search`, {
-      params: { startDate: start, endDate: end, district: tuman, neighborhood: mahalla, status: status, search: search, page: page, limit: limit, },
+      params: { startDate: start, endDate: end, district: tuman, neighborhood: mahalla, status: status, search: search, page: page, limit: limit, }
+    })
+    return response;
+  }
+
+
   static getFilteredRequest = async (
     start,
     end,
@@ -136,11 +141,8 @@ class Requests {
     )
     return response
   }
-        neighborhood: neighborhood,
-      },
-    });
-    return response;
-  };
+        
+  
   static getDashboardAll = async (year, district, neighborhood) => {
     const response = await $api.get(`${BASE_URL}/statistics/general`, {
       params: {
@@ -153,11 +155,7 @@ class Requests {
     )
     return response
   }
-        neighborhood: neighborhood,
-      },
-    });
-    return response;
-  };
+       
   static getById = async (id) => {
     const response = await $api.get(`${BASE_URL}/requests/request/${id}`);
     return response;

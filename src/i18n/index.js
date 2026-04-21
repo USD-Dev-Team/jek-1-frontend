@@ -64,8 +64,8 @@ const resources = {
       sidebar: sidebarUz, 
       dashboard: dashboardUz,
       inspection: inspectionUz,
-      idashboard: dashboardInUz
-      problem: problemUz
+      idashboard: dashboardInUz,
+      problem: problemUz,
     },
   },
   ru: {
@@ -78,9 +78,8 @@ const resources = {
       sidebar: sidebarRu,
       dashboard: dashboardRu,
       inspection: inspectionRu,
-      idashboard: dashboardInRu
-      problem: problemRu
-
+      idashboard: dashboardInRu,
+      problem: problemRu,
     },
   },
   en: {
@@ -93,8 +92,8 @@ const resources = {
       sidebar: sidebarEn, 
       dashboard: dashboardEn,
       inspection: inspectionEn,
-      idashboard: dashboardInEn
-      problem: problemEn
+      idashboard: dashboardInEn,
+      problem: problemEn,
     },
   },
 };
