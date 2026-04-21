@@ -1,33 +1,54 @@
 {
   "hodim": {
     "hodimlar": "Employees",
-    "hodimlarningumumiyishholati": "Overall employee status",
-
+    "hodimlarningumumiyishholati": "Overall employee work status",
     "bajarilgan": "Completed",
     "jami": "Total",
-
-    "barchahududlar": "All districts",
+    "barchahududlar": "All regions",
     "barcha": {
       "mahallalar": "All neighborhoods",
       "holat": "All statuses"
     },
-
+    "mahalla": "Select a neighborhood",
+    "hudud": "Select a region",
+    "manzilbiriktirish": "Address binding",
+    "manzilochirish": "Delete address",
+    "sorov": "Are you sure you want to remove the address from this person?",
+    "saqlash": "Save",
+    "ochirish": "Delete",
+    "nofaolqilish": "Deactivate",
+    "harakatlar": "Actions",
+    "faol": "Activate",
     "aktiv": "Active",
     "nofaol": "Inactive",
-
     "jami_label": "Total",
     "hodim": "employee",
-
     "natijatopilmadi": "No results found",
-
     "bekorqilish": "Cancel",
-
+    "qidirish": "Search",
     "modal": {
       "disable_title": "Deactivate employee",
       "enable_title": "Activate employee",
-
-      "disable_text": "After confirmation, the employee will not be able to log in. Data will be محفوظ.",
-      "enable_text": "After confirmation, the employee will be able to log in again."
+      "disable_text": "If confirmed, the employee will not be able to access the system. Their data will be preserved.",
+      "enable_text": "If confirmed, the employee will regain access to the system.",
+      "disable_btn": "Deactivate",
+      "enable_btn": "Activate"
+    },
+    "info": {
+      "ahodimlar": "Active employees",
+      "nhodim": "Inactive employees",
+      "jhodim": "Total in list"
+    },
+    "jadval": {
+      "mahalla": "Neighborhood",
+      "hodim": "Employee",
+      "hudud": "Region",
+      "holat": "Status",
+      "aktiv_nofaol": "Active/Inactive"
     }
+  },
+  "common": {
+    "oldingi": "Previous",
+    "keyingi": "Next"
   }
 }

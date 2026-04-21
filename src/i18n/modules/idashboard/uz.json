@@ -1,0 +1,29 @@
+{
+    "idashboard": {
+        "dashboard": "Boshqaruv paneli",
+        "hudundingiumumiyholati": "Hududiy murojaatlar umumiy holati",
+        "yil": "Yil",
+        "tuman": "Tuman",
+        "mahalla": "Mahalla",
+        "barchasi": "Barchasi",
+        "bajarilgan": "Bajarilgan",
+        "jarayonda": "Jarayonda",
+        "rad_etilgan": "Rad etilgan",
+        "yillik_murojaatlar": "Yillik murojaatlar",
+        "holat_taqsimoti": "Holat taqsimoti",
+        "oylar": {
+            "yan": "Yan",
+            "fev": "Fev",
+            "mar": "Mar",
+            "apr": "Apr",
+            "may": "May",
+            "iyn": "Iyn",
+            "iyl": "Iyl",
+            "avg": "Avg",
+            "sen": "Sen",
+            "okt": "Okt",
+            "noy": "Noy",
+            "dek": "Dek"
+        }
+    }
+}

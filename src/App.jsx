@@ -14,6 +14,7 @@ import GvLayout from './layouts/GvLayout'
 import gvRoute from './routes/gvRoutes'
 import InLayout from './layouts/InLayout'
 import inRoute from './routes/inRoute'
+import RequireAuth from './auth/RequireAuth'
 
 function App() {
   return (
@@ -23,7 +24,7 @@ function App() {
 
        <Route path="/" element={<Navigate to="/login" />} />
        <Route path='/login' element={<Login />} />
-        <Route >
+        <Route element={<RequireAuth role="JEK" />} >
           <Route path='/jek' element={<JekLayout />} >
             {jekRoute.map((r) => {
               return (
@@ -32,7 +33,7 @@ function App() {
             })}
           </Route>
         </Route>
-        <Route >
+        <Route element={<RequireAuth role="GOVERNMENT" />}>
           <Route path='/hokim' element={<GvLayout />} >
             {gvRoute.map((r) => {
               return (
@@ -41,7 +42,7 @@ function App() {
             })}
           </Route>
         </Route>
-        <Route >
+        <Route element={<RequireAuth role="INSPECTION" />}>
           <Route path='/inseksiya' element={<InLayout />} >
             {inRoute.map((r) => {
               return (
