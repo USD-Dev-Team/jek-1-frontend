@@ -1,0 +1,29 @@
+{
+    "idashboard": {
+        "dashboard": "Панель управления",
+        "hudundingiumumiyholati": "Общее состояние региональных обращений",
+        "yil": "Год",
+        "tuman": "Район",
+        "mahalla": "Махалля",
+        "barchasi": "Все",
+        "bajarilgan": "Выполнено",
+        "jarayonda": "В процессе",
+        "rad_etilgan": "Отклонено",
+        "yillik_murojaatlar": "Годовые обращения",
+        "holat_taqsimoti": "Распределение статусов",
+        "oylar": {
+            "yan": "Янв",
+            "fev": "Фев",
+            "mar": "Мар",
+            "apr": "Апр",
+            "may": "Май",
+            "iyn": "Июн",
+            "iyl": "Июл",
+            "avg": "Авг",
+            "sen": "Сен",
+            "okt": "Окт",
+            "noy": "Ноя",
+            "dek": "Дек"
+        }
+    }
+}

@@ -45,7 +45,7 @@ export default function Murojat() {
   const [debouncedQwery, setDebouncedQwery] = useState("");
   const [page, setPage] = useState(1);
   const [meta, setMeta] = useState({});
-  const  [workers, setWorkers] = useState([])
+  const [workers, setWorkers] = useState([])
   const [previewImg, setPreviewImg] = useState(null);
 
 
@@ -58,37 +58,37 @@ export default function Murojat() {
     endData: null,
     status: "",
     district: "",
-      neighborhood: "",
+    neighborhood: "",
     search: "",
   });
 
- const statusMap = {
-  pending: {
-    label: t("inspection.status.pending"),
-    bg: "orange.500",
-    color: "white",
-  },
-  in_progress: {
-    label: t("inspection.status.in_progress"),
-    bg: "blue.500",
-    color: "white",
-  },
-  completed: {
-    label: t("inspection.status.completed"),
-    bg: "green.500",
-    color: "white",
-  },
-  rejected: {
-    label: t("inspection.status.rejected"),
-    bg: "red.500",
-    color: "white",
-  },
-   jek_completed: {
-    label: t("inspection.status.jek_completed"),
-    bg: "green",
-    color: "white",
-  },
-};
+  const statusMap = {
+    pending: {
+      label: t("inspection.status.pending"),
+      bg: "orange.500",
+      color: "white",
+    },
+    in_progress: {
+      label: t("inspection.status.in_progress"),
+      bg: "blue.500",
+      color: "white",
+    },
+    completed: {
+      label: t("inspection.status.completed"),
+      bg: "green.500",
+      color: "white",
+    },
+    rejected: {
+      label: t("inspection.status.rejected"),
+      bg: "red.500",
+      color: "white",
+    },
+    jek_completed: {
+      label: t("inspection.status.jek_completed"),
+      bg: "green",
+      color: "white",
+    },
+  };
 
   const getStatus = (status) => {
     return (
@@ -100,30 +100,30 @@ export default function Murojat() {
     );
   };
 
-  const getWorkers = async ()=>{
+  const getWorkers = async () => {
     setLoading(true)
-    try{
+    try {
       const res = await Requests.getEmploye(true)
       setWorkers(res.data.data)
-     
 
-    }finally{
+
+    } finally {
       setLoading(false)
     }
   }
 
-  
-  
 
-  useEffect(()=>{
+
+
+  useEffect(() => {
     getWorkers()
-  },[])
+  }, [])
 
 
 
-const openImage = (url) => {
-  setPreviewImg(url);
-};
+  const openImage = (url) => {
+    setPreviewImg(url);
+  };
 
   const workerMap = Object.fromEntries(workers.map(w => [w.id, w]))
 
@@ -135,8 +135,8 @@ const openImage = (url) => {
         form.startData,
         form.endData,
         form.district,
-         form.neighborhood,
-         
+        form.neighborhood,
+
         form.status,
         text,
         page - 1,
@@ -145,11 +145,11 @@ const openImage = (url) => {
 
       setData(res.data.data);
       setMeta(res.data.meta)
-   
-      
+
+
     } finally {
       setLoading(false);
-     
+
     }
   };
 
@@ -157,118 +157,121 @@ const openImage = (url) => {
     const time = setTimeout(() => {
       setDebouncedQwery(form.search);
     }, 400);
-  
+
 
     return () => clearTimeout(time);
   }, [form.search]);
 
   useEffect(() => {
     getData(debouncedQwery);
-  }, [form.startData, form.endData, form.status, form.district, debouncedQwery,   form.neighborhood,  page]);
+  }, [form.startData, form.endData, form.status, form.district, debouncedQwery, form.neighborhood, page]);
 
 
   const shortText = (text, limit = 30) => {
-  if (!text) return "-";
-  return text.length > limit ? text.slice(0, limit) + "..." : text;
-};
+    if (!text) return "-";
+    return text.length > limit ? text.slice(0, limit) + "..." : text;
+  };
 
 
-const clearFilters = () => {
-  setForm({
-    startData: null,
-    endData: null,
-    status: "",
-    district: "",
-    neighborhood: "",
-    search: "",
-  });
+  const clearFilters = () => {
+    setForm({
+      startData: "all",
+      endData: "all",
+      status: "",
+      district: "",
+      neighborhood: "",
+      search: "",
+    });
 
-  setPage(1);
-};
+    setPage(1);
+  };
   return (
     <Box bg="bg" minH="100vh" p={6}>
-     <Heading fontSize={25}>{t("inspection.title")}</Heading>
+      <Heading fontSize={25}>{t("inspection.title")}</Heading>
 
       {/* FILTER */}
-    <Box  mb={6} mt={6}>  
-  <Flex
-    gap={3}
-    align="center"
-    wrap="nowrap"
-    overflowX="auto"
-  >
+      <Box mb={6} mt={6}>
+        <Flex
+          gap={3}
+          align="center"
+          wrap="nowrap"
+          overflowX="auto"
+        >
 
-    <Input
-      placeholder="Search..."
-      value={form.search}
-      onChange={(e) =>
-        setForm({ ...form, search: e.target.value })
-      }
-      minW="200px"
-    />
+          <Input
+            placeholder="Search..."
+            border={'1px solid'}
+            borderColor={'border'}
+            bg={"#ffffff11"}
+            value={form.search}
+            onChange={(e) =>
+              setForm({ ...form, search: e.target.value })
+            }
+            minW="200px"
+          />
 
-    <Select
-  minW="160px"
-  placeholder={t("inspection.all")}
-  value={form.district}
-  onChange={(e) =>
-    setForm({
-      ...form,
-      district: e.target.value,
-      neighborhood: "" // reset
-    })
-  }
->
-  {regions.uz.addresses.map((d) => (
-    <option key={d} value={d}>
-      {d}
-    </option>
-  ))}
-</Select>
+          <Select
+            minW="160px"
+            placeholder={t("inspection.all")}
+            value={form.district}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                district: e.target.value,
+                neighborhood: "" // reset
+              })
+            }
+          >
+            {regions.uz.addresses.map((d) => (
+              <option key={d} value={d}>
+                {d}
+              </option>
+            ))}
+          </Select>
 
-  <Select
-  minW="160px"
-  placeholder={t("inspection.all")}
-  value={form.neighborhood}
-  onChange={(e) =>
-    setForm({ ...form, neighborhood: e.target.value })
-  }
-  isDisabled={!form.district}
->
-  {regions.uz.mahallas[form.district]?.map((m) => (
-    <option key={m} value={m}>
-      {m}
-    </option>
-  ))}
-</Select>
+          <Select
+            minW="160px"
+            placeholder={t("inspection.all")}
+            value={form.neighborhood}
+            onChange={(e) =>
+              setForm({ ...form, neighborhood: e.target.value })
+            }
+            isDisabled={!form.district}
+          >
+            {regions.uz.mahallas[form.district]?.map((m) => (
+              <option key={m} value={m}>
+                {m}
+              </option>
+            ))}
+          </Select>
 
-    <Input
-      type="date"
-      minW="150px"
-      value={form.startData}
-      onChange={(e) =>
-        setForm({ ...form, startData: e.target.value })
-      }
-    />
+          <Input
+            type="date"
+            minW="150px"
+            value={form.startData}
+            onChange={(e) =>
+              setForm({ ...form, startData: e.target.value })
+            }
+          />
 
-    <Input
-      type="date"
-      minW="150px"
-      value={form.endData}
-      onChange={(e) =>
-        setForm({ ...form, endData: e.target.value })
-      }
-    />
-    <Button
-  minW="120px"
-  variant="outline"
-  onClick={clearFilters}
->
-     <Icon as={Trash} boxSize={4} />
-</Button>
+          <Input
+            type="date"
+            minW="150px"
+            value={form.endData}
+            onChange={(e) =>
+              setForm({ ...form, endData: e.target.value })
+            }
+          />
+          <Button
+            minW="120px"
+            variant="outline"
+            onClick={clearFilters}
+          >
+            <Icon as={Trash} boxSize={4} />
+          </Button>
 
-  </Flex>
-</Box>
+        </Flex>
+      </Box>
 
       {/* TABLE */}
       <Box bg="surface" borderRadius="xl" border="1px solid" borderColor="border" p={5}>
@@ -278,109 +281,109 @@ const clearFilters = () => {
             <Tr>
               <Th w="80px">№</Th>
               <Th>ID</Th>
-             <Th>{t("inspection.user")}</Th>
-<Th>{t("inspection.region")}</Th>
-<Th>{t("inspection.date")}</Th>
-<Th>{t("inspection.duration")}</Th>
-<Th>{t("inspection.status_label")}</Th>
-<Th textAlign="center">{t("inspection.action")}</Th>
+              <Th>{t("inspection.user")}</Th>
+              <Th>{t("inspection.region")}</Th>
+              <Th>{t("inspection.date")}</Th>
+              <Th>{t("inspection.duration")}</Th>
+              <Th>{t("inspection.status_label")}</Th>
+              <Th textAlign="center">{t("inspection.action")}</Th>
             </Tr>
           </Thead>
 
-        <Tbody>
-  {loading ? (
-    <TableSkeleton rows={5} columns={8} />
-  ) : data.length === 0 ? (
-    <Tr>
-      <Td colSpan={8} textAlign="center">
-       {t("inspection.empty")}
-      </Td>
-    </Tr>
-  ) : (
-    data.map((item, index) => {
-      const status = getStatus(item.status);
+          <Tbody>
+            {loading ? (
+              <TableSkeleton rows={5} columns={8} />
+            ) : data.length === 0 ? (
+              <Tr>
+                <Td colSpan={8} textAlign="center">
+                  {t("inspection.empty")}
+                </Td>
+              </Tr>
+            ) : (
+              data.map((item, index) => {
+                const status = getStatus(item.status);
 
-      const days =
-        Math.ceil(
-          (new Date(item.updatedAt) -
-            new Date(item.createdAt)) /
-            (1000 * 60 * 60 * 24)
-        ) || 0;
+                const days =
+                  Math.ceil(
+                    (new Date(item.updatedAt) -
+                      new Date(item.createdAt)) /
+                    (1000 * 60 * 60 * 24)
+                  ) || 0;
 
-      return (
-        <Tr key={item.id} _hover={{ bg: hoverBg }}>
-          <Td>{index + 1}</Td>
-          
-          {/* ID */}
-          <Td>{item.request_number}</Td>
+                return (
+                  <Tr key={item.id} _hover={{ bg: hoverBg }}>
+                    <Td>{index + 1}</Td>
 
-
-          <Td>
-            <Text>{item.user?.full_name}</Text>
-            <Text fontSize="xs">{item.phone}</Text>
-          </Td>
+                    {/* ID */}
+                    <Td>{item.request_number}</Td>
 
 
-          <Td>{item.address?.district}</Td>
+                    <Td>
+                      <Text>{item.user?.full_name}</Text>
+                      <Text fontSize="xs">{item.phone}</Text>
+                    </Td>
 
 
-         
+                    <Td>{item.address?.district}</Td>
 
 
-          <Td>{formatDateTime(item.createdAt)}</Td>
 
 
-          <Td>{days} kun</Td>
 
-        
-          <Td>
-            <Badge bg={status.bg} color={status.color}>
-              {status.label}
-            </Badge>
-          </Td>
+                    <Td>{formatDateTime(item.createdAt)}</Td>
 
 
-          <Td textAlign="right">
-            {item.status?.toLowerCase() !== "jek_completed" && (
-              <Button
-                size="sm"
-                onClick={() => {
-                  setSelected(item);
-                  viewModal.onOpen();
-                }}
-              >
-            {t("inspection.view")}
-              </Button>
+                    <Td>{days} kun</Td>
+
+
+                    <Td>
+                      <Badge bg={status.bg} color={status.color}>
+                        {status.label}
+                      </Badge>
+                    </Td>
+
+
+                    <Td textAlign="right">
+                      {item.status?.toLowerCase() !== "jek_completed" && (
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            setSelected(item);
+                            viewModal.onOpen();
+                          }}
+                        >
+                          {t("inspection.view")}
+                        </Button>
+                      )}
+                    </Td>
+
+                  </Tr>
+                );
+              })
             )}
-          </Td>
-
-        </Tr>
-      );
-    })
-  )}
-</Tbody>
+          </Tbody>
         </Table>
       </Box>
 
 
       <Flex mt={6} justify="center" gap={3}>
         <Button
-  size="sm"
-  onClick={() => setPage((p) => Math.max(p - 1, 1))}
-  isDisabled={!meta?.hasPreviousPage}
->
-  ← {t("inspection.prev")}
-</Button>
+          size="sm"
+          onClick={() => setPage((p) => Math.max(p - 1, 1))}
+          isDisabled={!meta?.hasPreviousPage}
+        >
+          ← {t("inspection.prev")}
+        </Button>
 
         <Box px={4}>{meta?.page} / {meta?.totalPages}</Box>
 
-       <Button
-  size="sm"
-  onClick={() => setPage((p) => p + 1)}
-  isDisabled={!meta?.hasNextPage}
->
-  {t("inspection.next")} →
-</Button>
+        <Button
+          size="sm"
+          onClick={() => setPage((p) => p + 1)}
+          isDisabled={!meta?.hasNextPage}
+        >
+          {t("inspection.next")} →
+        </Button>
       </Flex>
 
       {/* VIEW MODAL */}
@@ -388,7 +391,7 @@ const clearFilters = () => {
         <ModalOverlay />
         <ModalContent borderRadius="md">
           <ModalHeader borderBottom="1px solid" borderColor="gray.200">
-           {t("inspection.modal.title")}
+            {t("inspection.modal.title")}
           </ModalHeader>
 
           <ModalBody py={4}>
@@ -425,66 +428,66 @@ const clearFilters = () => {
                   {selected?.address?.apartment_number}
                 </Text>
               </Flex>
-               <Text color="gray.500" mb={1}>
-    {t("inspection.fields.problem")}
-  </Text>
-             <Box maxH="100px" overflowY="auto">
- 
-  <Text>{selected?.description}</Text>
-</Box><Box>
-  <Text color="gray.500" mb={1}>
-    {t("inspection.fields.note")}
-  </Text>
+              <Text color="gray.500" mb={1}>
+                {t("inspection.fields.problem")}
+              </Text>
+              <Box maxH="100px" overflowY="auto">
 
-  <Box
-   
-    p={2}
-    borderRadius="sm"
-    maxH="100px"
-    overflowY="auto"
-  >
-    {selected?.note || "-"}
-  </Box>
-</Box>
+                <Text>{selected?.description}</Text>
+              </Box><Box>
+                <Text color="gray.500" mb={1}>
+                  {t("inspection.fields.note")}
+                </Text>
 
-             <Flex gap={2} wrap="wrap">
-  {selected?.requestPhotos?.length > 0 ? (
-    selected.requestPhotos.map((img) => (
-      <Box
-        key={img.id}
-        w="200px"
-        h="200px"
-        borderRadius="12px"
-        overflow="hidden"
-        border="1px solid"
-        borderColor="gray.200"
-        cursor="pointer"
-        _hover={{
-          transform: "scale(1.05)",
-          boxShadow: "lg",
-        }}
-      >
-      <Image
-  src={`${FILE_BASE}${img.file_url}`}
-  w="100%"
-  h="100%"
-  objectFit="cover"
-  onClick={() => openImage(`${FILE_BASE}${img.file_url}`)}
-/>
-      </Box>
-    ))
-  ) : (
-    <Text color="gray.400" fontSize="sm">
-      Rasm mavjud emas
-    </Text>
-  )}
-</Flex>
+                <Box
+
+                  p={2}
+                  borderRadius="sm"
+                  maxH="100px"
+                  overflowY="auto"
+                >
+                  {selected?.note || "-"}
+                </Box>
+              </Box>
+
+              <Flex gap={2} wrap="wrap">
+                {selected?.requestPhotos?.length > 0 ? (
+                  selected.requestPhotos.map((img) => (
+                    <Box
+                      key={img.id}
+                      w="200px"
+                      h="200px"
+                      borderRadius="12px"
+                      overflow="hidden"
+                      border="1px solid"
+                      borderColor="gray.200"
+                      cursor="pointer"
+                      _hover={{
+                        transform: "scale(1.05)",
+                        boxShadow: "lg",
+                      }}
+                    >
+                      <Image
+                        src={`${FILE_BASE}${img.file_url}`}
+                        w="100%"
+                        h="100%"
+                        objectFit="cover"
+                        onClick={() => openImage(`${FILE_BASE}${img.file_url}`)}
+                      />
+                    </Box>
+                  ))
+                ) : (
+                  <Text color="gray.400" fontSize="sm">
+                    Rasm mavjud emas
+                  </Text>
+                )}
+              </Flex>
             </VStack>
           </ModalBody>
 
           <ModalFooter gap={4} borderTop="1px solid" borderColor="gray.200">
             <Button size="sm" onClick={viewModal.onClose}>
-          {t("inspection.close")}
+              {t("inspection.close")}
             </Button>
             {selected?.status?.toLowerCase().includes("rejected") && (
               <Button
@@ -492,7 +495,7 @@ const clearFilters = () => {
                 colorScheme="blue"
                 onClick={() => getStartRequest(selected?.id)}
               >
-            {t("inspection.restart")}
+                {t("inspection.restart")}
               </Button>
             )}
           </ModalFooter>
@@ -500,24 +503,24 @@ const clearFilters = () => {
       </Modal>
 
       <Modal
-  isOpen={!!previewImg}
-  onClose={() => setPreviewImg(null)}
-  size="xl"
-  isCentered
->
-  <ModalOverlay bg="blackAlpha.800" backdropFilter="blur(6px)" />
+        isOpen={!!previewImg}
+        onClose={() => setPreviewImg(null)}
+        size="xl"
+        isCentered
+      >
+        <ModalOverlay bg="blackAlpha.800" backdropFilter="blur(6px)" />
 
-  <ModalContent bg="transparent" boxShadow="none">
-    <ModalBody display="flex" justifyContent="center">
-      <Image
-        src={previewImg}
-        maxH="80vh"
-        borderRadius="12px"
-        objectFit="contain"
-      />
-    </ModalBody>
-  </ModalContent>
-</Modal>
+        <ModalContent bg="transparent" boxShadow="none">
+          <ModalBody display="flex" justifyContent="center">
+            <Image
+              src={previewImg}
+              maxH="80vh"
+              borderRadius="12px"
+              objectFit="contain"
+            />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
 
     </Box>
   );

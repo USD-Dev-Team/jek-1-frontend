@@ -2,32 +2,53 @@
   "hodim": {
     "hodimlar": "Hodimlar",
     "hodimlarningumumiyishholati": "Hodimlarning umumiy ish holati",
-
     "bajarilgan": "Bajarilgan",
     "jami": "Jami",
-
     "barchahududlar": "Barcha hududlar",
     "barcha": {
       "mahallalar": "Barcha mahallalar",
       "holat": "Barcha holatlar"
     },
-
+    "mahalla": "Mahalla tanlang",
+    "hudud": "Hudud tanlang",
+    "manzilbiriktirish": "Manzil biriktirish",
+    "manzilochirish": "Manzilni o'chirish",
+    "sorov": "Haqiqatdan ham ushbu hodimdan manzilni olib tashlamoqchimisiz?",
+    "saqlash": "Saqlash",
+    "ochirish": "O'chirish",
+    "nofaolqilish": "Nofaollashtirish",
+    "harakatlar": "Harakatlar",
+    "faol": "Fa'ollashtirish",
     "aktiv": "Aktiv",
     "nofaol": "Nofaol",
-
     "jami_label": "Jami",
     "hodim": "hodim",
-
     "natijatopilmadi": "Natija topilmadi",
-
     "bekorqilish": "Bekor qilish",
-
+    "qidirish": "Qidirish",
     "modal": {
       "disable_title": "Hodimni nofaol qilish",
       "enable_title": "Hodimni faollashtirish",
-
       "disable_text": "Tasdiqlasangiz, hodim tizimga kira olmaydi. Ma'lumotlari saqlanib qoladi.",
-      "enable_text": "Tasdiqlasangiz, hodim tizimga qayta kira oladi."
+      "enable_text": "Tasdiqlasangiz, hodim tizimga qayta kira oladi.",
+      "disable_btn": "Nofaol qilish",
+      "enable_btn": "Faollashtirish"
+    },
+    "info": {
+      "ahodimlar": "Aktiv hodimlar",
+      "nhodim": "Nofaol hodimlar",
+      "jhodim": "Jami ro'yxatda"
+    },
+    "jadval": {
+      "mahalla": "Mahalla",
+      "hodim": "Hodim",
+      "hudud": "Hudud",
+      "holat": "Holat",
+      "aktiv_nofaol": "Aktiv/Nofaol"
     }
+  },
+  "common": {
+    "oldingi": "Oldingi",
+    "keyingi": "Keyingi"
   }
 }

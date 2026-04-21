@@ -23,7 +23,7 @@ import {
   HStack,
 } from "@chakra-ui/react";
 
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useParams } from "react-router-dom";
 
 import {
   ChevronLeft,
@@ -39,12 +39,13 @@ import { useTranslation } from "react-i18next";
 import Cookies from "js-cookie";
 
 export default function Sidebar({ links = [] }) {
+  const { id } = useParams()
+  const navigate = useNavigate()
   const { toggleColorMode } = useColorMode();
   const collapsed = useUIStore((s) => s.collapsed);
   const toggleSidebar = useUIStore((s) => s.toggleSidebar);
-
+  const { manzil } = useParams();
   const { logout } = useAuth();
-  const navigate = useNavigate();
   const { onOpen, onClose, isOpen } = useDisclosure();
 
   const { t, i18n } = useTranslation();
@@ -168,7 +169,7 @@ export default function Sidebar({ links = [] }) {
             borderColor="border"
           >
             <Flex align="center" gap={2}>
-              <Avatar size="sm" name={Cookies.get("first_name")} />
+              <Avatar onClick={() => navigate(`/profile/${id}`)} size="sm" name={Cookies.get("first_name")} />
 
               {!collapsed && (
                 <Box>

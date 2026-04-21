@@ -39,7 +39,10 @@ import dashboardEn from "./modules/DashboardJek/en.json";
 import inspectionUz  from "./modules/MurojatIn/uz.json";
 import inspectionRu from "./modules/MurojatIn/ru.json";
 import inspectionEn from "./modules/MurojatIn/en.json";
-
+//DashboardIn
+import dashboardInUz from "./modules/idashboard/uz.json";
+import dashboardInRu from "./modules/idashboard/ru.json";
+import dashboardInEn from "./modules/idashboard/en.json";
 
 // === RESOURCES ===
 const resources = {
@@ -52,7 +55,8 @@ const resources = {
       hodim: hdUz,
       sidebar: sidebarUz, 
       dashboard: dashboardUz,
-      inspection: inspectionUz
+      inspection: inspectionUz,
+      idashboard: dashboardInUz
     },
   },
   ru: {
@@ -64,7 +68,8 @@ const resources = {
       hodim: hdRu,
       sidebar: sidebarRu,
       dashboard: dashboardRu,
-      inspection: inspectionRu
+      inspection: inspectionRu,
+      idashboard: dashboardInRu
 
     },
   },
@@ -77,7 +82,8 @@ const resources = {
       hodim: hdEn,
       sidebar: sidebarEn, 
       dashboard: dashboardEn,
-      inspection: inspectionEn
+      inspection: inspectionEn,
+      idashboard: dashboardInEn
     },
   },
 };

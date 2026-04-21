@@ -1,0 +1,29 @@
+{
+    "idashboard": {
+        "dashboard": "Dashboard",
+        "hudundingiumumiyholati": "Overall status of regional applications",
+        "yil": "Year",
+        "tuman": "District",
+        "mahalla": "Neighborhood",
+        "barchasi": "All",
+        "bajarilgan": "Completed",
+        "jarayonda": "In progress",
+        "rad_etilgan": "Rejected",
+        "yillik_murojaatlar": "Yearly requests",
+        "holat_taqsimoti": "Status distribution",
+        "oylar": {
+            "yan": "Jan",
+            "fev": "Feb",
+            "mar": "Mar",
+            "apr": "Apr",
+            "may": "May",
+            "iyn": "Jun",
+            "iyl": "Jul",
+            "avg": "Aug",
+            "sen": "Sep",
+            "okt": "Oct",
+            "noy": "Nov",
+            "dek": "Dec"
+        }
+    }
+}
