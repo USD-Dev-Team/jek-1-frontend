@@ -1,0 +1,29 @@
+{
+    "title": "Ariza ma'lumotlari",
+    "back": "Orqaga",
+    "start": "Boshlash",
+    "restart": "Qayta boshlash",
+    "finish": "Tugatish",
+
+    "client": "Arizachi",
+    "assigned": "Biriktirilgan xodim",
+    "created": "Yaratilgan",
+    "completed": "Tugatilgan",
+
+    "problem": "Muammo",
+    "note": "Izoh",
+    "no_data": "Mavjud emas",
+
+    "images": "Rasmlar",
+    "no_image": "Rasm mavjud emas",
+
+    "history": "Tarix (Chat)",
+
+    "confirm_start": "Rostdan ham boshlamoqchimisiz?",
+    "confirm_restart": "Qayta boshlashni tasdiqlaysizmi?",
+    "cancel": "Bekor qilish",
+    "yes": "Ha",
+    "no": "Yo‘q",
+    "send": "Yuborish",
+    "write_note": "Izoh yozing..."
+  }
