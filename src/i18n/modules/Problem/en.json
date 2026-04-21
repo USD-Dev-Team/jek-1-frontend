@@ -1,0 +1,29 @@
+ {
+    "title": "Request Details",
+    "back": "Back",
+    "start": "Start",
+    "restart": "Restart",
+    "finish": "Complete",
+
+    "client": "Applicant",
+    "assigned": "Assigned Staff",
+    "created": "Created At",
+    "completed": "Completed At",
+
+    "problem": "Problem",
+    "note": "Note",
+    "no_data": "No data",
+
+    "images": "Images",
+    "no_image": "No images available",
+
+    "history": "History (Chat)",
+
+    "confirm_start": "Are you sure you want to start?",
+    "confirm_restart": "Confirm restart",
+    "cancel": "Cancel",
+    "yes": "Yes",
+    "no": "No",
+    "send": "Send",
+    "write_note": "Write a note..."
+  }
