@@ -39,10 +39,18 @@ import dashboardEn from "./modules/DashboardJek/en.json";
 import inspectionUz  from "./modules/MurojatIn/uz.json";
 import inspectionRu from "./modules/MurojatIn/ru.json";
 import inspectionEn from "./modules/MurojatIn/en.json";
+
 //DashboardIn
 import dashboardInUz from "./modules/idashboard/uz.json";
 import dashboardInRu from "./modules/idashboard/ru.json";
 import dashboardInEn from "./modules/idashboard/en.json";
+
+//Problem
+import problemUz  from "./modules/Problem/uz.json";
+import problemRu from "./modules/Problem/ru.json";
+import problemEn from "./modules/Problem/en.json";
+
+
 
 // === RESOURCES ===
 const resources = {
@@ -57,6 +65,7 @@ const resources = {
       dashboard: dashboardUz,
       inspection: inspectionUz,
       idashboard: dashboardInUz
+      problem: problemUz
     },
   },
   ru: {
@@ -70,6 +79,7 @@ const resources = {
       dashboard: dashboardRu,
       inspection: inspectionRu,
       idashboard: dashboardInRu
+      problem: problemRu
 
     },
   },
@@ -84,6 +94,7 @@ const resources = {
       dashboard: dashboardEn,
       inspection: inspectionEn,
       idashboard: dashboardInEn
+      problem: problemEn
     },
   },
 };
