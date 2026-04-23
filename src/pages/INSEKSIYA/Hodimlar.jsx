@@ -1,4 +1,4 @@
-import React, { useState, useEffect,} from "react";
+import React, { useState, useEffect, } from "react";
 import { Avatar, Badge, Box, Button, Circle, Flex, Icon, IconButton, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Switch, Table, Tbody, Td, Text, Th, Thead, Tr, useDisclosure, } from "@chakra-ui/react";
 import { Pen, PenOff, Search, Trash2, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -8,24 +8,7 @@ import { toastService } from "../../utils/toast";
 import { useNavigate } from "react-router";
 
 export default function Hodimlari() {
-  const {
-    isOpen: isRemoveOpen,
-    onOpen: openRemove,
-    onClose: closeRemove,
-  } = useDisclosure()
-  const {
-    isOpen: isAddressOpen,
-    onOpen: openAddress,
-    onClose: closeAddress,
-  } = useDisclosure()
   const navigate = useNavigate()
-  const [assignLoading, setAssignLoading] = useState(false)
-  const [removeLoading, setRemoveLoading] = useState(false)
-  const [removeHodim, setRemoveHodim] = useState(null)
-  const [selectedHodim, setSelectedHodim] = useState(null)
-  const [modalHudud, setModalHudud] = useState("")
-  const [modalMahalla, setModalMahalla] = useState("")
-  const modalMahallalar = modalHudud ? destination?.uz?.mahallas?.[modalHudud] || [] : []
   const [hodimlar, setHodimlar] = useState([]);
   const { t } = useTranslation();
   const [hudud, setHudud] = useState("");
@@ -72,6 +55,7 @@ export default function Hodimlari() {
         familiya: i.last_name,
         telefon: "+" + i.phoneNumber,
         hudud: i.addresses?.[0]?.address?.district,
+        hudud2: i.addresses?.[1]?.address?.district,
         mahalla: i.addresses?.[0]?.address?.neighborhood,
         addressId: i.addresses?.[0]?.address_id,
         aktiv: i.isActive,
@@ -83,30 +67,6 @@ export default function Hodimlari() {
     } finally {
     }
   };
-  const assignAddress = async () => {
-    setAssignLoading(true)
-    try {
-      const res = await Requests.assignAddress(selectedHodim.id, modalHudud, modalMahalla)
-      toastService.success(res.data.message)
-      fetchHodimlar()
-      closeAddress()
-    } catch (e) {
-      toastService.error("Xatolik yuz berdi")
-    } finally {
-      setAssignLoading(false)
-    }
-  }
-  const removeAddress = async () => {
-    setRemoveLoading(true)
-    try {
-      const res = await Requests.removeAddress(removeHodim.id, removeHodim.addressId)
-      toastService.success(res.data.message)
-      fetchHodimlar()
-      closeRemove()
-    } finally {
-      setRemoveLoading(false)
-    }
-  }
   useEffect(() => {
     fetchHodimlar();
   }, [page]);
@@ -328,9 +288,9 @@ export default function Hodimlari() {
                 "#",
                 t("hodim.hodim.jadval.hodim"),
                 t("hodim.hodim.jadval.hudud"),
+                t("hodim.hodim.jadval.hudud"),
                 t("hodim.hodim.jadval.holat"),
                 t("hodim.hodim.jadval.aktiv_nofaol"),
-                t("hodim.hodim.harakatlar"),
                 "",
               ].map((h, i) => (
                 <Th
@@ -399,6 +359,37 @@ export default function Hodimlari() {
                     </Badge>
                   </Td>
 
+                  {/* Hudud */}
+                  <Td px={4} py={3}>
+                    {h.hudud2 ?
+                      <>
+                        <Badge
+                          bg="#3f1a5dcc"
+                          color="#d6c6e2cc"
+                          borderRadius="6px"
+                          px={2}
+                          py={1}
+                          fontSize="11px"
+                          fontWeight="500"
+                        >
+                          {h.hudud2}
+                        </Badge>
+                      </> :
+                      <>
+                        <Badge
+                          bg="#5d1a1acc"
+                          color="#e2c6c6cc"
+                          borderRadius="6px"
+                          px={2}
+                          py={1}
+                          fontSize="11px"
+                          fontWeight="500"
+                        >
+                          2-manzil mavjud emas
+                        </Badge>
+                      </>}
+                  </Td>
+
                   {/* Holat */}
                   <Td px={4} py={3}>
                     <Badge
@@ -421,27 +412,6 @@ export default function Hodimlari() {
                       isChecked={h.aktiv}
                       colorScheme="green"
                       onChange={() => handleToggleClick(h)}
-                    />
-                  </Td>
-
-                  <Td>
-                    <IconButton
-                      size="sm"
-                      variant="ghost"
-                      colorScheme={h.hudud ? "red" : "blue"}
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        if (h.hudud) {
-                          setRemoveHodim(h)
-                          openRemove()
-                        } else {
-                          setSelectedHodim(h)
-                          setModalHudud("")
-                          setModalMahalla("")
-                          openAddress()
-                        }
-                      }}
-                      icon={h.hudud ? <PenOff size={16} /> : <Pen size={16} />}
                     />
                   </Td>
                   <Td px={4} py={3}>
@@ -493,191 +463,6 @@ export default function Hodimlari() {
           </Button>
         </Flex>
       )}
-
-
-      {/* MANZIL O'CHIRISH MODAL */}
-      <Modal isOpen={isRemoveOpen} onClose={closeRemove} isCentered size="sm">
-        <ModalOverlay bg="blackAlpha.700" backdropFilter="blur(4px)" />
-        <ModalContent
-          border="1px solid"
-          borderColor="whiteAlpha.200"
-          borderRadius="16px"
-        >
-          <ModalHeader pb={0}>
-            <Flex align="center" gap={3}>
-              <Box
-                w="48px" h="48px"
-                borderRadius="14px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                fontSize="22px"
-                bg="red.900"
-              >
-                🗑️
-              </Box>
-              <Text fontSize="16px" fontWeight="600" color="text">
-                {t("hodim.hodim.manzilochirish")}
-              </Text>
-            </Flex>
-          </ModalHeader>
-
-          <ModalBody py={4}>
-            <Text fontSize="13px" color="text" mb={4} lineHeight="1.6">
-              {t("hodim.hodim.sorov")}
-            </Text>
-            <Flex align="center" gap={3} bg="whiteAlpha.100" borderRadius="10px" p={3}>
-              <Avatar
-                size="sm"
-                name={`${removeHodim?.ism} ${removeHodim?.familiya}`}
-                borderRadius="10px"
-              />
-              <Box>
-                <Text fontSize="14px" fontWeight="500" color="text">
-                  {removeHodim?.ism} {removeHodim?.familiya}
-                </Text>
-                <Text fontSize="12px" color="gray.500">
-                  {removeHodim?.hudud} — {removeHodim?.mahalla}
-                </Text>
-              </Box>
-            </Flex>
-          </ModalBody>
-
-          <ModalFooter gap={3} pt={0}>
-            <Button
-              flex={1}
-              variant="ghost"
-              color="gray.500"
-              _hover={{ bg: "whiteAlpha.100" }}
-              onClick={closeRemove}
-            >
-              {t("hodim.hodim.bekorqilish")}
-            </Button>
-            <Button
-              flex={1}
-              bg="red.500"
-              color="white"
-              _hover={{ opacity: 0.85 }}
-              isLoading={removeLoading}
-              loadingText="O'chirilmoqda..."
-              onClick={removeAddress}
-            >
-              {t("hodim.hodim.ochirish")}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-
-      {/* MANZIL MODAL */}
-      <Modal isOpen={isAddressOpen} onClose={closeAddress} isCentered size="sm">
-        <ModalOverlay bg="blackAlpha.700" backdropFilter="blur(4px)" />
-        <ModalContent
-          border="1px solid"
-          borderColor="whiteAlpha.200"
-          borderRadius="16px"
-        >
-          <ModalHeader pb={0}>
-            <Flex align="center" gap={3}>
-              <Box
-                w="48px" h="48px"
-                borderRadius="14px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                fontSize="22px"
-                bg="blue.900"
-              >
-                📍
-              </Box>
-              <Text fontSize="16px" fontWeight="600" color="text">
-                {t("hodim.hodim.manzilbiriktirish")}
-              </Text>
-            </Flex>
-          </ModalHeader>
-
-          <ModalBody py={4}>
-            {/* Hodim info */}
-            <Flex align="center" gap={3} bg="whiteAlpha.100" borderRadius="10px" p={3} mb={4}>
-              <Avatar
-                size="sm"
-                name={`${selectedHodim?.ism} ${selectedHodim?.familiya}`}
-                borderRadius="10px"
-              />
-              <Box>
-                <Text fontSize="14px" fontWeight="500" color="text">
-                  {selectedHodim?.ism} {selectedHodim?.familiya}
-                </Text>
-                <Text fontSize="12px" color="gray.500">
-                  {selectedHodim?.telefon}
-                </Text>
-              </Box>
-            </Flex>
-
-            {/* Hudud select */}
-            <Select
-              mb={3}
-              value={modalHudud}
-              onChange={(e) => {
-                setModalHudud(e.target.value)
-                setModalMahalla("")
-              }}
-              bg="whiteAlpha.50"
-              border="1px solid"
-              borderColor="border"
-              _focus={{ borderColor: "blue.500" }}
-              fontSize="13px"
-            >
-              <option value="">{t("hodim.hodim.hudud")}</option>
-              {HUDUDLAR.map((h) => (
-                <option key={h} value={h}>{h}</option>
-              ))}
-            </Select>
-
-            {/* Mahalla select */}
-            <Select
-              value={modalMahalla}
-              onChange={(e) => setModalMahalla(e.target.value)}
-              isDisabled={!modalHudud}
-              bg="whiteAlpha.50"
-              border="1px solid"
-              borderColor="border"
-              _focus={{ borderColor: "blue.500" }}
-              fontSize="13px"
-            >
-              <option value="">{t("hodim.hodim.mahalla")}</option>
-              {modalMahallalar.map((m) => (
-                <option key={m} value={m}>{m}</option>
-              ))}
-            </Select>
-          </ModalBody>
-
-          <ModalFooter gap={3} pt={0}>
-            <Button
-              flex={1}
-              variant="ghost"
-              color="gray.500"
-              _hover={{ bg: "whiteAlpha.100" }}
-              onClick={closeAddress}
-            >
-              {t("hodim.hodim.bekorqilish")}
-            </Button>
-            <Button
-              flex={1}
-              bg="blue.500"
-              color="white"
-              _hover={{ opacity: 0.85 }}
-              isDisabled={!modalHudud || !modalMahalla}
-              isLoading={assignLoading}
-              loadingText="Saqlanmoqda..."
-              onClick={assignAddress}
-            >
-              {t("hodim.hodim.saqlash")}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-
-
 
       {/* TASDIQLASH MODAL */}
       <Modal isOpen={isModalOpen} onClose={closeModal} isCentered size="sm">

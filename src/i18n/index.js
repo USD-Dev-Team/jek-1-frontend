@@ -50,6 +50,10 @@ import problemUz  from "./modules/Problem/uz.json";
 import problemRu from "./modules/Problem/ru.json";
 import problemEn from "./modules/Problem/en.json";
 
+// profile
+import profileUz from "./modules/profile/uz.json"
+import profileRu from "./modules/profile/ru.json"
+import profileEn from "./modules/profile/en.json"
 
 
 // === RESOURCES ===
@@ -66,6 +70,7 @@ const resources = {
       inspection: inspectionUz,
       idashboard: dashboardInUz,
       problem: problemUz,
+      profile: profileUz,
     },
   },
   ru: {
@@ -80,6 +85,7 @@ const resources = {
       inspection: inspectionRu,
       idashboard: dashboardInRu,
       problem: problemRu,
+      profile: profileRu,
     },
   },
   en: {
@@ -94,6 +100,7 @@ const resources = {
       inspection: inspectionEn,
       idashboard: dashboardInEn,
       problem: problemEn,
+      profile: profileEn,
     },
   },
 };
