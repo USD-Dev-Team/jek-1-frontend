@@ -6,12 +6,12 @@ import {
   ModalFooter, ModalHeader, ModalOverlay, Select,
   Text, useDisclosure,
 } from "@chakra-ui/react"
-import { ArrowLeft, Lock, LockOpen, MapPin, MapPinOff, KeyRound } from "lucide-react"
+import { ArrowLeft, Lock, LockOpen, KeyRound, EyeOff, Eye, Pencil } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Requests } from "../../Services/api/Requests"
 import { toastService } from "../../utils/toast"
 import destination from "../../constants/mahallas.json"
-
+import Cookies from "js-cookie"
 // ---- kichik yordamchi komponent ----
 function Row({ label, value }) {
   return (
@@ -40,20 +40,28 @@ function ActionBtn({ icon, label, colorScheme, onClick }) {
   )
 }
 
-export default function HodimDetail() {
+export default function Profile() {
+  const [editFirst, setEditFirst] = useState("")
+  const [editLast, setEditLast] = useState("")
+  const [editPhone, setEditPhone] = useState("")
+  const currentRole = Cookies.get("role")
   const { id } = useParams()
   const navigate = useNavigate()
   const { t } = useTranslation()
-
+  const [removeAddressId, setRemoveAddressId] = useState(null)
   const [hodim, setHodim] = useState(null)
   const [loading, setLoading] = useState(true)
   const [btnLoading, setBtnLoading] = useState(false)
+  const [removeAddress, setRemoveAddress] = useState(null)
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirm, setShowConfirm] = useState(false)
 
   // Modals
   const { isOpen: isBlockOpen, onOpen: openBlock, onClose: closeBlock } = useDisclosure()
   const { isOpen: isRemoveOpen, onOpen: openRemove, onClose: closeRemove } = useDisclosure()
   const { isOpen: isAddressOpen, onOpen: openAddress, onClose: closeAddress } = useDisclosure()
   const { isOpen: isPasswordOpen, onOpen: openPassword, onClose: closePassword } = useDisclosure()
+  const { isOpen: isEditOpen, onOpen: openEdit, onClose: closeEdit } = useDisclosure()
 
   // Address state
   const HUDUDLAR = destination.uz.addresses
@@ -85,15 +93,14 @@ export default function HodimDetail() {
   }
 
   const handleBlock = () => withLoad(async () => {
-    const res = await Requests.updateStatus({ id, isActive: !hodim?.isActive })
-    toastService.success(res.data.message)
+    const res = await Requests.updateStatus({ id, isActive: !hodim?.data?.isActive })
+    toastService.success(hodim?.data?.isActive ? "Hodim bloklandi" : "Hodim faollashtirildi")
     await fetchHodim()
     closeBlock()
   })
 
   const handleRemove = () => withLoad(async () => {
-    const addressId = hodim?.addresses?.[0]?.address_id
-    const res = await Requests.removeAddress(id, addressId)
+    const res = await Requests.removeAddress(id, removeAddressId)
     toastService.success(res.data.message)
     await fetchHodim()
     closeRemove()
@@ -107,16 +114,19 @@ export default function HodimDetail() {
   })
 
   const handlePassword = () => withLoad(async () => {
-    const res = await Requests.changePassword(newPassword, confirmPassword)
+    const res = await Requests.changePassword(id, newPassword, confirmPassword)
     toastService.success(res.data.message)
     setNewPassword("")
     setConfirmPassword("")
     closePassword()
   })
 
-  const hasAddress = hodim?.addresses?.length > 0
-  const district = hodim?.addresses?.[0]?.address?.district
-  const neighborhood = hodim?.addresses?.[0]?.address?.neighborhood
+  const handleEdit = () => withLoad(async () => {
+    const res = await Requests.updateProfile(id, editFirst, editLast, editPhone)
+    toastService.success(res.data.message)
+    await fetchHodim()
+    closeEdit()
+  })
 
   if (loading) return (
     <Flex h="60vh" align="center" justify="center">
@@ -136,7 +146,7 @@ export default function HodimDetail() {
         mb={8}
         px={0}
         _hover={{ color: "text", bg: "transparent" }}
-        onClick={() => navigate("/inseksiya/hodim")}
+        onClick={() => navigate(-1)}
       >
         Orqaga
       </Button>
@@ -175,58 +185,63 @@ export default function HodimDetail() {
           textTransform="uppercase" letterSpacing="1px" mb={1}>
           Ma'lumotlar
         </Text>
-        <Box bg="whiteAlpha.50" border="1px solid" borderColor="whiteAlpha.100"
+        <Box bg="whiteAlpha.50" border="1px solid" borderColor="border"
           borderRadius="12px" px={4}>
           <Row label="Ism" value={hodim?.data?.first_name} />
+          <Divider borderColor="border" />
           <Row label="Familiya" value={hodim?.data?.last_name} />
+          <Divider borderColor="border" />
           <Row label="Telefon" value={`+${hodim?.data?.phoneNumber}`} />
-          <Row label="Rol" value={hodim?.data?.role} />
         </Box>
       </Box>
 
 
       {/* MANZIL */}
-      <Box mb={6}>
-        <Flex justify="space-between" align="center" mb={1}>
-          <Text fontSize="10px" fontWeight="600" color="gray.600"
-            textTransform="uppercase" letterSpacing="1px">
-            Manzillar
-          </Text>
-          <Button size="xs" variant="ghost" colorScheme="blue" onClick={openAddress}>
-            + Qo'shish
-          </Button>
-        </Flex>
-        <Box bg="whiteAlpha.50" border="1px solid" borderColor="whiteAlpha.100"
-          borderRadius="12px" px={4}>
-          {hodim?.addresses?.length > 0 ? (
-            hodim.addresses.map((a, i) => (
-              <Flex key={a.id} justify="space-between" align="center"
-                py={3} borderBottom="1px solid" borderColor="whiteAlpha.100"
-                _last={{ borderBottom: "none" }}>
-                <Box>
-                  <Text fontSize="13px" fontWeight="500" color="text">
-                    {a.address?.district}
-                  </Text>
-                  <Text fontSize="12px" color="gray.500" mt="1px">
-                    {a.address?.neighborhood}
-                  </Text>
-                </Box>
-                <Button size="xs" variant="ghost" colorScheme="red"
-                  onClick={() => {
-                    setRemoveAddressId(a.address_id)
-                    openRemove()
-                  }}>
-                  O'chirish
-                </Button>
+      {currentRole === "INSPECTION" && (
+        <Box mb={6}>
+          <Flex justify="space-between" align="center" mb={1}>
+            <Text fontSize="10px" fontWeight="600" color="gray.600"
+              textTransform="uppercase" letterSpacing="1px">
+              Manzillar
+            </Text>
+            <Button size="xs" variant="ghost" colorScheme="blue" onClick={openAddress}>
+              + Qo'shish
+            </Button>
+          </Flex>
+          <Box bg="whiteAlpha.50" border="1px solid" borderColor="border"
+            borderRadius="12px" px={4}>
+            {hodim?.data?.addresses?.length > 0 ? (
+              hodim.data.addresses.map((a, i) => (
+                <Flex key={a.address?.id || i} justify="space-between" align="center"
+                  py={3} borderBottom="1px solid" borderColor="border"
+                  _last={{ borderBottom: "none" }}>
+                  <Box>
+                    <Text fontSize="13px" fontWeight="500" color="text">
+                      {a.address?.district}
+                    </Text>
+                    <Text fontSize="12px" color="gray.500" mt="1px">
+                      {a.address?.neighborhood}
+                    </Text>
+                  </Box>
+                  <Button size="xs" variant="ghost" colorScheme="red"
+                    onClick={() => {
+                      console.log("address:", a)
+                      setRemoveAddressId(a.address?.id)
+                      setRemoveAddress(a.address)
+                      openRemove()
+                    }}>
+                    O'chirish
+                  </Button>
+                </Flex>
+              ))
+            ) : (
+              <Flex justify="space-between" align="center" py={3}>
+                <Text fontSize="12px" color="gray.600">Manzil biriktirilmagan</Text>
               </Flex>
-            ))
-          ) : (
-            <Flex justify="space-between" align="center" py={3}>
-              <Text fontSize="12px" color="gray.600">Manzil biriktirilmagan</Text>
-            </Flex>
-          )}
+            )}
+          </Box>
         </Box>
-      </Box>
+      )}
 
       {/* AMALLAR */}
       <Box>
@@ -234,23 +249,27 @@ export default function HodimDetail() {
           textTransform="uppercase" letterSpacing="1px" mb={1}>
           Amallar
         </Text>
-        <Box bg="whiteAlpha.50" border="1px solid" borderColor="whiteAlpha.100"
+        <Box bg="whiteAlpha.50" border="1px solid" borderColor="border"
           borderRadius="12px" px={2} py={2}>
           <Flex direction="column">
+            <ActionBtn
+              icon={Pencil}
+              label="Ma'lumotlarni tahrirlash"
+              colorScheme="blue"
+              onClick={() => {
+                setEditFirst(hodim?.data?.first_name || "")
+                setEditLast(hodim?.data?.last_name || "")
+                setEditPhone(hodim?.data?.phoneNumber || "")
+                openEdit()
+              }} />
+            <Divider borderColor="border" />
             <ActionBtn
               icon={hodim?.data?.isActive ? Lock : LockOpen}
               label={hodim?.data?.isActive ? "Bloklash" : "Faollashtirish"}
               colorScheme={hodim?.data?.isActive ? "red" : "green"}
               onClick={openBlock}
             />
-            <Divider borderColor="whiteAlpha.100" />
-            <ActionBtn
-              icon={hasAddress ? MapPinOff : MapPin}
-              label={hasAddress ? "Manzilni o'zgartirish" : "Manzil biriktirish"}
-              colorScheme="blue"
-              onClick={hasAddress ? openRemove : openAddress}
-            />
-            <Divider borderColor="whiteAlpha.100" />
+            <Divider borderColor="border" />
             <ActionBtn
               icon={KeyRound}
               label="Parolni o'zgartirish"
@@ -266,7 +285,7 @@ export default function HodimDetail() {
       {/* BLOKLASH */}
       <Modal isOpen={isBlockOpen} onClose={closeBlock} isCentered size="sm">
         <ModalOverlay bg="blackAlpha.700" backdropFilter="blur(4px)" />
-        <ModalContent border="1px solid" borderColor="whiteAlpha.200" borderRadius="16px">
+        <ModalContent border="1px solid" borderColor="border" borderRadius="16px">
           <ModalHeader>
             {hodim?.data?.isActive ? "Hodimni bloklash" : "Hodimni faollashtirish"}
           </ModalHeader>
@@ -284,7 +303,7 @@ export default function HodimDetail() {
             </Button>
             <Button flex={1} size="sm"
               bg={hodim?.data?.isActive ? "red.500" : "green.500"}
-              color="white"
+              color="text"
               isLoading={btnLoading}
               onClick={handleBlock}>
               {hodim?.data?.isActive ? "Bloklash" : "Faollashtirish"}
@@ -296,20 +315,20 @@ export default function HodimDetail() {
       {/* MANZIL O'CHIRISH */}
       <Modal isOpen={isRemoveOpen} onClose={closeRemove} isCentered size="sm">
         <ModalOverlay bg="blackAlpha.700" backdropFilter="blur(4px)" />
-        <ModalContent border="1px solid" borderColor="whiteAlpha.200" borderRadius="16px">
+        <ModalContent border="1px solid" borderColor="border" borderRadius="16px">
           <ModalHeader fontSize="15px" fontWeight="600" color="text">
             Manzilni o'chirish
           </ModalHeader>
           <ModalBody>
             <Text fontSize="13px" color="gray.400">
-              <b>{district}</b> — {neighborhood} manzili o'chiriladi.
+              <b>{removeAddress?.district}</b> — {removeAddress?.neighborhood} manzili o'chiriladi.
             </Text>
           </ModalBody>
           <ModalFooter gap={2} pt={2}>
             <Button flex={1} variant="ghost" size="sm" color="gray.500" onClick={closeRemove}>
               Bekor
             </Button>
-            <Button flex={1} size="sm" bg="red.500" color="white"
+            <Button flex={1} size="sm" bg="red.500" color="text"
               isLoading={btnLoading} onClick={handleRemove}>
               O'chirish
             </Button>
@@ -320,14 +339,14 @@ export default function HodimDetail() {
       {/* MANZIL BIRIKTIRISH */}
       <Modal isOpen={isAddressOpen} onClose={closeAddress} isCentered size="sm">
         <ModalOverlay bg="blackAlpha.700" backdropFilter="blur(4px)" />
-        <ModalContent border="1px solid" borderColor="whiteAlpha.200" borderRadius="16px">
+        <ModalContent border="1px solid" borderColor="border" borderRadius="16px">
           <ModalHeader fontSize="15px" fontWeight="600" color="text">
             Manzil biriktirish
           </ModalHeader>
           <ModalBody display="flex" flexDir="column" gap={3}>
             <Select value={modalHudud}
               onChange={e => { setModalHudud(e.target.value); setModalMahalla("") }}
-              bg="whiteAlpha.50" border="1px solid" borderColor="whiteAlpha.200"
+              bg="whiteAlpha.50" border="1px solid" borderColor="border"
               fontSize="13px" size="sm" borderRadius="8px">
               <option value="">Hudud tanlang</option>
               {HUDUDLAR.map(h => <option key={h} value={h}>{h}</option>)}
@@ -335,7 +354,7 @@ export default function HodimDetail() {
             <Select value={modalMahalla}
               onChange={e => setModalMahalla(e.target.value)}
               isDisabled={!modalHudud}
-              bg="whiteAlpha.50" border="1px solid" borderColor="whiteAlpha.200"
+              bg="whiteAlpha.50" border="1px solid" borderColor="border"
               fontSize="13px" size="sm" borderRadius="8px">
               <option value="">Mahalla tanlang</option>
               {modalMahallalar.map(m => <option key={m} value={m}>{m}</option>)}
@@ -345,7 +364,7 @@ export default function HodimDetail() {
             <Button flex={1} variant="ghost" size="sm" color="gray.500" onClick={closeAddress}>
               Bekor
             </Button>
-            <Button flex={1} size="sm" bg="blue.500" color="white"
+            <Button flex={1} size="sm" bg="blue.500" color="text"
               isDisabled={!modalHudud || !modalMahalla}
               isLoading={btnLoading} onClick={handleAssign}>
               Saqlash
@@ -357,31 +376,47 @@ export default function HodimDetail() {
       {/* PAROL */}
       <Modal isOpen={isPasswordOpen} onClose={closePassword} isCentered size="sm">
         <ModalOverlay bg="blackAlpha.700" backdropFilter="blur(4px)" />
-        <ModalContent border="1px solid" borderColor="whiteAlpha.200" borderRadius="16px">
+        <ModalContent border="1px solid" borderColor="border" borderRadius="16px">
           <ModalHeader fontSize="15px" fontWeight="600" color="text">
             Parolni o'zgartirish
           </ModalHeader>
           <ModalBody display="flex" flexDir="column" gap={3}>
-            <Input
-              type="password"
-              placeholder="Yangi parol (min 8 belgi)"
-              value={newPassword}
-              onChange={e => setNewPassword(e.target.value)}
-              bg="whiteAlpha.50" border="1px solid"
-              borderColor="whiteAlpha.200" fontSize="13px"
-              size="sm" borderRadius="8px"
-              _focus={{ borderColor: "blue.500" }}
-            />
-            <Input
-              type="password"
-              placeholder="Parolni tasdiqlang"
-              value={confirmPassword}
-              onChange={e => setConfirmPassword(e.target.value)}
-              bg="whiteAlpha.50" border="1px solid"
-              borderColor="whiteAlpha.200" fontSize="13px"
-              size="sm" borderRadius="8px"
-              _focus={{ borderColor: "blue.500" }}
-            />
+            <Flex align="center" position="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                placeholder="Yangi parol (min 8 belgi)"
+                value={newPassword}
+                onChange={e => setNewPassword(e.target.value)}
+                bg="whiteAlpha.50" border="1px solid"
+                borderColor="border" fontSize="13px"
+                size="sm" borderRadius="8px"
+                pr="36px"
+                _focus={{ borderColor: "blue.500" }}
+              />
+              <Box position="absolute" right={3} cursor="pointer"
+                color="gray.500" onClick={() => setShowPassword(p => !p)}>
+                <Icon as={showPassword ? EyeOff : Eye} boxSize={4} />
+              </Box>
+            </Flex>
+
+            <Flex align="center" position="relative">
+              <Input
+                type={showConfirm ? "text" : "password"}
+                placeholder="Parolni tasdiqlang"
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                bg="whiteAlpha.50" border="1px solid"
+                borderColor="border" fontSize="13px"
+                size="sm" borderRadius="8px"
+                pr="36px"
+                _focus={{ borderColor: "blue.500" }}
+              />
+              <Box position="absolute" right={3} cursor="pointer"
+                color="gray.500" onClick={() => setShowConfirm(p => !p)}>
+                <Icon as={showConfirm ? EyeOff : Eye} boxSize={4} />
+              </Box>
+            </Flex>
+
             {confirmPassword && newPassword !== confirmPassword && (
               <Text fontSize="11px" color="red.400">Parollar mos emas</Text>
             )}
@@ -390,9 +425,59 @@ export default function HodimDetail() {
             <Button flex={1} variant="ghost" size="sm" color="gray.500" onClick={closePassword}>
               Bekor
             </Button>
-            <Button flex={1} size="sm" bg="blue.500" color="white"
+            <Button flex={1} size="sm" bg="blue.500" color="text"
               isDisabled={newPassword.length < 8 || newPassword !== confirmPassword}
               isLoading={btnLoading} onClick={handlePassword}>
+              Saqlash
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      {/* TAHRIRLASH MODAL */}
+      <Modal isOpen={isEditOpen} onClose={closeEdit} isCentered size="sm">
+        <ModalOverlay bg="blackAlpha.700" backdropFilter="blur(4px)" />
+        <ModalContent border="1px solid" borderColor="border" borderRadius="16px">
+          <ModalHeader fontSize="15px" fontWeight="600" color="text">
+            Ma'lumotlarni tahrirlash
+          </ModalHeader>
+          <ModalBody display="flex" flexDir="column" gap={3}>
+            <Input
+              placeholder="Ism"
+              value={editFirst}
+              onChange={e => setEditFirst(e.target.value)}
+              bg="whiteAlpha.50" border="1px solid"
+              borderColor="border" fontSize="13px"
+              size="sm" borderRadius="8px"
+              _focus={{ borderColor: "blue.500" }}
+            />
+            <Input
+              placeholder="Familiya"
+              value={editLast}
+              onChange={e => setEditLast(e.target.value)}
+              bg="whiteAlpha.50" border="1px solid"
+              borderColor="border" fontSize="13px"
+              size="sm" borderRadius="8px"
+              _focus={{ borderColor: "blue.500" }}
+            />
+            <Input
+              placeholder="Telefon (+998...)"
+              value={editPhone}
+              onChange={e => setEditPhone(e.target.value)}
+              bg="whiteAlpha.50" border="1px solid"
+              borderColor="border" fontSize="13px"
+              size="sm" borderRadius="8px"
+              _focus={{ borderColor: "blue.500" }}
+            />
+          </ModalBody>
+          <ModalFooter gap={2} pt={2}>
+            <Button flex={1} variant="ghost" size="sm" color="gray.500" onClick={closeEdit}>
+              Bekor
+            </Button>
+            <Button flex={1} size="sm" bg="blue.500" color="text"
+              isDisabled={!editFirst || !editLast || !editPhone}
+              isLoading={btnLoading}
+              onClick={handleEdit}>
               Saqlash
             </Button>
           </ModalFooter>

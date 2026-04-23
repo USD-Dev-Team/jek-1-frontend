@@ -91,7 +91,7 @@ export default function Login() {
           first_name: data.first_name,
           last_name: data.last_name,
           district: data?.addresses?.[0]?.district || '',
-         neighborhood: data?.addresses?.[0]?.neighborhood || "",
+          neighborhood: data?.addresses?.[0]?.neighborhood || "",
         });
 
         //  ROLE BO‘YICHA REDIRECT
@@ -102,7 +102,7 @@ export default function Login() {
           navigate("/hokim/dashboard");
           toastService.success("Government panelga xush kelibsiz");
         } else if (data.role === "INSPECTION") {
-        
+
           navigate("/inseksiya/dashboard");
           toastService.success("Inseksiya panelga xush kelibsiz");
         } else {
@@ -110,12 +110,12 @@ export default function Login() {
           //   navigate("/warehouse");
           //   toastService.success("Warehouse panelga xush kelibsiz");
           // } else {
-      
+
           toastService.error("Role mos kelmadi");
         }
       } else {
         toastService.error(res?.data?.message || "Login xato");
-  
+
 
       }
     } catch (err) {
@@ -179,7 +179,7 @@ export default function Login() {
         <FormControl mb={4} isInvalid={!!errors.login}>
           <FormLabel>{t("auth.login.phone")}</FormLabel>
           <Input
-             defaultValue={"+998"}
+            defaultValue={"+998"}
             type="text"
             placeholder={t("auth.login.phone_placeholder")}
             ref={logInput}
