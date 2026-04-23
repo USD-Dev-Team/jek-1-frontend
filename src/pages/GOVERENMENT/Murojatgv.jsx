@@ -189,7 +189,7 @@ export default function Murojat() {
   };
   return (
     <Box bg="bg" minH="100vh" p={6}>
-      <Heading fontSize={25}>{t("inspection.title")}</Heading>
+      <Heading fontSize={25}>{t("Hokim murojat")}</Heading>
 
       {/* FILTER */}
       <Box mb={6} mt={6}>
@@ -287,6 +287,7 @@ export default function Murojat() {
               <Th>{t("inspection.duration")}</Th>
               <Th>{t("inspection.status_label")}</Th>
               <Th textAlign="center">{t("inspection.action")}</Th>
+
             </Tr>
           </Thead>
 
@@ -348,7 +349,7 @@ export default function Murojat() {
                         <Button
                           size="sm"
                           onClick={() => {
-                             navigate(`/murojat/${item.id}`)
+                             navigate(`${item.id}`)
                           }}
                         >
                           {t("inspection.view")}
@@ -392,6 +393,7 @@ export default function Murojat() {
           <ModalHeader borderBottom="1px solid" borderColor="gray.200">
             {t("inspection.modal.title")}
           </ModalHeader>
+
 
           <ModalBody py={4}>
             <VStack align="stretch" spacing={3}>

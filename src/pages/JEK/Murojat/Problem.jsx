@@ -40,10 +40,10 @@ const STATUS_BORDER = {
 function Field({ label, value, t }) {
   return (
     <Box mb={5}>
-      <Text fontSize="xs" color="gray.400" mb={1}>
+      <Text fontSize="xs" color="textSecondary" mb={1}>
         {label}
       </Text>
-      <Text fontSize="sm" fontWeight="500" color="white">
+      <Text fontSize="sm" fontWeight="500" color="textSecondary">
         {value || t("problem.no_data")}
       </Text>
     </Box>
@@ -53,7 +53,7 @@ function Field({ label, value, t }) {
 function PhotoGrid({ photos, onOpen, t }) {
   if (!photos?.length) {
     return (
-      <Text fontSize="sm" color="gray.500">
+      <Text fontSize="sm" color="textSecondary">
         {t("problem.no_image")}
       </Text>
     );
@@ -63,8 +63,8 @@ function PhotoGrid({ photos, onOpen, t }) {
     photos.length === 1
       ? "1fr"
       : photos.length === 2
-      ? "1fr 1fr"
-      : "repeat(3, 1fr)";
+        ? "1fr 1fr"
+        : "repeat(3, 1fr)";
 
   const h = photos.length === 1 ? "260px" : "160px";
 
@@ -92,7 +92,7 @@ function PhotoGrid({ photos, onOpen, t }) {
   );
 }
 
-export default function Problem() {
+export default function Problem({ role = "ins" }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -163,7 +163,7 @@ export default function Problem() {
   if (loading && !data) {
     return (
       <Flex minH="300px" align="center" justify="center">
-        <Spinner size="lg" color="blue.400" />
+        <Spinner size="lg" color="primary" />
       </Flex>
     );
   }
@@ -189,29 +189,27 @@ export default function Problem() {
 
       {/* HEADER */}
       <Flex mt={6} justify="space-between" align="center" mb={6}>
-        <Button variant="outline" onClick={() => navigate(-1)}>
+        <Button variant="outlinePrimary" onClick={() => navigate(-1)}>
           {t("problem.back")}
         </Button>
 
-        <Flex gap={3}>
-          {data.status === "PENDING" && (
-            <Button onClick={onOpenStart}>
-              {t("problem.start")}
-            </Button>
-          )}
+        {role === "jek" && (
+          <Flex gap={3}>
+            {data.status === "PENDING" && (
+              <Button onClick={onOpenStart}>{t("problem.start")}</Button>
+            )}
 
-          {data.status === "REJECTED" && (
-            <Button onClick={onOpenStart}>
-              {t("problem.restart")}
-            </Button>
-          )}
+            {data.status === "REJECTED" && (
+              <Button onClick={onOpenStart}>{t("problem.restart")}</Button>
+            )}
 
-          {data.status === "IN_PROGRESS" && (
-            <Button colorScheme="green" onClick={onOpenFinish}>
-              {t("problem.finish")}
-            </Button>
-          )}
-        </Flex>
+            {data.status === "IN_PROGRESS" && (
+              <Button variant={"solidPrimary"} onClick={onOpenFinish}>
+                {t("problem.finish")}
+              </Button>
+            )}
+          </Flex>
+        )}
       </Flex>
 
       {/* CARD */}
@@ -220,7 +218,9 @@ export default function Problem() {
         borderRadius="xl"
         borderTop="4px solid"
         borderTopColor={STATUS_BORDER[data.status]}
-        bg="gray.800"
+        bg="surface"
+        border="1px solid"
+        borderColor="border"
       >
         <Badge colorScheme={STATUS_COLORS[data.status]} mb={6}>
           {data.status}
@@ -228,7 +228,11 @@ export default function Problem() {
 
         <Box display="grid" gridTemplateColumns="400px 1fr">
           <Box>
-            <Field t={t} label={t("problem.client")} value={data.user?.full_name} />
+            <Field
+              t={t}
+              label={t("problem.client")}
+              value={data.user?.full_name}
+            />
 
             <Field
               t={t}
@@ -256,15 +260,11 @@ export default function Problem() {
           </Box>
 
           <Box>
-            <Text fontSize="xs" color="gray.400" mb={3}>
+            <Text fontSize="xs" color={"textSecondary"} mb={3}>
               {t("problem.images")}
             </Text>
 
-            <PhotoGrid
-              photos={data.requestPhotos}
-              onOpen={openImage}
-              t={t}
-            />
+            <PhotoGrid photos={data.requestPhotos} onOpen={openImage} t={t} />
           </Box>
         </Box>
 
@@ -275,33 +275,43 @@ export default function Problem() {
       </Box>
 
       {/* CHAT */}
-      <Box mt={8}>
-        <Text fontSize="sm" color="gray.400" mb={3}>
-          {t("problem.history")}
-        </Text>
 
-        <Flex direction="column" gap={3}>
-          {chatData.map((msg, index) => (
-            <Flex
-              key={index}
-              justify={msg.role === "USER" ? "flex-end" : "flex-start"}
-            >
-              <Box
-                maxW="60%"
-                px={4}
-                py={2}
-                borderRadius="lg"
-                bg={msg.role === "USER" ? "blue.500" : "gray.700"}
-              >
-                <Text fontSize="sm">{msg.note}</Text>
-                <Text fontSize="10px" mt={1}>
-                  {new Date(msg.createdAt).toLocaleString("uz-UZ")}
-                </Text>
-              </Box>
-            </Flex>
-          ))}
+
+     
+  <Box mt={8}>
+  <Text fontSize="sm" color="textSecondary" mb={3}>
+    {t("problem.history")}
+  </Text>
+
+  {chatData.length === 0 ? (
+    <Text fontSize="sm" color="textSecondary">
+      {t("problem.no_data")}
+    </Text>
+  ) : (
+    <Flex direction="column" gap={3}>
+      {chatData.map((msg, index) => (
+        <Flex
+          key={index}
+          justify={msg.role === "USER" ? "flex-end" : "flex-start"}
+        >
+          <Box
+            maxW="60%"
+            px={4}
+            py={2}
+            borderRadius="lg"
+            bg={msg.role === "USER" ? "primary" : "mutedBg"}
+            color={msg.role === "USER" ? "white" : "text"}
+          >
+            <Text fontSize="sm">{msg.note}</Text>
+            <Text fontSize="10px" mt={1}>
+              {new Date(msg.createdAt).toLocaleString("uz-UZ")}
+            </Text>
+          </Box>
         </Flex>
-      </Box>
+      ))}
+    </Flex>
+  )}
+</Box>
 
       {/* MODALS */}
       <Modal isOpen={isStartOpen} onClose={onCloseStart} isCentered>
