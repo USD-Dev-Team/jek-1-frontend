@@ -140,7 +140,7 @@ const limit = meta?.limit ?? 10;
 
   const fetchHodimlar = async () => {
     try {
-      const res = await Requests.getEmploye({role:"JEK",   page});
+      const res = await Requests.getEmploye({role:["JEK", "INSPECTION"],   page});
       const mapped = res.data.data.map((i) => ({
         id: i.id,
         ism: i.first_name,
@@ -376,8 +376,8 @@ const jamiCount = meta.total || 0;
                 "Hudud",
                 "Holat",
                 "Bajarilgan",
-                "Sana",
-                "Aktiv/Nofaol",
+
+        
                 "",
               ].map((h, i) => (
                 <Th
@@ -465,21 +465,10 @@ const jamiCount = meta.total || 0;
                     <MiniBar value={h.bajarilgan} />
                   </Td>
 
-                  {/* Sana */}
-                  <Td px={4} py={3}>
-                    <Text fontSize="12px" color="gray.500">
-                      {h.sana}
-                    </Text>
-                  </Td>
 
-                  {/* Toggle */}
-                  <Td px={4} py={3}>
-                    <Switch
-                      isChecked={h.aktiv}
-                      colorScheme="green"
-                      onChange={() => handleToggleClick(h)}
-                    />
-                  </Td>
+
+
+               
 
                   {/* Expand */}
                   <Td px={4} py={3}>
@@ -647,87 +636,8 @@ const jamiCount = meta.total || 0;
   </Button>
 </Flex>
 
-      {/* TASDIQLASH MODAL */}
-      <Modal isOpen={isModalOpen} onClose={closeModal} isCentered size="sm">
-        <ModalOverlay bg="blackAlpha.700" backdropFilter="blur(4px)" />
-        <ModalContent
-          bg="gray.900"
-          border="1px solid"
-          borderColor="whiteAlpha.200"
-          borderRadius="16px"
-        >
-          <ModalHeader pb={0}>
-            <Flex align="center" gap={3}>
-              <Box
-                w="48px"
-                h="48px"
-                borderRadius="14px"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                fontSize="22px"
-                bg={pendingToggle?.aktiv ? "red.900" : "green.900"}
-              >
-                {pendingToggle?.aktiv ? "🔒" : "🔓"}
-              </Box>
-              <Text fontSize="16px" fontWeight="600" color="white">
-                {pendingToggle?.aktiv
-                  ? t("hodim.modal.disable_title")
-                  : t("hodim.modal.enable_title")}
-              </Text>
-            </Flex>
-          </ModalHeader>
-          <ModalBody py={4}>
-            <Text fontSize="13px" color="gray.400" mb={4} lineHeight="1.6">
-              {pendingToggle?.aktiv
-                ? t("hodim.modal.disable_text")
-                : t("hodim.modal.enable_text")}
-            </Text>
-            <Flex
-              align="center"
-              gap={3}
-              bg="whiteAlpha.100"
-              borderRadius="10px"
-              p={3}
-            >
-              <Avatar
-                size="sm"
-                name={pendingToggle?.ism}
-                borderRadius="10px"
-                getInitials={() => pendingToggle?.initials}
-              />
-              <Box>
-                <Text fontSize="14px" fontWeight="500" color="white">
-                  {pendingToggle?.ism}
-                </Text>
-                <Text fontSize="12px" color="gray.500">
-                  {pendingToggle?.hudud}
-                </Text>
-              </Box>
-            </Flex>
-          </ModalBody>
-          <ModalFooter gap={3} pt={0}>
-            <Button
-              flex={1}
-              variant="ghost"
-              color="gray.400"
-              _hover={{ bg: "whiteAlpha.100" }}
-              onClick={closeModal}
-            >
-              {t("hodim.bekorqilish")}
-            </Button>
-            <Button
-              flex={1}
-              bg={pendingToggle?.aktiv ? "red.500" : "green.500"}
-              color="white"
-              _hover={{ opacity: 0.85 }}
-              onClick={confirmToggle}
-            >
-              {pendingToggle?.aktiv ? "Nofaol qilish" : "Faollashtirish"}
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+
+     
     </Box>
   );
 }

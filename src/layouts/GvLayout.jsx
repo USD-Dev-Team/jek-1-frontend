@@ -17,17 +17,23 @@ export default function GvLayout() {
     //   end: true
     // },
     {
-      label: t("jek.sidebar.murojat"),
+      label: t("jek.sidebar.dashboard"),
       to: "/hokim/dashboard",
       icon: MessageCircle,
       end: true
     },
-    // {
-    //   label: t("jek.sidebar.hodimlar"),
-    //   to: "/hokimyat/hodimlar",
-    //   icon: Users,
-    //   end: true
-    // }
+    {
+      label: t("jek.sidebar.murojat"),
+      to: "/hokim/murojat",
+      icon: MessageCircle,
+      end: true
+    },
+    {
+      label: t("jek.sidebar.hodimlar"),
+      to: "/hokim/hodimlar",
+      icon: Users,
+      end: true
+    }
 
   ];
 

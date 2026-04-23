@@ -118,6 +118,7 @@ export default function Murojat() {
     status: "" || null,
     search: "",
   });
+  
 
   const getData = async (text) => {
     try {
@@ -218,7 +219,7 @@ export default function Murojat() {
     search: "",
   });
 
-  setPage(1); // pagination ham reset
+  setPage(1); 
 };
 
   return (
@@ -306,7 +307,7 @@ export default function Murojat() {
           <Tbody>
             {loading ? (
               <TableSkeleton rows={5} columns={6} />
-            ) : data.length === 0 ? (
+            ) : filteredData.length === 0 ? (
               <Tr>
                 <Td colSpan={6} textAlign="center" py={10} color="gray.500">
                   <Text  fontSize="lg" mb={2}>
@@ -392,7 +393,7 @@ export default function Murojat() {
       </Box>
 
       {/*  PAGINATION */}
-{meta?.totalPages > 1 && (
+{meta?.totalPages > 1 && filteredData.length > 0 && (
   <Flex mt={6} justify="center" align="center" gap={2}>
     <Button
       size="sm"

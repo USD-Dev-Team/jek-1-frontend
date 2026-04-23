@@ -10,6 +10,12 @@ export default function InLayout() {
   const { collapsed } = useUIStore();
 
   const links = [
+
+     {
+      label: "Boshqaruv paneli",
+      to: "/inseksiya/dashboard",
+      icon: EqualApproximatelyIcon,
+    },
    
     {
       label: t("jek.sidebar.murojat"),
@@ -21,11 +27,7 @@ export default function InLayout() {
       to: "/inseksiya/hodim",
       icon: User2Icon,
     },
-     {
-      label: "Boshqaruv paneli",
-      to: "/inseksiya/dashboard",
-      icon: EqualApproximatelyIcon,
-    },
+    
   ];
 
   return (

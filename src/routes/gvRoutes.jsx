@@ -1,6 +1,10 @@
 
 import DashboardGv from "../pages/GOVERENMENT/DashboardGv";
-import MurojatGv from "../pages/GOVERENMENT/DashboardGv";
+import Hodimlari from "../pages/GOVERENMENT/HodimlarGv";
+import MurojatGv from "../pages/GOVERENMENT/MurojatGv";
+
+import Problem from "../pages/JEK/Murojat/Problem";
+
 
 const gvRoute = [
     // {
@@ -13,11 +17,24 @@ const gvRoute = [
         path:'dashboard',
         element:<DashboardGv />
     },
-    // {
-    //     name:"Jek Hodimlari",
-    //     path:'hodimlar',
-    //     element:<Hodimlar />
-    // },
+    {
+        name:"Murojat",
+        path:'murojat',
+        element:<MurojatGv />
+    },
+
+
+    {
+        name:"Problem",
+        path:'murojat/:id',
+        element:<Problem role="gv" />
+    },
+
+    {
+        name:"Jek Hodimlari",
+        path:'hodimlar',
+        element:<Hodimlari />
+    },
     
 ];
 export default gvRoute

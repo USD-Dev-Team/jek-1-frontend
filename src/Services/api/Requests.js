@@ -2,8 +2,8 @@ import axios from "axios";
 import { $api, BASE_URL } from "../parametres/axios";
 
 class Requests {
-  static changePassword = async (password, passwordConfirm) => {
-    const response = await $api.patch(`${BASE_URL}/admins/change/password`, {
+static changePassword = async (id, password, passwordConfirm) => {
+    const response = await $api.patch(`${BASE_URL}/admins/change/password/${id}`, {
       password,
       passwordConfirm
     })

@@ -25,7 +25,7 @@ const jekRoute = [
     {
         name:"Problem",
         path:`murojat/:id`,
-        element:<Problem />
+        element:<Problem role={'jek'}/>
     },
     
 ];

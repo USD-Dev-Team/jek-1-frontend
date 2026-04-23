@@ -15,12 +15,15 @@ import gvRoute from './routes/gvRoutes'
 import InLayout from './layouts/InLayout'
 import inRoute from './routes/inRoute'
 import RequireAuth from './auth/RequireAuth'
+import Problem from './pages/JEK/Murojat/Problem'
 
 function App() {
   return (
     <>
       <Routes>
         <Route path='/register' element={<Register /> } />
+
+
 
        <Route path="/" element={<Navigate to="/login" />} />
        <Route path='/login' element={<Login />} />
