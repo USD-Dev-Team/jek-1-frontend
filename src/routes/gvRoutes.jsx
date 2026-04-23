@@ -2,6 +2,8 @@
 import DashboardGv from "../pages/GOVERENMENT/DashboardGv";
 import Hodimlari from "../pages/GOVERENMENT/HodimlarGv";
 import MurojatGv from "../pages/GOVERENMENT/MurojatGv";
+import Hodimlariinseksiya from "../pages/INSEKSIYA/HodimlarInseksiya";
+
 
 import Problem from "../pages/JEK/Murojat/Problem";
 
@@ -32,8 +34,13 @@ const gvRoute = [
 
     {
         name:"Jek Hodimlari",
-        path:'hodimlar',
+        path:'jek/hodimlar',
         element:<Hodimlari />
+    },
+    {
+        name:"Inseksiya Hodimlari",
+        path:'inseksiya/hodimlar',
+        element:<Hodimlariinseksiya />
     },
     
 ];
