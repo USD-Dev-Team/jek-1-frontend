@@ -1,98 +1,8 @@
-import React, { useState, useEffect, Fragment } from "react";
-import { Avatar, Badge, Box, Button, Circle, Collapse, Flex, Icon, IconButton, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Switch, Table, Tbody, Td, Text, Th, Thead, Tr, useDisclosure, } from "@chakra-ui/react";
-import { ChevronDown, ChevronUp, Pen, PenOff, Search, Trash2, Users } from "lucide-react";
+import React, { useState, useEffect,} from "react";
+import { Avatar, Badge, Box, Button, Circle, Flex, Icon, IconButton, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Switch, Table, Tbody, Td, Text, Th, Thead, Tr, useDisclosure, } from "@chakra-ui/react";
+import { Pen, PenOff, Search, Trash2, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import destination from "../../constants/mahallas.json";
-
-function EffRing({ value, color, t }) {
-  const r = 32;
-  const circ = 2 * Math.PI * r;
-  const offset = circ - (value / 100) * circ;
-  const colors = {
-    blue: "#3b82f6",
-    green: "#10b981",
-    purple: "#8b5cf6",
-    amber: "#f59e0b",
-    red: "#ef4444",
-    gray: "#6b7280",
-  };
-  const textColors = {
-    blue: "blue.300",
-    green: "green.300",
-    purple: "purple.300",
-    amber: "#FF7E00",
-    red: "red.300",
-    gray: "gray.400",
-  };
-  return (
-    <Flex direction="column" align="center" justify="center" gap={1}>
-      <Box position="relative" w="80px" h="80px">
-        <svg width="80" height="80" viewBox="0 0 80 80">
-          <circle
-            cx="40"
-            cy="40"
-            r={r}
-            fill="none"
-            stroke="rgba(255,255,255,0.06)"
-            strokeWidth="7"
-          />
-          <circle
-            cx="40"
-            cy="40"
-            r={r}
-            fill="none"
-            stroke={colors[color] || "#3b82f6"}
-            strokeWidth="7"
-            strokeDasharray={circ}
-            strokeDashoffset={offset}
-            strokeLinecap="round"
-            transform="rotate(-90 40 40)"
-          />
-        </svg>
-        <Flex position="absolute" inset="0" align="center" justify="center">
-          <Text
-            fontFamily="mono"
-            fontSize="14px"
-            fontWeight="700"
-            color={textColors[color]}
-          >
-            {value}%
-          </Text>
-        </Flex>
-      </Box>
-      <Text fontSize="10px" color="gray.500">
-        {t("hodim.hodim.hodim.bajarilgan")} / {t("hodim.hodim.hodim.jami")}
-      </Text>
-    </Flex>
-  );
-}
-
-function MiniBar({ value, max = 142 }) {
-  const pct = Math.round((value / max) * 100);
-  return (
-    <Flex align="center" gap={2}>
-      <Text
-        fontFamily="mono"
-        fontSize="13px"
-        fontWeight="600"
-        color="green.400"
-        minW="36px"
-      >
-        {value}
-      </Text>
-      <Box
-        w="48px"
-        h="4px"
-        borderRadius="2px"
-        bg="whiteAlpha.100"
-        overflow="hidden"
-      >
-        <Box h="100%" w={`${pct}%`} bg="green.500" borderRadius="2px" />
-      </Box>
-    </Flex>
-  );
-}
-
 import { Requests } from "../../Services/api/Requests";
 import { toastService } from "../../utils/toast";
 import { useNavigate } from "react-router";
@@ -117,9 +27,7 @@ export default function Hodimlari() {
   const [modalMahalla, setModalMahalla] = useState("")
   const modalMahallalar = modalHudud ? destination?.uz?.mahallas?.[modalHudud] || [] : []
   const [hodimlar, setHodimlar] = useState([]);
-  const [infod, setIinfod] = useState([]);
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(false);
   const [hudud, setHudud] = useState("");
   const [mahalla, setMahalla] = useState("");
   const HUDUDLAR = destination.uz.addresses;
@@ -134,7 +42,6 @@ export default function Hodimlari() {
 
   const [search, setSearch] = useState("");
   const [holat, setHolat] = useState("");
-  const [expandedId, setExpandedId] = useState(null);
   const [pendingToggle, setPendingToggle] = useState(null);
 
   const filtered = hodimlar.filter((h) => {
@@ -191,15 +98,11 @@ export default function Hodimlari() {
   }
   const removeAddress = async () => {
     setRemoveLoading(true)
-    console.log("jek_id:", removeHodim.id)
-    console.log("addressId:", removeHodim.addressId)
     try {
       const res = await Requests.removeAddress(removeHodim.id, removeHodim.addressId)
       toastService.success(res.data.message)
       fetchHodimlar()
       closeRemove()
-    } catch (e) {
-      toastService.error("Xatolik yuz berdi")
     } finally {
       setRemoveLoading(false)
     }
@@ -229,20 +132,6 @@ export default function Hodimlari() {
       toastService.success(res.data.message);
     } finally {
       toastService.error(res.data.message);
-    }
-  };
-
-  function toggleExpand(id) {
-    setExpandedId((prev) => (prev === id ? null : id));
-  }
-
-  const hodimInfo = async (id) => {
-    setLoading(true);
-    try {
-      const resi = await Requests.getUserInfo(id);
-      setIinfod(resi?.data?.infod);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -564,93 +453,6 @@ export default function Hodimlari() {
                     >
                       Ko'rish →
                     </Button>
-                  </Td>
-                </Tr>
-
-                {/* EXPAND qatori */}
-                <Tr
-                  key={`exp-${h.id}`}
-                  borderBottom="1px solid"
-                  borderColor="whiteAlpha.100"
-                >
-                  <Td colSpan={8} p={0}>
-                    <Collapse in={expandedId === h.id} animateOpacity>
-                      <Flex gap={4} p={4} bg="blackAlpha.100">
-                        <Box
-                          gap={6}
-                          display={"flex"}
-                          alignItems={"center"}
-                          justifyContent={"space-between"}
-                          bg={"blackAlpha.400"}
-                          p={4}
-                          borderRadius={"20px"}
-                          w={"100%"}
-                        >
-                          <Flex
-                            alignItems={"center"}
-                            justifyContent={"start"}
-                            gap={2}
-                          >
-                            <Avatar
-                              size="md"
-                              name={`${h.ism} ${h.familiya}`}
-                              borderRadius="16px"
-                            />
-                            <Box>
-                              <Text
-                                fontSize="16px"
-                                fontWeight="600"
-                                color="text"
-                                mb={1}
-                              >
-                                {h.ism} {h.familiya}
-                              </Text>
-
-                              <Text fontSize="12px" color="text">
-                                {h.telefon}
-                              </Text>
-                            </Box>
-                          </Flex>
-                          <Flex gap={8} flexWrap="wrap">
-                            <Box>
-                              <Text fontSize="11px" color="text" mb={1}>
-                                {t('hodim.hodim.jadval.hudud')}
-                              </Text>
-                              <Text fontSize="13px" color="text">
-                                {h.hudud || "-"}
-                              </Text>
-                            </Box>
-
-                            <Box>
-                              <Text fontSize="11px" color="text" mb={1}>
-                                {t('hodim.hodim.jadval.mahalla')}
-                              </Text>
-                              <Text fontSize="13px" color="text">
-                                {h.mahalla || "-"}
-                              </Text>
-                            </Box>
-
-                            <Box>
-                              <Text fontSize="11px" color="text" mb={1}>
-                                {t('hodim.hodim.jadval.holat')}
-                              </Text>
-                              <Badge
-                                bg={h.aktiv ? "#1c4532b9" : "#63171Bb9"}
-                                color={h.aktiv ? "green.300" : "red.300"}
-                                borderRadius="20px"
-                                px={3}
-                                py={1}
-                                fontSize="11px"
-                              >
-                                ● {h.aktiv ? t('hodim.hodim.aktiv') : t('hodim.hodim.nofaol')}
-                              </Badge>
-                            </Box>
-
-                          </Flex>
-
-                        </Box>
-                      </Flex>
-                    </Collapse>
                   </Td>
                 </Tr>
               </React.Fragment>

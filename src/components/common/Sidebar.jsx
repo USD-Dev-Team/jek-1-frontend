@@ -44,7 +44,8 @@ export default function Sidebar({ links = [] }) {
   const { toggleColorMode } = useColorMode();
   const collapsed = useUIStore((s) => s.collapsed);
   const toggleSidebar = useUIStore((s) => s.toggleSidebar);
-  const { manzil } = useParams();
+  const manzil = Cookies.get("user_id")
+  const role = Cookies.get("role")
   const { logout } = useAuth();
   const { onOpen, onClose, isOpen } = useDisclosure();
 
@@ -169,8 +170,20 @@ export default function Sidebar({ links = [] }) {
             borderColor="border"
           >
             <Flex align="center" gap={2}>
-              <Avatar onClick={() => navigate(`/profile/${id}`)} size="sm" name={Cookies.get("first_name")} />
-
+              <Avatar
+                onClick={() => {
+                  if (role === "JEK") {
+                    navigate(`/jek/jekprofile/${manzil}`)
+                  } else if (role === "INSPECTION") {
+                    navigate(`/inseksiya/myprofile/${manzil}`)
+                  } else if (role === "GOVERNMENT") {
+                    navigate(`/hokim/profile/${manzil}`)
+                  }
+                }}
+                size="sm"
+                name={Cookies.get("first_name")}
+                cursor="pointer"
+              />
               {!collapsed && (
                 <Box>
                   <HStack fontSize="sm" fontWeight="600">

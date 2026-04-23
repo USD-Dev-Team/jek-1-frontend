@@ -8,7 +8,7 @@ import {
   Circle,
   Spinner,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CheckCircle, Clock, XCircle } from "lucide-react";
 import {
   LineChart,
@@ -25,16 +25,17 @@ import {
 
 import { Requests } from "../../Services/api/Requests";
 import manzil from "../../constants/mahallas.json";
+import { useTranslation } from "react-i18next";
 
 const months = [
-  "Yan","Fev","Mar","Apr","May","Iyn",
-  "Iyl","Avg","Sen","Okt","Noy","Dek"
+  "Yan", "Fev", "Mar", "Apr", "May", "Iyn",
+  "Iyl", "Avg", "Sen", "Okt", "Noy", "Dek"
 ];
 
-export default function DashboardGv() {
+export default function InspectionDashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(false);
-
+  const { t } = useTranslation();
   const [year, setYear] = useState(new Date().getFullYear());
   const [district, setDistrict] = useState("");
   const [neighborhood, setNeighborhood] = useState("");
@@ -59,17 +60,17 @@ export default function DashboardGv() {
   // 🥧 PIE DATA
   const pieData = [
     {
-      name: "Bajarilgan",
+      name: t("idashboard.idashboard.bajarilgan"),
       value: completed + jekCompleted,
       color: "#22C55E",
     },
     {
-      name: "Jarayonda",
+      name: t("idashboard.idashboard.jarayonda"),
       value: pending + inProgress,
       color: "#3B82F6",
     },
     {
-      name: "Rad etilgan",
+      name: t("idashboard.idashboard.rad_etilgan"),
       value: rejected,
       color: "#EF4444",
     },
@@ -79,7 +80,7 @@ export default function DashboardGv() {
   const tumanlar = manzil?.uz?.addresses || [];
   const mahallalar = manzil?.uz?.mahallas || {};
 
-  // FETCH
+  // 🚀 FETCH
   useEffect(() => {
     const getDashboard = async () => {
       setLoading(true);
@@ -100,6 +101,63 @@ export default function DashboardGv() {
     getDashboard();
   }, [year, district, neighborhood]);
 
+  function AnimatedCounter({ value, duration = 1200 }) {
+    const [count, setCount] = useState(0);
+    const start = useRef(null);
+
+    useEffect(() => {
+      let raf;
+      start.current = null;
+
+      const step = (timestamp) => {
+        if (!start.current) start.current = timestamp;
+
+        const progress = Math.min((timestamp - start.current) / duration, 1);
+        setCount(Math.floor(progress * value));
+
+        if (progress < 1) {
+          raf = requestAnimationFrame(step);
+        }
+      };
+
+      raf = requestAnimationFrame(step);
+
+      return () => cancelAnimationFrame(raf);
+    }, [value, duration]);
+
+    return <>{count}</>;
+  }
+
+  function StatCard({ label, value, icon, iconBg, iconColor, accent }) {
+    return (
+      <Box
+        bg="surface"
+        borderRadius="xl"
+        border="1px solid"
+        borderColor="border"
+        borderTop="3px solid"
+        borderTopColor={accent}
+        p={5}
+        _hover={{ transform: "translateY(-2px)", shadow: "md" }}
+        transition="all 0.2s"
+      >
+        <Flex justify="space-between" align="flex-start">
+          <Box>
+            <Text fontSize="sm" color="textSecondary" mb={1}>
+              {label}
+            </Text>
+            <Text fontSize="2xl" fontWeight="700" color="text">
+              <AnimatedCounter value={value} />
+            </Text>
+          </Box>
+          <Circle size="44px" bg={iconBg}>
+            <Icon as={icon} boxSize={5} color={iconColor} />
+          </Circle>
+        </Flex>
+      </Box>
+    );
+  }
+
   return (
     <Box p={6} bg="bg" minH="100vh">
 
@@ -110,10 +168,10 @@ export default function DashboardGv() {
         </Circle>
         <Box>
           <Text fontSize="xl" fontWeight="700">
-            Dashboard
+            {t("idashboard.idashboard.dashboard")}
           </Text>
           <Text fontSize="xs" color="textSecondary">
-            Hududiy murojaatlar umumiy holati
+            {t("idashboard.idashboard.hudundingiumumiyholati")}
           </Text>
         </Box>
       </Flex>
@@ -121,7 +179,7 @@ export default function DashboardGv() {
       {/* 🎯 FILTER */}
       <Grid templateColumns="repeat(3, 1fr)" gap={4} mb={6}>
         <Box>
-          <Text fontSize="sm">Yil</Text>
+          <Text fontSize="sm">{t("idashboard.idashboard.yil")}</Text>
           <Select
             value={year}
             onChange={(e) => setYear(Number(e.target.value))}
@@ -135,7 +193,7 @@ export default function DashboardGv() {
         </Box>
 
         <Box>
-          <Text fontSize="sm">Tuman</Text>
+          <Text fontSize="sm">{t("idashboard.idashboard.tuman")}</Text>
           <Select
             value={district}
             onChange={(e) => {
@@ -145,7 +203,7 @@ export default function DashboardGv() {
             bg="surface"
             borderColor="border"
           >
-            <option value="">Barchasi</option>
+            <option value="">{t("idashboard.idashboard.barchasi")}</option>
             {tumanlar.map((t) => (
               <option key={t} value={t}>{t}</option>
             ))}
@@ -153,7 +211,7 @@ export default function DashboardGv() {
         </Box>
 
         <Box>
-          <Text fontSize="sm">Mahalla</Text>
+          <Text fontSize="sm">{t("idashboard.idashboard.mahalla")}</Text>
           <Select
             value={neighborhood}
             onChange={(e) => setNeighborhood(e.target.value)}
@@ -161,7 +219,7 @@ export default function DashboardGv() {
             bg="surface"
             borderColor="border"
           >
-            <option value="">Barchasi</option>
+            <option value="">{t("idashboard.idashboard.barchasi")}</option>
             {mahallalar[district]?.map((m) => (
               <option key={m} value={m}>{m}</option>
             ))}
@@ -178,14 +236,37 @@ export default function DashboardGv() {
         <>
           {/* 📊 STATS */}
           <Grid templateColumns="repeat(3, 1fr)" gap={4} mb={6}>
-            <Stat title="Bajarilgan" value={completed + jekCompleted} icon={CheckCircle} color="success" />
-            <Stat title="Jarayonda" value={pending + inProgress} icon={Clock} color="warning" />
-            <Stat title="Rad etilgan" value={rejected} icon={XCircle} color="danger" />
+            <StatCard
+              label={t("idashboard.idashboard.bajarilgan")}
+              value={(completed || 0) + (jekCompleted || 0)}
+              icon={CheckCircle}
+              iconBg="green.100"
+              iconColor="green.500"
+              accent="green.500"
+            />
+
+            <StatCard
+              label={t("idashboard.idashboard.jarayonda")}
+              value={(pending || 0) + (inProgress || 0)}
+              icon={Clock}
+              iconBg="yellow.100"
+              iconColor="yellow.500"
+              accent="yellow.500"
+            />
+
+            <StatCard
+              label={t("idashboard.idashboard.rad_etilgan")}
+              value={rejected || 0}
+              icon={XCircle}
+              iconBg="red.100"
+              iconColor="red.500"
+              accent="red.500"
+            />
           </Grid>
 
           {/* 📈 CHARTS */}
           <Grid templateColumns="2fr 1fr" gap={4}>
-            
+
             {/* LINE */}
             <Box
               bg="surface"
@@ -194,7 +275,7 @@ export default function DashboardGv() {
               border="1px solid"
               borderColor="border"
             >
-              <Text mb={3}>Yillik murojaatlar</Text>
+              <Text mb={3}>{t("idashboard.idashboard.yillik_murojaatlar")}</Text>
 
               <ResponsiveContainer width="100%" height={250}>
                 <LineChart data={lineData}>
@@ -220,7 +301,7 @@ export default function DashboardGv() {
               border="1px solid"
               borderColor="border"
             >
-              <Text mb={3}>Holat taqsimoti</Text>
+              <Text mb={3}>{t("idashboard.idashboard.holat_taqsimoti")}</Text>
 
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
@@ -238,8 +319,22 @@ export default function DashboardGv() {
                   <Tooltip />
                 </PieChart>
               </ResponsiveContainer>
+              <Flex direction="column" gap={2} mt={3}>
+                {pieData.map((d, i) => (
+                  <Flex key={i} align="center" justify="space-between">
+                    <Flex align="center" gap={2}>
+                      <Box w={2} h={2} borderRadius="full" bg={d.color} />
+                      <Text fontSize="xs" color="textSecondary">
+                        {d.name}
+                      </Text>
+                    </Flex>
+                    <Text fontSize="xs" fontWeight="600" color="text">
+                      {d.value}
+                    </Text>
+                  </Flex>
+                ))}
+              </Flex>
             </Box>
-
           </Grid>
         </>
       )}

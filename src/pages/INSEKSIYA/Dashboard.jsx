@@ -107,7 +107,7 @@ export default function InspectionDashboard() {
 
     useEffect(() => {
       let raf;
-      start.current = null; // 🔥 MUHIM: reset
+      start.current = null;
 
       const step = (timestamp) => {
         if (!start.current) start.current = timestamp;
