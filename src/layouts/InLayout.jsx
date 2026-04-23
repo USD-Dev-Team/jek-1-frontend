@@ -23,11 +23,15 @@ export default function InLayout() {
       icon: MessageCircle,
     },
      {
-      label: "Hodimlar",
+      label: t("hodim.hodim.hodimlar"),
       to: "/inseksiya/hodim",
       icon: User2Icon,
     },
-    
+     {
+      label: t("idashboard.idashboard.dashboard"),
+      to: "/inseksiya/dashboard",
+      icon: EqualApproximatelyIcon,
+    },
   ];
 
   return (

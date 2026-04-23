@@ -2,17 +2,17 @@ import { useEffect, useState } from "react"
 import { useParams, useNavigate } from "react-router-dom"
 import {
   Avatar, Badge, Box, Button, Divider, Flex,
-  Icon, Input, Modal, ModalBody, ModalContent,
+  Icon, IconButton, Input, InputGroup, InputRightElement, Modal, ModalBody, ModalContent,
   ModalFooter, ModalHeader, ModalOverlay, Select,
   Text, useDisclosure,
 } from "@chakra-ui/react"
-import { ArrowLeft, Lock, LockOpen, MapPin, MapPinOff, KeyRound } from "lucide-react"
+import { ArrowLeft, Lock, LockOpen, KeyRound, EyeOff, Eye, Pencil } from "lucide-react"
 import { useTranslation } from "react-i18next"
 import { Requests } from "../../Services/api/Requests"
 import { toastService } from "../../utils/toast"
 import destination from "../../constants/mahallas.json"
+import Cookies from "js-cookie"
 
-// ---- kichik yordamchi komponent ----
 function Row({ label, value }) {
   return (
     <Flex justify="space-between" align="center" py={3}
@@ -40,28 +40,33 @@ function ActionBtn({ icon, label, colorScheme, onClick }) {
   )
 }
 
-export default function HodimDetail() {
+export default function Profile() {
+  const [show, setShow] = useState(false);
+  const [show2, setShow2] = useState(false);
+  const [editFirst, setEditFirst] = useState("")
+  const [editLast, setEditLast] = useState("")
+  const [editPhone, setEditPhone] = useState("")
+  const currentRole = Cookies.get("role")
   const { id } = useParams()
   const navigate = useNavigate()
   const { t } = useTranslation()
-
+  const [removeAddressId, setRemoveAddressId] = useState(null)
   const [hodim, setHodim] = useState(null)
   const [loading, setLoading] = useState(true)
   const [btnLoading, setBtnLoading] = useState(false)
+  const [removeAddress, setRemoveAddress] = useState(null)
 
-  // Modals
   const { isOpen: isBlockOpen, onOpen: openBlock, onClose: closeBlock } = useDisclosure()
   const { isOpen: isRemoveOpen, onOpen: openRemove, onClose: closeRemove } = useDisclosure()
   const { isOpen: isAddressOpen, onOpen: openAddress, onClose: closeAddress } = useDisclosure()
   const { isOpen: isPasswordOpen, onOpen: openPassword, onClose: closePassword } = useDisclosure()
+  const { isOpen: isEditOpen, onOpen: openEdit, onClose: closeEdit } = useDisclosure()
 
-  // Address state
   const HUDUDLAR = destination.uz.addresses
   const [modalHudud, setModalHudud] = useState("")
   const [modalMahalla, setModalMahalla] = useState("")
   const modalMahallalar = modalHudud ? destination?.uz?.mahallas?.[modalHudud] || [] : []
 
-  // Password state
   const [newPassword, setNewPassword] = useState("")
   const [confirmPassword, setConfirmPassword] = useState("")
 
@@ -71,7 +76,7 @@ export default function HodimDetail() {
       const res = await Requests.getUserInfo(id)
       setHodim(res.data)
     } catch {
-      toastService.error("Ma'lumot olishda xatolik")
+      toastService.error(t("profile.profile.fetch_error"))
     } finally {
       setLoading(false)
     }
@@ -85,15 +90,14 @@ export default function HodimDetail() {
   }
 
   const handleBlock = () => withLoad(async () => {
-    const res = await Requests.updateStatus({ id, isActive: !hodim?.isActive })
-    toastService.success(res.data.message)
+    await Requests.updateStatus({ id, isActive: !hodim?.data?.isActive })
+    toastService.success(hodim?.data?.isActive ? t("profile.profile.blocked") : t("profile.profile.unblocked"))
     await fetchHodim()
     closeBlock()
   })
 
   const handleRemove = () => withLoad(async () => {
-    const addressId = hodim?.addresses?.[0]?.address_id
-    const res = await Requests.removeAddress(id, addressId)
+    const res = await Requests.removeAddress(id, removeAddressId)
     toastService.success(res.data.message)
     await fetchHodim()
     closeRemove()
@@ -107,27 +111,29 @@ export default function HodimDetail() {
   })
 
   const handlePassword = () => withLoad(async () => {
-    const res = await Requests.changePassword(newPassword, confirmPassword)
+    const res = await Requests.changePassword(id, newPassword, confirmPassword)
     toastService.success(res.data.message)
     setNewPassword("")
     setConfirmPassword("")
     closePassword()
   })
 
-  const hasAddress = hodim?.addresses?.length > 0
-  const district = hodim?.addresses?.[0]?.address?.district
-  const neighborhood = hodim?.addresses?.[0]?.address?.neighborhood
+  const handleEdit = () => withLoad(async () => {
+    const res = await Requests.updateProfile(id, editFirst, editLast, editPhone)
+    toastService.success(res.data.message)
+    await fetchHodim()
+    closeEdit()
+  })
 
   if (loading) return (
     <Flex h="60vh" align="center" justify="center">
-      <Text fontSize="13px" color="gray.600">Yuklanmoqda...</Text>
+      <Text fontSize="13px" color="gray.600">{t("profile.profile.loading")}</Text>
     </Flex>
   )
 
   return (
     <Box maxW="560px" mx="auto" py={8} px={4}>
 
-      {/* BACK */}
       <Button
         leftIcon={<ArrowLeft size={15} />}
         variant="ghost"
@@ -136,12 +142,11 @@ export default function HodimDetail() {
         mb={8}
         px={0}
         _hover={{ color: "text", bg: "transparent" }}
-        onClick={() => navigate("/inseksiya/hodim")}
+        onClick={() => navigate(-1)}
       >
-        Orqaga
+        {t("profile.profile.back")}
       </Button>
 
-      {/* AVATAR + ISM */}
       <Flex align="center" gap={4} mb={8}>
         <Avatar
           size="lg"
@@ -164,96 +169,100 @@ export default function HodimDetail() {
             fontSize="10px"
             fontWeight="500"
           >
-            ● {hodim?.data?.isActive ? "Aktiv" : "Nofaol"}
+            ● {hodim?.data?.isActive ? t("profile.profile.status_active") : t("profile.profile.status_inactive")}
           </Badge>
         </Box>
       </Flex>
 
-      {/* MA'LUMOTLAR */}
       <Box mb={6}>
         <Text fontSize="10px" fontWeight="600" color="gray.600"
           textTransform="uppercase" letterSpacing="1px" mb={1}>
-          Ma'lumotlar
+          {t("profile.profile.info")}
         </Text>
-        <Box bg="whiteAlpha.50" border="1px solid" borderColor="whiteAlpha.100"
+        <Box bg="whiteAlpha.50" border="1px solid" borderColor="border"
           borderRadius="12px" px={4}>
-          <Row label="Ism" value={hodim?.data?.first_name} />
-          <Row label="Familiya" value={hodim?.data?.last_name} />
-          <Row label="Telefon" value={`+${hodim?.data?.phoneNumber}`} />
-          <Row label="Rol" value={hodim?.data?.role} />
+          <Row label={t("profile.profile.first_name")} value={hodim?.data?.first_name} />
+          <Divider borderColor="border" />
+          <Row label={t("profile.profile.last_name")} value={hodim?.data?.last_name} />
+          <Divider borderColor="border" />
+          <Row label={t("profile.profile.phone")} value={`+${hodim?.data?.phoneNumber}`} />
         </Box>
       </Box>
 
-
-      {/* MANZIL */}
-      <Box mb={6}>
-        <Flex justify="space-between" align="center" mb={1}>
-          <Text fontSize="10px" fontWeight="600" color="gray.600"
-            textTransform="uppercase" letterSpacing="1px">
-            Manzillar
-          </Text>
-          <Button size="xs" variant="ghost" colorScheme="blue" onClick={openAddress}>
-            + Qo'shish
-          </Button>
-        </Flex>
-        <Box bg="whiteAlpha.50" border="1px solid" borderColor="whiteAlpha.100"
-          borderRadius="12px" px={4}>
-          {hodim?.addresses?.length > 0 ? (
-            hodim.addresses.map((a, i) => (
-              <Flex key={a.id} justify="space-between" align="center"
-                py={3} borderBottom="1px solid" borderColor="whiteAlpha.100"
-                _last={{ borderBottom: "none" }}>
-                <Box>
-                  <Text fontSize="13px" fontWeight="500" color="text">
-                    {a.address?.district}
-                  </Text>
-                  <Text fontSize="12px" color="gray.500" mt="1px">
-                    {a.address?.neighborhood}
-                  </Text>
-                </Box>
-                <Button size="xs" variant="ghost" colorScheme="red"
-                  onClick={() => {
-                    setRemoveAddressId(a.address_id)
-                    openRemove()
-                  }}>
-                  O'chirish
-                </Button>
+      {currentRole === "INSPECTION" && (
+        <Box mb={6}>
+          <Flex justify="space-between" align="center" mb={1}>
+            <Text fontSize="10px" fontWeight="600" color="gray.600"
+              textTransform="uppercase" letterSpacing="1px">
+              {t("profile.profile.addresses")}
+            </Text>
+            <Button size="xs" variant="ghost" colorScheme="blue" onClick={openAddress}>
+              + {t("profile.profile.add")}
+            </Button>
+          </Flex>
+          <Box bg="whiteAlpha.50" border="1px solid" borderColor="border"
+            borderRadius="12px" px={4}>
+            {hodim?.data?.addresses?.length > 0 ? (
+              hodim.data.addresses.map((a, i) => (
+                <Flex key={a.address?.id || i} justify="space-between" align="center"
+                  py={3} borderBottom="1px solid" borderColor="border"
+                  _last={{ borderBottom: "none" }}>
+                  <Box>
+                    <Text fontSize="13px" fontWeight="500" color="text">
+                      {a.address?.district}
+                    </Text>
+                    <Text fontSize="12px" color="gray.500" mt="1px">
+                      {a.address?.neighborhood}
+                    </Text>
+                  </Box>
+                  <Button size="xs" variant="ghost" colorScheme="red"
+                    onClick={() => {
+                      setRemoveAddressId(a.address?.id)
+                      setRemoveAddress(a.address)
+                      openRemove()
+                    }}>
+                    {t("profile.profile.delete")}
+                  </Button>
+                </Flex>
+              ))
+            ) : (
+              <Flex justify="space-between" align="center" py={3}>
+                <Text fontSize="12px" color="gray.600">{t("profile.profile.no_address")}</Text>
               </Flex>
-            ))
-          ) : (
-            <Flex justify="space-between" align="center" py={3}>
-              <Text fontSize="12px" color="gray.600">Manzil biriktirilmagan</Text>
-            </Flex>
-          )}
+            )}
+          </Box>
         </Box>
-      </Box>
+      )}
 
-      {/* AMALLAR */}
       <Box>
         <Text fontSize="10px" fontWeight="600" color="gray.600"
           textTransform="uppercase" letterSpacing="1px" mb={1}>
-          Amallar
+          {t("profile.profile.actions")}
         </Text>
-        <Box bg="whiteAlpha.50" border="1px solid" borderColor="whiteAlpha.100"
+        <Box bg="whiteAlpha.50" border="1px solid" borderColor="border"
           borderRadius="12px" px={2} py={2}>
           <Flex direction="column">
             <ActionBtn
+              icon={Pencil}
+              label={t("profile.profile.edit_profile")}
+              colorScheme="blue"
+              onClick={() => {
+                setEditFirst(hodim?.data?.first_name || "")
+                setEditLast(hodim?.data?.last_name || "")
+                setEditPhone(hodim?.data?.phoneNumber || "")
+                openEdit()
+              }} />
+            <Divider borderColor="border" />
+            <ActionBtn
               icon={hodim?.data?.isActive ? Lock : LockOpen}
-              label={hodim?.data?.isActive ? "Bloklash" : "Faollashtirish"}
+              label={hodim?.data?.isActive ? t("profile.profile.block") : t("profile.profile.unblock")}
               colorScheme={hodim?.data?.isActive ? "red" : "green"}
               onClick={openBlock}
             />
-            <Divider borderColor="whiteAlpha.100" />
-            <ActionBtn
-              icon={hasAddress ? MapPinOff : MapPin}
-              label={hasAddress ? "Manzilni o'zgartirish" : "Manzil biriktirish"}
-              colorScheme="blue"
-              onClick={hasAddress ? openRemove : openAddress}
-            />
-            <Divider borderColor="whiteAlpha.100" />
+            <Divider borderColor="border" />
             <ActionBtn
               icon={KeyRound}
-              label="Parolni o'zgartirish"
+              label={t("profile.profile.change_password")}
               colorScheme="yellow"
               onClick={openPassword}
             />
@@ -261,139 +270,210 @@ export default function HodimDetail() {
         </Box>
       </Box>
 
-      {/* ===== MODALLAR ===== */}
-
-      {/* BLOKLASH */}
+      {/* BLOKLASH MODAL */}
       <Modal isOpen={isBlockOpen} onClose={closeBlock} isCentered size="sm">
         <ModalOverlay bg="blackAlpha.700" backdropFilter="blur(4px)" />
-        <ModalContent border="1px solid" borderColor="whiteAlpha.200" borderRadius="16px">
+        <ModalContent border="1px solid" borderColor="border" borderRadius="16px">
           <ModalHeader>
-            {hodim?.data?.isActive ? "Hodimni bloklash" : "Hodimni faollashtirish"}
+            {hodim?.data?.isActive ? t("profile.profile.block_title") : t("profile.profile.unblock_title")}
           </ModalHeader>
           <ModalBody>
             <Text fontSize="13px" color="gray.400">
-              {hodim?.data?.isActive
-                ? "Bu hodim tizimga kira olmay qoladi."
-                : "Bu hodim tizimga qayta kira oladi."
-              }
+              {hodim?.data?.isActive ? t("profile.profile.block_desc") : t("profile.profile.unblock_desc")}
             </Text>
           </ModalBody>
           <ModalFooter gap={2} pt={2}>
             <Button flex={1} variant="ghost" size="sm" color="gray.500" onClick={closeBlock}>
-              Bekor
+              {t("profile.profile.cancel")}
             </Button>
             <Button flex={1} size="sm"
               bg={hodim?.data?.isActive ? "red.500" : "green.500"}
-              color="white"
+              color="text"
               isLoading={btnLoading}
               onClick={handleBlock}>
-              {hodim?.data?.isActive ? "Bloklash" : "Faollashtirish"}
+              {hodim?.data?.isActive ? t("profile.profile.block") : t("profile.profile.unblock")}
             </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
 
-      {/* MANZIL O'CHIRISH */}
+      {/* MANZIL O'CHIRISH MODAL */}
       <Modal isOpen={isRemoveOpen} onClose={closeRemove} isCentered size="sm">
         <ModalOverlay bg="blackAlpha.700" backdropFilter="blur(4px)" />
-        <ModalContent border="1px solid" borderColor="whiteAlpha.200" borderRadius="16px">
+        <ModalContent border="1px solid" borderColor="border" borderRadius="16px">
           <ModalHeader fontSize="15px" fontWeight="600" color="text">
-            Manzilni o'chirish
+            {t("profile.profile.remove_address_title")}
           </ModalHeader>
           <ModalBody>
             <Text fontSize="13px" color="gray.400">
-              <b>{district}</b> — {neighborhood} manzili o'chiriladi.
+              <b>{removeAddress?.district}</b> — {removeAddress?.neighborhood} {t("profile.profile.remove_address_desc")}
             </Text>
           </ModalBody>
           <ModalFooter gap={2} pt={2}>
             <Button flex={1} variant="ghost" size="sm" color="gray.500" onClick={closeRemove}>
-              Bekor
+              {t("profile.profile.cancel")}
             </Button>
-            <Button flex={1} size="sm" bg="red.500" color="white"
+            <Button flex={1} size="sm" bg="red.500" color="text"
               isLoading={btnLoading} onClick={handleRemove}>
-              O'chirish
+              {t("profile.profile.delete")}
             </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
 
-      {/* MANZIL BIRIKTIRISH */}
+      {/* MANZIL BIRIKTIRISH MODAL */}
       <Modal isOpen={isAddressOpen} onClose={closeAddress} isCentered size="sm">
         <ModalOverlay bg="blackAlpha.700" backdropFilter="blur(4px)" />
-        <ModalContent border="1px solid" borderColor="whiteAlpha.200" borderRadius="16px">
+        <ModalContent border="1px solid" borderColor="border" borderRadius="16px">
           <ModalHeader fontSize="15px" fontWeight="600" color="text">
-            Manzil biriktirish
+            {t("profile.profile.assign_address_title")}
           </ModalHeader>
           <ModalBody display="flex" flexDir="column" gap={3}>
             <Select value={modalHudud}
               onChange={e => { setModalHudud(e.target.value); setModalMahalla("") }}
-              bg="whiteAlpha.50" border="1px solid" borderColor="whiteAlpha.200"
+              bg="whiteAlpha.50" border="1px solid" borderColor="border"
               fontSize="13px" size="sm" borderRadius="8px">
-              <option value="">Hudud tanlang</option>
+              <option value="">{t("profile.profile.select_district")}</option>
               {HUDUDLAR.map(h => <option key={h} value={h}>{h}</option>)}
             </Select>
             <Select value={modalMahalla}
               onChange={e => setModalMahalla(e.target.value)}
               isDisabled={!modalHudud}
-              bg="whiteAlpha.50" border="1px solid" borderColor="whiteAlpha.200"
+              bg="whiteAlpha.50" border="1px solid" borderColor="border"
               fontSize="13px" size="sm" borderRadius="8px">
-              <option value="">Mahalla tanlang</option>
+              <option value="">{t("profile.profile.select_mahalla")}</option>
               {modalMahallalar.map(m => <option key={m} value={m}>{m}</option>)}
             </Select>
           </ModalBody>
           <ModalFooter gap={2} pt={2}>
             <Button flex={1} variant="ghost" size="sm" color="gray.500" onClick={closeAddress}>
-              Bekor
+              {t("profile.profile.cancel")}
             </Button>
-            <Button flex={1} size="sm" bg="blue.500" color="white"
+            <Button flex={1} size="sm" bg="blue.500" color="text"
               isDisabled={!modalHudud || !modalMahalla}
               isLoading={btnLoading} onClick={handleAssign}>
-              Saqlash
+              {t("profile.profile.save")}
             </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
 
-      {/* PAROL */}
+      {/* PAROL MODAL */}
       <Modal isOpen={isPasswordOpen} onClose={closePassword} isCentered size="sm">
         <ModalOverlay bg="blackAlpha.700" backdropFilter="blur(4px)" />
-        <ModalContent border="1px solid" borderColor="whiteAlpha.200" borderRadius="16px">
+        <ModalContent border="1px solid" borderColor="border" borderRadius="16px">
           <ModalHeader fontSize="15px" fontWeight="600" color="text">
-            Parolni o'zgartirish
+            {t("profile.profile.password_title")}
           </ModalHeader>
           <ModalBody display="flex" flexDir="column" gap={3}>
-            <Input
-              type="password"
-              placeholder="Yangi parol (min 8 belgi)"
-              value={newPassword}
-              onChange={e => setNewPassword(e.target.value)}
-              bg="whiteAlpha.50" border="1px solid"
-              borderColor="whiteAlpha.200" fontSize="13px"
-              size="sm" borderRadius="8px"
-              _focus={{ borderColor: "blue.500" }}
-            />
-            <Input
-              type="password"
-              placeholder="Parolni tasdiqlang"
-              value={confirmPassword}
-              onChange={e => setConfirmPassword(e.target.value)}
-              bg="whiteAlpha.50" border="1px solid"
-              borderColor="whiteAlpha.200" fontSize="13px"
-              size="sm" borderRadius="8px"
-              _focus={{ borderColor: "blue.500" }}
-            />
+            <Flex align="center" position="relative">
+              <InputGroup size="sm">
+                <Input
+                  type={show ? "text" : "password"}
+                  placeholder={t("profile.profile.password_placeholder")}
+                  value={newPassword}
+                  onChange={e => setNewPassword(e.target.value)}
+                  bg="whiteAlpha.50" border="1px solid"
+                  borderColor="border" fontSize="13px"
+                  size="sm" borderRadius="8px"
+                  pr="36px"
+                  _focus={{ borderColor: "blue.500" }}
+                />
+                <InputRightElement>
+                  <IconButton
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShow(!show)}
+                    icon={show ? <EyeOff size={16} /> : <Eye size={16} />}
+                  />
+                </InputRightElement>
+              </InputGroup>
+            </Flex>
+            <Flex align="center" position="relative">
+              <InputGroup size="sm">
+                <Input
+                  type={show2 ? "text" : "password"}
+                  placeholder={t("profile.profile.confirm_placeholder")}
+                  value={confirmPassword}
+                  onChange={e => setConfirmPassword(e.target.value)}
+                  bg="whiteAlpha.50" border="1px solid"
+                  borderColor="border" fontSize="13px"
+                  size="sm" borderRadius="8px"
+                  pr="36px"
+                  _focus={{ borderColor: "blue.500" }}
+                />
+                <InputRightElement>
+                  <IconButton
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShow2(!show2)}
+                    icon={show2 ? <EyeOff size={16} /> : <Eye size={16} />}
+                  />
+                </InputRightElement>
+              </InputGroup>
+            </Flex>
             {confirmPassword && newPassword !== confirmPassword && (
-              <Text fontSize="11px" color="red.400">Parollar mos emas</Text>
+              <Text fontSize="11px" color="red.400">{t("profile.profile.password_mismatch")}</Text>
             )}
           </ModalBody>
           <ModalFooter gap={2} pt={2}>
             <Button flex={1} variant="ghost" size="sm" color="gray.500" onClick={closePassword}>
-              Bekor
+              {t("profile.profile.cancel")}
             </Button>
-            <Button flex={1} size="sm" bg="blue.500" color="white"
+            <Button flex={1} size="sm" bg="blue.500" color="text"
               isDisabled={newPassword.length < 8 || newPassword !== confirmPassword}
               isLoading={btnLoading} onClick={handlePassword}>
-              Saqlash
+              {t("profile.profile.save")}
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
+      {/* TAHRIRLASH MODAL */}
+      <Modal isOpen={isEditOpen} onClose={closeEdit} isCentered size="sm">
+        <ModalOverlay bg="blackAlpha.700" backdropFilter="blur(4px)" />
+        <ModalContent border="1px solid" borderColor="border" borderRadius="16px">
+          <ModalHeader fontSize="15px" fontWeight="600" color="text">
+            {t("profile.profile.edit_title")}
+          </ModalHeader>
+          <ModalBody display="flex" flexDir="column" gap={3}>
+            <Input
+              placeholder={t("profile.profile.first_name_placeholder")}
+              value={editFirst}
+              onChange={e => setEditFirst(e.target.value)}
+              bg="whiteAlpha.50" border="1px solid"
+              borderColor="border" fontSize="13px"
+              size="sm" borderRadius="8px"
+              _focus={{ borderColor: "blue.500" }}
+            />
+            <Input
+              placeholder={t("profile.profile.last_name_placeholder")}
+              value={editLast}
+              onChange={e => setEditLast(e.target.value)}
+              bg="whiteAlpha.50" border="1px solid"
+              borderColor="border" fontSize="13px"
+              size="sm" borderRadius="8px"
+              _focus={{ borderColor: "blue.500" }}
+            />
+            <Input
+              placeholder={t("profile.profile.phone_placeholder")}
+              value={editPhone}
+              onChange={e => setEditPhone(e.target.value)}
+              bg="whiteAlpha.50" border="1px solid"
+              borderColor="border" fontSize="13px"
+              size="sm" borderRadius="8px"
+              _focus={{ borderColor: "blue.500" }}
+            />
+          </ModalBody>
+          <ModalFooter gap={2} pt={2}>
+            <Button flex={1} variant="ghost" size="sm" color="gray.500" onClick={closeEdit}>
+              {t("profile.profile.cancel")}
+            </Button>
+            <Button flex={1} size="sm" bg="blue.500" color="text"
+              isDisabled={!editFirst || !editLast || !editPhone}
+              isLoading={btnLoading}
+              onClick={handleEdit}>
+              {t("profile.profile.save")}
             </Button>
           </ModalFooter>
         </ModalContent>

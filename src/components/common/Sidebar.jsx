@@ -44,7 +44,8 @@ export default function Sidebar({ links = [] }) {
   const { toggleColorMode } = useColorMode();
   const collapsed = useUIStore((s) => s.collapsed);
   const toggleSidebar = useUIStore((s) => s.toggleSidebar);
-  const { manzil } = useParams();
+  const manzil = Cookies.get("user_id")
+  const role = Cookies.get("role")
   const { logout } = useAuth();
   const { onOpen, onClose, isOpen } = useDisclosure();
 
@@ -168,21 +169,36 @@ export default function Sidebar({ links = [] }) {
             borderTop="1px solid"
             borderColor="border"
           >
-            <Flex align="center" gap={2}>
-              <Avatar onClick={() => navigate(`/profile/${id}`)} size="sm" name={Cookies.get("first_name")} />
+            <Box
+              cursor="pointer"
+              onClick={() => {
+                if (role === "JEK") {
+                  navigate(`/jek/jekprofile/${manzil}`)
+                } else if (role === "INSPECTION") {
+                  navigate(`/inseksiya/myprofile/${manzil}`)
+                } else if (role === "GOVERNMENT") {
+                  navigate(`/hokim/profile/${manzil}`)
+                }
+              }}>
+              <Flex align="center" gap={2}>
+                <Avatar
+                  size="sm"
+                  name={Cookies.get("first_name")}
+                />
+                {!collapsed && (
+                  <Box>
+                    <HStack fontSize="sm" fontWeight="600">
+                      <Text>{Cookies.get("first_name")}</Text>
+                      <Text>{Cookies.get("last_name")}</Text>
+                    </HStack>
+                    <Text fontSize="xs" color="textSecondary">
+                      {Cookies.get("role")}
+                    </Text>
+                  </Box>
+                )}
+              </Flex>
+            </Box>
 
-              {!collapsed && (
-                <Box>
-                  <HStack fontSize="sm" fontWeight="600">
-                    <Text>{Cookies.get("first_name")}</Text>
-                    <Text>{Cookies.get("last_name")}</Text>
-                  </HStack>
-                  <Text fontSize="xs" color="textSecondary">
-                    {Cookies.get("role")}
-                  </Text>
-                </Box>
-              )}
-            </Flex>
 
             {!collapsed && (
               <Button size="sm" variant="ghost" onClick={onOpen}>
