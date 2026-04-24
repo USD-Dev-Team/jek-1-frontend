@@ -23,17 +23,17 @@ import { Requests } from "../../../Services/api/Requests";
 import { toastService } from "../../../utils/toast";
 
 const STATUS_COLORS = {
-  COMPLETED: "green",
-  PENDING: "yellow",
-  REJECTED: "red",
-  IN_PROGRESS: "blue",
+  COMPLETED: "success",
+  PENDING: "warning",
+  REJECTED: "danger",
+  IN_PROGRESS: "info",
 };
 
 const STATUS_BORDER = {
-  COMPLETED: "green.400",
-  PENDING: "yellow.400",
-  REJECTED: "red.400",
-  IN_PROGRESS: "blue.400",
+  COMPLETED: "success",
+  PENDING: "warning",
+  REJECTED: "danger",
+  IN_PROGRESS: "info",
 };
 
 // helpers
@@ -79,7 +79,7 @@ function PhotoGrid({ photos, onOpen, t }) {
             src={url}
             w="100%"
             h={h}
-            borderRadius="lg"
+            borderRadius="xl"
             objectFit="cover"
             cursor="pointer"
             transition="0.2s"
@@ -182,8 +182,8 @@ export default function Problem({ role = "ins" }) {
   ].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 
   return (
-    <Box p={6}>
-      <Text fontSize="28px" fontWeight="700">
+    <Box bg="bg" minH="100vh" p={{ base: 4, md: 6 }}>
+      <Text fontSize="xl" fontWeight="700" color="text">
         {t("problem.title")}
       </Text>
 
@@ -216,13 +216,13 @@ export default function Problem({ role = "ins" }) {
       <Box
         p={6}
         borderRadius="xl"
-        borderTop="4px solid"
+        borderTop="3px solid"
         borderTopColor={STATUS_BORDER[data.status]}
         bg="surface"
         border="1px solid"
         borderColor="border"
       >
-        <Badge colorScheme={STATUS_COLORS[data.status]} mb={6}>
+        <Badge p={1} bg="green.700" mb={6}>
           {data.status}
         </Badge>
 
@@ -298,7 +298,7 @@ export default function Problem({ role = "ins" }) {
             maxW="60%"
             px={4}
             py={2}
-            borderRadius="lg"
+            borderRadius="xl"
             bg={msg.role === "USER" ? "primary" : "mutedBg"}
             color={msg.role === "USER" ? "white" : "text"}
           >
@@ -316,15 +316,15 @@ export default function Problem({ role = "ins" }) {
       {/* MODALS */}
       <Modal isOpen={isStartOpen} onClose={onCloseStart} isCentered>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent borderRadius="xl" border="1px solid" borderColor="border" bg="surface">
           <ModalHeader>
             {data.status === "REJECTED"
               ? t("problem.confirm_restart")
               : t("problem.confirm_start")}
           </ModalHeader>
           <ModalFooter>
-            <Button onClick={onCloseStart}>{t("problem.no")}</Button>
-            <Button isLoading={loading} onClick={getStartRequest}>
+            <Button variant="ghost" onClick={onCloseStart}>{t("problem.no")}</Button>
+            <Button variant="solidPrimary" isLoading={loading} onClick={getStartRequest}>
               {t("problem.yes")}
             </Button>
           </ModalFooter>
@@ -333,24 +333,33 @@ export default function Problem({ role = "ins" }) {
 
       <Modal isOpen={isFinishOpen} onClose={onCloseFinish} isCentered>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent borderRadius="xl" border="1px solid" borderColor="border" bg="surface">
           <ModalHeader>{t("problem.finish")}</ModalHeader>
           <ModalBody>
             <Textarea
               placeholder={t("problem.write_note")}
               value={reason}
               onChange={(e) => setReason(e.target.value)}
+              bg="surface"
+              border="1px solid"
+              borderColor="border"
+              borderRadius="md"
+              _focus={{ borderColor: "primary" }}
             />
             <Input
               mt={3}
               type="file"
               multiple
               onChange={(e) => setFiles([...e.target.files])}
+              bg="surface"
+              border="1px solid"
+              borderColor="border"
+              borderRadius="md"
             />
           </ModalBody>
           <ModalFooter>
-            <Button onClick={onCloseFinish}>{t("problem.cancel")}</Button>
-            <Button isLoading={loading} onClick={complete}>
+            <Button variant="ghost" onClick={onCloseFinish}>{t("problem.cancel")}</Button>
+            <Button variant="solidPrimary" isLoading={loading} onClick={complete}>
               {t("problem.send")}
             </Button>
           </ModalFooter>

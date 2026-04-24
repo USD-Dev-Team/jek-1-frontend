@@ -15,12 +15,18 @@ const Button = {
 
     // Semantic tokens
     variants: {
-        solidPrimary: {
-            bg: "primary",
-            color: "white",
-            _hover: { bg: "secondary" },
-            _active: { bg: "primary" },
-        },
+     solidPrimary: {
+  bg: "primary",
+  color: "white",
+  _hover: {
+    bg: "secondary",
+    transform: "translateY(-1px)",
+  },
+  _active: {
+    bg: "primary",
+    transform: "scale(0.98)",
+  },
+},
 
         outlinePrimary: {
             borderWidth: "2px",

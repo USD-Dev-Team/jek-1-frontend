@@ -99,6 +99,16 @@ const semanticTokens = {
             default: "orange.500",
             _dark: "orange.400",
         },
+        interactive: {
+  hover: {
+    default: "neutral.100",
+    _dark: "neutral.700",
+  },
+  active: {
+    default: "neutral.200",
+    _dark: "neutral.600",
+  },
+},
     },
 };
 

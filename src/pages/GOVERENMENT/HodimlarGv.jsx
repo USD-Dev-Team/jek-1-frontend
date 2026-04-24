@@ -1,6 +1,43 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { Avatar, Badge, Box, Button, Circle, Collapse, Flex, Icon, IconButton, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Switch, Table, Tbody, Td, Text, Th, Thead, Tr, useDisclosure, } from "@chakra-ui/react";
-import { ChevronDown, ChevronUp, Pen, PenOff, Search, Trash2, Users } from "lucide-react";
+import {
+  Avatar,
+  Badge,
+  Box,
+  Button,
+  Circle,
+  Collapse,
+  Flex,
+  Icon,
+  IconButton,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Select,
+  Switch,
+  Table,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+  useDisclosure,
+} from "@chakra-ui/react";
+import {
+  ChevronDown,
+  ChevronUp,
+  Pen,
+  PenOff,
+  Search,
+  Trash2,
+  Users,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import destination from "../../constants/mahallas.json";
 
@@ -98,24 +135,16 @@ import { toastService } from "../../utils/toast";
 import { useNavigate } from "react-router";
 
 export default function Hodimlari() {
-  const {
-    isOpen: isRemoveOpen,
-    onOpen: openRemove,
-    onClose: closeRemove,
-  } = useDisclosure()
-  const {
-    isOpen: isAddressOpen,
-    onOpen: openAddress,
-    onClose: closeAddress,
-  } = useDisclosure()
-  const navigate = useNavigate()
-  const [assignLoading, setAssignLoading] = useState(false)
-  const [removeLoading, setRemoveLoading] = useState(false)
-  const [removeHodim, setRemoveHodim] = useState(null)
-  const [selectedHodim, setSelectedHodim] = useState(null)
-  const [modalHudud, setModalHudud] = useState("")
-  const [modalMahalla, setModalMahalla] = useState("")
-  const modalMahallalar = modalHudud ? destination?.uz?.mahallas?.[modalHudud] || [] : []
+  const { isOpen: isRemoveOpen, onOpen: openRemove, onClose: closeRemove, } = useDisclosure();
+  const { isOpen: isAddressOpen, onOpen: openAddress, onClose: closeAddress, } = useDisclosure();
+  const navigate = useNavigate();
+  const [assignLoading, setAssignLoading] = useState(false);
+  const [removeLoading, setRemoveLoading] = useState(false);
+  const [removeHodim, setRemoveHodim] = useState(null);
+  const [selectedHodim, setSelectedHodim] = useState(null);
+  const [modalHudud, setModalHudud] = useState("");
+  const [modalMahalla, setModalMahalla] = useState("");
+  const modalMahallalar = modalHudud ? destination?.uz?.mahallas?.[modalHudud] || []  : [];
   const [hodimlar, setHodimlar] = useState([]);
   const [infod, setIinfod] = useState([]);
   const { t } = useTranslation();
@@ -125,12 +154,7 @@ export default function Hodimlari() {
   const HUDUDLAR = destination.uz.addresses;
 
   const mahallalar = hudud ? destination?.uz?.mahallas?.[hudud] || [] : [];
-
-  const {
-    isOpen: isModalOpen,
-    onOpen: openModal,
-    onClose: closeModal,
-  } = useDisclosure();
+  const { isOpen: isModalOpen, onOpen: openModal, onClose: closeModal, } = useDisclosure();
 
   const [search, setSearch] = useState("");
   const [holat, setHolat] = useState("");
@@ -138,74 +162,62 @@ export default function Hodimlari() {
   const [pendingToggle, setPendingToggle] = useState(null);
   const [debouncedSearch, setDebouncedSearch] = useState("");
 
-
-
   const [page, setPage] = useState(1);
   const [meta, setMeta] = useState({});
   const limit = meta?.limit ?? 10;
 
-const fetchHodimlar = async () => {
-  try {
-    const res = await Requests.getEmploye({
-      role: ["JEK", "INSPECTION"],
-      page,
+  const fetchHodimlar = async () => {
+    try {
+      const res = await Requests.getEmploye({
+        role: ["JEK"],
+        page,
 
-      first_name: debouncedSearch,
-      last_name: debouncedSearch,
+        first_name: debouncedSearch,
+        last_name: debouncedSearch,
 
-      district: hudud,
-      neighborhood: mahalla,
+        district: hudud,
+        neighborhood: mahalla,
 
-      isActive:
-        holat === ""
-          ? undefined
-          : holat === "aktiv"
-          ? true
-          : false,
-    });
+        isActive: holat === "" ? undefined : holat === "aktiv" ? true : false,
+      });
 
-    const mapped = res.data.data.map((i) => ({
-      id: i.id,
-      ism: i.first_name,
-      familiya: i.last_name,
-      telefon: "+" + i.phoneNumber,
-      role: i.role,
-      hudud: i.addresses?.[0]?.address?.district,
-      mahalla: i.addresses?.[0]?.address?.neighborhood,
-      aktiv: i.isActive,
-    }));
+      const mapped = res.data.data.map((i) => ({
+        id: i.id,
+        ism: i.first_name,
+        familiya: i.last_name,
+        telefon: "+" + i.phoneNumber,
+        role: i.role,
+        hudud: i.addresses?.[0]?.address?.district,
+        mahalla: i.addresses?.[0]?.address?.neighborhood,
+        aktiv: i.isActive,
+      }));
 
-    setHodimlar(mapped);
-    setMeta(res.data.meta);
-  } catch (e) {
-    console.log(e);
-  }
-};
+      setHodimlar(mapped);
+      setMeta(res.data.meta);
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
-useEffect(() => {
-  const timer = setTimeout(() => {
-    setDebouncedSearch(search);
-    setPage(1);
-  }, 500);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(search);
+      setPage(1);
+    }, 500);
 
-  return () => clearTimeout(timer);
-}, [search]);
+    return () => clearTimeout(timer);
+  }, [search]);
 
 
- useEffect(() => {
-  fetchHodimlar();
-}, [page, debouncedSearch, hudud, mahalla, holat]);
+  
 
+  useEffect(() => {
+    fetchHodimlar();
+  }, [page, debouncedSearch, hudud, mahalla, holat]);
 
-  const aktivCount = hodimlar.filter(h => h.aktiv).length;
+  const aktivCount = hodimlar.filter((h) => h.aktiv).length;
   const nofaolCount = hodimlar.length - aktivCount;
   const jamiCount = meta.total || 0;
-
-
-
-
-
-
 
   const hodimInfo = async (id) => {
     setLoading(true);
@@ -217,13 +229,13 @@ useEffect(() => {
     }
   };
 
- function clearFilter() {
-  setSearch("");
-  setHudud("");
-  setMahalla("");
-  setHolat("");
-  setPage(1);
-}
+  function clearFilter() {
+    setSearch("");
+    setHudud("");
+    setMahalla("");
+    setHolat("");
+    setPage(1);
+  }
 
   return (
     <Box>
@@ -245,9 +257,21 @@ useEffect(() => {
       <Box mb={5} mr={6}>
         <Flex gap={3} w="100%">
           {[
-            { label: t('hodim.hodim.info.ahodimlar'), val: aktivCount, color: "green.400" },
-            { label: t('hodim.hodim.info.nhodim'), val: nofaolCount, color: "red.400" },
-            { label: t('hodim.hodim.info.jhodim'), val: jamiCount, color: "blue.400" },
+            {
+              label: t("hodim.hodim.info.ahodimlar"),
+              val: aktivCount,
+              color: "green.400",
+            },
+            {
+              label: t("hodim.hodim.info.nhodim"),
+              val: nofaolCount,
+              color: "red.400",
+            },
+            {
+              label: t("hodim.hodim.info.jhodim"),
+              val: jamiCount,
+              color: "blue.400",
+            },
           ].map((p, i) => (
             <Box
               key={i}
@@ -352,7 +376,6 @@ useEffect(() => {
           maxW="200px"
           value={mahalla}
           onChange={(e) => setMahalla(e.target.value)}
-         
           isDisabled={!hudud}
           bg="whiteAlpha.50"
           border="1px solid"
@@ -385,10 +408,7 @@ useEffect(() => {
         </Select>
 
         {/* Clear Filter */}
-        <IconButton
-          icon={<Trash2 />}
-          onClick={clearFilter}
-        />
+        <IconButton icon={<Trash2 />} onClick={clearFilter} />
       </Flex>
 
       {/* JADVAL */}
@@ -412,10 +432,6 @@ useEffect(() => {
                 t("hodim.hodim.jadval.hodim"),
                 t("hodim.hodim.jadval.hudud"),
                 t("hodim.hodim.jadval.holat"),
-                t("hodim.hodim.role"),
-
-       
-          
               ].map((h, i) => (
                 <Th
                   key={i}
@@ -493,118 +509,11 @@ useEffect(() => {
                       py={1}
                       fontSize="11px"
                     >
-                      ● {h.aktiv ? t('hodim.hodim.aktiv') : t('hodim.hodim.nofaol')}
+                      ●{" "}
+                      {h.aktiv
+                        ? t("hodim.hodim.aktiv")
+                        : t("hodim.hodim.nofaol")}
                     </Badge>
-                  </Td>
-                  <Td px={4} py={3}> 
-                    <Badge
-                      bg="#1a365dcc"
-                      color="blue.300"
-                      borderRadius="6px"
-                      px={2}
-                      py={1}
-                      fontSize="11px"
-                      fontWeight="500"
-                    >
-                      {h?.role || "MAvjud emas"}
-
-                    </Badge>
-                  </Td>
-
-
-
-
-                  {/* Toggle */}
-               
-
-                
-               
-                </Tr>
-
-                {/* EXPAND qatori */}
-                <Tr
-                  key={`exp-${h.id}`}
-                  borderBottom="1px solid"
-                  borderColor="whiteAlpha.100"
-                >
-                  <Td colSpan={8} p={0}>
-                    <Collapse in={expandedId === h.id} animateOpacity>
-                      <Flex gap={4} p={4} bg="blackAlpha.100">
-                        <Box
-                          gap={6}
-                          display={"flex"}
-                          alignItems={"center"}
-                          justifyContent={"space-between"}
-                          bg={"blackAlpha.400"}
-                          p={4}
-                          borderRadius={"20px"}
-                          w={"100%"}
-                        >
-                          <Flex
-                            alignItems={"center"}
-                            justifyContent={"start"}
-                            gap={2}
-                          >
-                            <Avatar
-                              size="md"
-                              name={`${h.ism} ${h.familiya}`}
-                              borderRadius="16px"
-                            />
-                            <Box>
-                              <Text
-                                fontSize="16px"
-                                fontWeight="600"
-                                color="text"
-                                mb={1}
-                              >
-                                {h.ism} {h.familiya}
-                              </Text>
-
-                              <Text fontSize="12px" color="text">
-                                {h.telefon}
-                              </Text>
-                            </Box>
-                          </Flex>
-                          <Flex gap={8} flexWrap="wrap">
-                            <Box>
-                              <Text fontSize="11px" color="text" mb={1}>
-                                {t('hodim.hodim.jadval.hudud')}
-                              </Text>
-                              <Text fontSize="13px" color="text">
-                                {h.hudud || "-"}
-                              </Text>
-                            </Box>
-
-                            <Box>
-                              <Text fontSize="11px" color="text" mb={1}>
-                                {t('hodim.hodim.jadval.mahalla')}
-                              </Text>
-                              <Text fontSize="13px" color="text">
-                                {h.mahalla || "-"}
-                              </Text>
-                            </Box>
-
-                            <Box>
-                              <Text fontSize="11px" color="text" mb={1}>
-                                {t('hodim.hodim.jadval.holat')}
-                              </Text>
-                              <Badge
-                                bg={h.aktiv ? "#1c4532b9" : "#63171Bb9"}
-                                color={h.aktiv ? "green.300" : "red.300"}
-                                borderRadius="20px"
-                                px={3}
-                                py={1}
-                                fontSize="11px"
-                              >
-                                ● {h.aktiv ? t('hodim.hodim.aktiv') : t('hodim.hodim.nofaol')}
-                              </Badge>
-                            </Box>
-
-                          </Flex>
-
-                        </Box>
-                      </Flex>
-                    </Collapse>
                   </Td>
                 </Tr>
               </React.Fragment>
@@ -613,17 +522,22 @@ useEffect(() => {
         </Table>
 
         {hodimlar.length === 0 && (
-          <Flex direction="column" align="center" justify="center" py={16} gap={2}>
+          <Flex
+            direction="column"
+            align="center"
+            justify="center"
+            py={16}
+            gap={2}
+          >
             <Icon as={Users} boxSize={10} color="gray.600" />
             <Text color="gray.500" fontSize="14px">
               {t("hodim.hodim.natijatopilmadi")}
             </Text>
           </Flex>
         )}
-
       </Box>
       {hodimlar.length > 0 && (
-        <Flex justify="center" mt={6} gap={3}>
+        <Flex justify="center" mb={6} mt={6} gap={3}>
           <Button
             size="sm"
             onClick={() => setPage((p) => p - 1)}
@@ -645,16 +559,6 @@ useEffect(() => {
           </Button>
         </Flex>
       )}
-
-
-  
-
-     
-
-
-
-      {/* TASDIQLASH MODAL */}
-  
     </Box>
   );
 }

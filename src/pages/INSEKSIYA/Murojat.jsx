@@ -210,12 +210,14 @@ export default function Murojat() {
               setForm({ ...form, search: e.target.value })
             }
             minW="200px"
+       
           />
 
           <Select
             minW="160px"
             placeholder={t("inspection.all")}
             value={form.district}
+            borderRadius={"sm"}
             onChange={(e) =>
               setForm({
                 ...form,
@@ -235,6 +237,7 @@ export default function Murojat() {
             minW="160px"
             placeholder={t("inspection.all")}
             value={form.neighborhood}
+            borderRadius={"sm"}
             onChange={(e) =>
               setForm({ ...form, neighborhood: e.target.value })
             }
