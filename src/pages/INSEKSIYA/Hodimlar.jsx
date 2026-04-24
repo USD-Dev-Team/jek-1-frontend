@@ -1,5 +1,33 @@
-import React, { useState, useEffect, } from "react";
-import { Avatar, Badge, Box, Button, Circle, Flex, Icon, IconButton, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, Switch, Table, Tbody, Td, Text, Th, Thead, Tr, useDisclosure, } from "@chakra-ui/react";
+import React, { useState, useEffect } from "react";
+import {
+  Avatar,
+  Badge,
+  Box,
+  Button,
+  Circle,
+  Flex,
+  Icon,
+  IconButton,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Select,
+  Switch,
+  Table,
+  Tbody,
+  Td,
+  Text,
+  Th,
+  Thead,
+  Tr,
+  useDisclosure,
+} from "@chakra-ui/react";
 import { Pen, PenOff, Search, Trash2, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import destination from "../../constants/mahallas.json";
@@ -8,7 +36,7 @@ import { toastService } from "../../utils/toast";
 import { useNavigate } from "react-router";
 
 export default function Hodimlari() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const [hodimlar, setHodimlar] = useState([]);
   const { t } = useTranslation();
   const [hudud, setHudud] = useState("");
@@ -27,20 +55,7 @@ export default function Hodimlari() {
   const [holat, setHolat] = useState("");
   const [pendingToggle, setPendingToggle] = useState(null);
 
-  const filtered = hodimlar.filter((h) => {
-    const q = search.toLowerCase();
 
-    const matchSearch =
-      h.ism.toLowerCase().includes(q) || h.telefon.includes(q);
-
-    const matchHudud = !hudud || h.hudud === hudud;
-
-    const matchMahalla = !mahalla || h.mahalla === mahalla;
-
-    const matchHolat = !holat || (holat === "aktiv" ? h.aktiv : !h.aktiv);
-
-    return matchSearch && matchHudud && matchMahalla && matchHolat;
-  });
 
   const [page, setPage] = useState(1);
   const [meta, setMeta] = useState({});
@@ -48,7 +63,15 @@ export default function Hodimlari() {
 
   const fetchHodimlar = async () => {
     try {
-      const res = await Requests.getEmploye({ role: "JEK", page });
+      const res = await Requests.getEmploye({
+        role: "JEK",
+        page,
+        search,
+        district: hudud,
+        neighborhood: mahalla,
+        status:
+          holat === "aktiv" ? true : holat === "nofaol" ? false : undefined,
+      });
       const mapped = res.data.data.map((i) => ({
         id: i.id,
         ism: i.first_name,
@@ -61,16 +84,16 @@ export default function Hodimlari() {
         aktiv: i.isActive,
         bajarilgan: 0,
         sana: "-",
-      }))
+      }));
       setHodimlar(mapped);
       setMeta(res.data.meta);
     } finally {
     }
   };
-  useEffect(() => {
-    fetchHodimlar();
-  }, [page]);
-  const aktivCount = hodimlar.filter(h => h.aktiv).length;
+useEffect(() => {
+  fetchHodimlar();
+}, [page, search, hudud, mahalla, holat]);
+  const aktivCount = hodimlar.filter((h) => h.aktiv).length;
   const nofaolCount = hodimlar.length - aktivCount;
   const jamiCount = meta.total || 0;
 
@@ -96,10 +119,10 @@ export default function Hodimlari() {
   };
 
   function clearFilter() {
-    setSearch("")
-    setHudud("")
-    setMahalla("")
-    setHolat("")
+    setSearch("");
+    setHudud("");
+    setMahalla("");
+    setHolat("");
   }
 
   return (
@@ -122,17 +145,29 @@ export default function Hodimlari() {
       <Box mb={5} mr={6}>
         <Flex gap={3} w="100%">
           {[
-            { label: t('hodim.hodim.info.ahodimlar'), val: aktivCount, color: "green.400" },
-            { label: t('hodim.hodim.info.nhodim'), val: nofaolCount, color: "red.400" },
-            { label: t('hodim.hodim.info.jhodim'), val: jamiCount, color: "blue.400" },
+            {
+              label: t("hodim.hodim.info.ahodimlar"),
+              val: aktivCount,
+              color: "green.400",
+            },
+            {
+              label: t("hodim.hodim.info.nhodim"),
+              val: nofaolCount,
+              color: "red.400",
+            },
+            {
+              label: t("hodim.hodim.info.jhodim"),
+              val: jamiCount,
+              color: "primary",
+            },
           ].map((p, i) => (
             <Box
               key={i}
               flex="1"
-              bg="whiteAlpha.50"
+              bg="surface"
               border="1px solid"
               borderColor="border"
-              borderRadius="10px"
+              borderRadius="sm"
               px={4}
               py={3}
             >
@@ -148,7 +183,7 @@ export default function Hodimlari() {
                   >
                     {p.val}
                   </Text>
-                  <Text fontSize="11px" color="gray.500" mt="2px">
+                  <Text fontSize="11px" color="textSecondary" mt="2px">
                     {p.label}
                   </Text>
                 </Box>
@@ -165,22 +200,23 @@ export default function Hodimlari() {
         mb={5}
         flexWrap="wrap"
         alignItems="center"
-        bg="whiteAlpha.50"
+        bg="surface"
         border="1px solid"
         borderColor="border"
-        borderRadius="12px"
+        borderRadius="sm"
         justifyContent={"space-between"}
         p={3}
       >
         {/* SEARCH */}
         <InputGroup
           maxW="280px"
-          bg="whiteAlpha.50"
+          bg="surface"
           border="1px solid"
-          borderColor="whiteAlpha.200"
-          borderRadius="10px"
+          borderColor="border"
+          borderRadius={"sm"}
           _focusWithin={{
-            borderColor: "blue.400",
+            borderColor: "border",
+
             boxShadow: "0 0 0 1px rgba(66,153,225,0.6)",
           }}
         >
@@ -196,9 +232,10 @@ export default function Hodimlari() {
             border="none"
             color="white"
             pl="36px"
-            _placeholder={{ color: "gray.500" }}
+            _placeholder={{ color: "textSecondary" }}
             _focus={{ boxShadow: "none" }}
             fontSize="13px"
+            borderRadius={"sm"}
           />
         </InputGroup>
 
@@ -210,10 +247,11 @@ export default function Hodimlari() {
             setHudud(e.target.value);
             setMahalla("");
           }}
-          bg="whiteAlpha.50"
+          bg="surface"
           border="1px solid"
           borderColor="border"
-          _focus={{ borderColor: "blue.500" }}
+          borderRadius={"sm"}
+          _focus={{ borderColor: "primary" }}
           fontSize="13px"
         >
           <option value="">{t("hodim.hodim.barchahududlar")}</option>
@@ -231,10 +269,11 @@ export default function Hodimlari() {
           onChange={(e) => setMahalla(e.target.value)}
           placeholder="Mahalla"
           isDisabled={!hudud}
-          bg="whiteAlpha.50"
+          bg="surface"
           border="1px solid"
           borderColor="border"
-          _focus={{ borderColor: "blue.500" }}
+          borderRadius={"sm"}
+          _focus={{ borderColor: "primary" }}
           fontSize="13px"
         >
           <option value="">{t("hodim.hodim.barcha.mahallalar")}</option>
@@ -250,10 +289,11 @@ export default function Hodimlari() {
           maxW="160px"
           value={holat}
           onChange={(e) => setHolat(e.target.value)}
-          bg="whiteAlpha.50"
+          bg="surface"
           border="1px solid"
           borderColor="border"
-          _focus={{ borderColor: "blue.500" }}
+          borderRadius={"sm"}
+          _focus={{ borderColor: "primary" }}
           fontSize="13px"
         >
           <option value="">{t("hodim.hodim.barcha.holat")}</option>
@@ -262,28 +302,21 @@ export default function Hodimlari() {
         </Select>
 
         {/* Clear Filter */}
-        <IconButton
-          icon={<Trash2 />}
-          onClick={clearFilter}
-        />
+        <IconButton icon={<Trash2 />} onClick={clearFilter} />
       </Flex>
 
       {/* JADVAL */}
       <Box
         mr={6}
-        bg="whiteAlpha.50"
+        bg="surface"
         border="1px solid"
         borderColor="border"
-        borderRadius="12px"
+        borderRadius="sm"
         overflow="hidden"
       >
         <Table size="sm">
           <Thead>
-            <Tr
-              bg="whiteAlpha.100"
-              borderBottom="1px solid"
-              borderColor="border"
-            >
+            <Tr bg="surface" borderBottom="1px solid" borderColor="border">
               {[
                 "#",
                 t("hodim.hodim.jadval.hodim"),
@@ -299,7 +332,7 @@ export default function Hodimlari() {
                   px={4}
                   fontSize="10px"
                   fontWeight="600"
-                  color="gray.500"
+                  color="textSecondary"
                   textTransform="uppercase"
                   letterSpacing=".5px"
                 >
@@ -309,19 +342,22 @@ export default function Hodimlari() {
             </Tr>
           </Thead>
           <Tbody>
-            {filtered.map((h, idx) => (
+            {hodimlar.map((h, idx) => (
               <React.Fragment key={h.id}>
                 <Tr
                   key={h.id}
                   opacity={h.aktiv ? 1 : 0.55}
                   borderBottom="1px solid"
                   borderColor="border"
-                  _hover={{ bg: "whiteAlpha.100" }}
                   transition="background .15s"
                   cursor="pointer"
                 >
                   <Td px={4} py={3}>
-                    <Text fontFamily="mono" fontSize="12px" color="gray.500">
+                    <Text
+                      fontFamily="mono"
+                      fontSize="12px"
+                      color="textSecondary"
+                    >
                       {String((page - 1) * limit + idx + 1).padStart(2, "0")}
                     </Text>
                   </Td>
@@ -335,7 +371,7 @@ export default function Hodimlari() {
                         </Text>
                         <Text
                           fontSize="11px"
-                          color="gray.500"
+                          color="textSecondary"
                           fontFamily="mono"
                         >
                           {h.telefon}
@@ -347,8 +383,8 @@ export default function Hodimlari() {
                   {/* Hudud */}
                   <Td px={4} py={3}>
                     <Badge
-                      bg="#1a365dcc"
-                      color="blue.300"
+                      bg="infoBg"
+                      color="info"
                       borderRadius="6px"
                       px={2}
                       py={1}
@@ -361,11 +397,11 @@ export default function Hodimlari() {
 
                   {/* Hudud */}
                   <Td px={4} py={3}>
-                    {h.hudud2 ?
+                    {h.hudud2 ? (
                       <>
                         <Badge
-                          bg="#3f1a5dcc"
-                          color="#d6c6e2cc"
+                          bg="mutedBg"
+                          color="text"
                           borderRadius="6px"
                           px={2}
                           py={1}
@@ -374,11 +410,12 @@ export default function Hodimlari() {
                         >
                           {h.hudud2}
                         </Badge>
-                      </> :
+                      </>
+                    ) : (
                       <>
                         <Badge
-                          bg="#5d1a1acc"
-                          color="#e2c6c6cc"
+                          bg="dangerBg"
+                          color="danger"
                           borderRadius="6px"
                           px={2}
                           py={1}
@@ -387,24 +424,26 @@ export default function Hodimlari() {
                         >
                           2-manzil mavjud emas
                         </Badge>
-                      </>}
+                      </>
+                    )}
                   </Td>
 
                   {/* Holat */}
                   <Td px={4} py={3}>
                     <Badge
-                      bg={h.aktiv ? "#1c4532b9" : "red.900"}
-                      color={h.aktiv ? "green.300" : "red.300"}
+                      bg={h.aktiv ? "successBg" : "dangerBg"}
+                      color={h.aktiv ? "success" : "danger"}
                       borderRadius="20px"
                       px={3}
                       py={1}
                       fontSize="11px"
                     >
-                      ● {h.aktiv ? t('hodim.hodim.aktiv') : t('hodim.hodim.nofaol')}
+                      ●{" "}
+                      {h.aktiv
+                        ? t("hodim.hodim.aktiv")
+                        : t("hodim.hodim.nofaol")}
                     </Badge>
                   </Td>
-
-
 
                   {/* Toggle */}
                   <Td px={4} py={3}>
@@ -417,8 +456,7 @@ export default function Hodimlari() {
                   <Td px={4} py={3}>
                     <Button
                       size="sm"
-                      colorScheme="blue"
-                      variant="ghost"
+                      variant="outlinePrimary"
                       onClick={() => navigate(`/inseksiya/profile/${h.id}`)}
                     >
                       Ko'rish →
@@ -430,18 +468,23 @@ export default function Hodimlari() {
           </Tbody>
         </Table>
 
-        {filtered.length === 0 && (
-          <Flex direction="column" align="center" justify="center" py={16} gap={2}>
+        {hodimlar.length === 0 && (
+          <Flex
+            direction="column"
+            align="center"
+            justify="center"
+            py={16}
+            gap={2}
+          >
             <Icon as={Users} boxSize={10} color="gray.600" />
-            <Text color="gray.500" fontSize="14px">
+            <Text color="textSecondary" fontSize="14px">
               {t("hodim.hodim.natijatopilmadi")}
             </Text>
           </Flex>
         )}
-
       </Box>
-      {filtered.length > 0 && (
-        <Flex justify="center" mt={6} gap={3}>
+      {hodimlar.length > 0 && (
+        <Flex justify="center" mb={6} mt={6} gap={3}>
           <Button
             size="sm"
             onClick={() => setPage((p) => p - 1)}
@@ -470,7 +513,7 @@ export default function Hodimlari() {
         <ModalContent
           // bg="gray.900"
           border="1px solid"
-          borderColor="whiteAlpha.200"
+          borderColor="border"
           borderRadius="16px"
         >
           <ModalHeader pb={0}>
@@ -500,24 +543,18 @@ export default function Hodimlari() {
                 ? t("hodim.hodim.modal.disable_text")
                 : t("hodim.hodim.modal.enable_text")}
             </Text>
-            <Flex
-              align="center"
-              gap={3}
-              bg="whiteAlpha.100"
-              borderRadius="10px"
-              p={3}
-            >
+            <Flex align="center" gap={3} bg="surface" borderRadius="xl" p={3}>
               <Avatar
                 size="sm"
                 name={`${pendingToggle?.ism} ${pendingToggle?.familiya}`}
                 borderRadius="10px"
-              // getInitials={() => pendingToggle?.initials}
+                // getInitials={() => pendingToggle?.initials}
               />
               <Box>
                 <Text fontSize="14px" fontWeight="500" color="text">
                   {pendingToggle?.ism} {pendingToggle?.familiya}
                 </Text>
-                <Text fontSize="12px" color="gray.500">
+                <Text fontSize="12px" color="textSecondary">
                   {pendingToggle?.hudud}
                 </Text>
               </Box>
@@ -527,7 +564,7 @@ export default function Hodimlari() {
             <Button
               flex={1}
               variant="ghost"
-              color="gray.500"
+              color="textSecondary"
               _hover={{ bg: "whiteAlpha.100" }}
               onClick={closeModal}
             >
@@ -540,7 +577,9 @@ export default function Hodimlari() {
               _hover={{ opacity: 0.85 }}
               onClick={confirmToggle}
             >
-              {pendingToggle?.aktiv ? t("hodim.hodim.nofaolqilish") : t("hodim.hodim.faol")}
+              {pendingToggle?.aktiv
+                ? t("hodim.hodim.nofaolqilish")
+                : t("hodim.hodim.faol")}
             </Button>
           </ModalFooter>
         </ModalContent>

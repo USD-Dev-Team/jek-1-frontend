@@ -97,8 +97,9 @@ export default function Murojat() {
     },
     jek_completed: {
       label: t("murojat.status.jek_completed"),
-      bg: "green.700",
-      color: "green.200",
+      bg: "successBg",
+
+  color: "success",
     },
   };
 
@@ -106,8 +107,9 @@ export default function Murojat() {
     return (
       statusMap[status?.toLowerCase()] || {
         label: status,
-        bg: "gray.200",
-        color: "gray.600",
+       bg: "mutedBg",
+
+color: "muted",
       }
     );
   };
@@ -224,7 +226,7 @@ export default function Murojat() {
 
   return (
     <Box bg="bg" minH="100vh" p={6}>
-      <Heading fontSize={25}>{t("murojat.title")}</Heading>
+      <Heading fontSize="xl" color="text">{t("murojat.title")}</Heading>
 
       {/* FILTER */}
       <Box mr={3} mb={5} mt={8}>
@@ -239,6 +241,7 @@ export default function Murojat() {
           <Select
             minW="180px"
             value={form.status || ""}
+            borderRadius={"sm"}
             onChange={(e) =>
               setForm({
                 ...form,
@@ -271,7 +274,9 @@ export default function Murojat() {
           />
           <Button
   minW="120px"
-  variant="outline"
+  borderRadius={"sm"}
+
+  variant="outlinePrimary"
   onClick={clearFilters}
 >
  <Icon as={Trash} boxSize={4} />
@@ -327,7 +332,7 @@ export default function Murojat() {
 
                     <Td>
                       <Text>{item.user.full_name}</Text>
-                      <Text fontSize="xs" color="gray.500">
+                      <Text fontSize="xs" color="textSecondary">
                         {item.phone}
                       </Text>
                     </Td>
@@ -408,7 +413,7 @@ export default function Murojat() {
       px={4}
       py={1}
       border="1px solid"
-      borderColor="gray.300"
+   borderColor="border"
       borderRadius="md"
       fontSize="sm"
       fontWeight="600"

@@ -380,7 +380,7 @@ export default function HodimlarInseksiya() {
           maxW="200px"
           value={mahalla}
           onChange={(e) => setMahalla(e.target.value)}
-          placeholder="Mahalla"
+         
           isDisabled={!hudud}
           bg="whiteAlpha.50"
           border="1px solid"
@@ -440,7 +440,7 @@ export default function HodimlarInseksiya() {
                 t("hodim.hodim.jadval.hodim"),
                 t("hodim.hodim.jadval.hudud"),
                 t("hodim.hodim.jadval.holat"),
-                t("hodim.hodim.role"),
+
 
 
                 "",
@@ -507,7 +507,7 @@ export default function HodimlarInseksiya() {
                       fontSize="11px"
                       fontWeight="500"
                     >
-                      {h.hudud}
+                      {h.hudud || "Hudud biriktirilmagan"}
                     </Badge>
                   </Td>
 
@@ -527,21 +527,7 @@ export default function HodimlarInseksiya() {
 
 
 
-                    {/* Role */}
-                       <Td px={4} py={3}> 
-                                        <Badge
-                                          bg="#1a365dcc"
-                                          color="blue.300"
-                                          borderRadius="6px"
-                                          px={2}
-                                          py={1}
-                                          fontSize="11px"
-                                          fontWeight="500"
-                                        >
-                                          {h?.role || "MAvjud emas"}
-                    
-                                        </Badge>
-                                      </Td>
+                  
               
                 
                

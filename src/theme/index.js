@@ -11,22 +11,30 @@ const config = {
 }
 
 const theme = extendTheme({
-    config,
-    colors,
-    semanticTokens,
-    components: {
-        Button,
-        Select,
+  config,
+  colors,
+  semanticTokens,
+
+  radii: {
+    sm: "8px",
+    md: "12px",
+    lg: "16px",
+    xl: "20px",
+  },
+
+  components: {
+    Button,
+    Select,
+  },
+
+  styles: {
+    global: {
+      body: {
+        bg: "bg",
+        color: "text",
+      },
     },
-    styles: {
-        global: {
-            body: {
-                bg: "bg",
-                color: "text",
-            },
-            
-        },
-    },
+  },
 });
 
 export default theme

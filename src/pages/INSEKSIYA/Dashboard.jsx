@@ -7,6 +7,7 @@ import {
   Select,
   Circle,
   Spinner,
+  Input,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { CheckCircle, Clock, XCircle } from "lucide-react";
@@ -28,8 +29,18 @@ import manzil from "../../constants/mahallas.json";
 import { useTranslation } from "react-i18next";
 
 const months = [
-  "Yan", "Fev", "Mar", "Apr", "May", "Iyn",
-  "Iyl", "Avg", "Sen", "Okt", "Noy", "Dek"
+  "Yan",
+  "Fev",
+  "Mar",
+  "Apr",
+  "May",
+  "Iyn",
+  "Iyl",
+  "Avg",
+  "Sen",
+  "Okt",
+  "Noy",
+  "Dek",
 ];
 
 export default function InspectionDashboard() {
@@ -40,9 +51,11 @@ export default function InspectionDashboard() {
   const [district, setDistrict] = useState("");
   const [neighborhood, setNeighborhood] = useState("");
 
+  const [debouncedYear, setDebouncedYear] = useState("");
+
   // ✅ STATUS PARSE (REAL DATA)
   const getCount = (statusName) =>
-    stats?.statuses?.find(s => s.status === statusName)?._count?.id ?? 0;
+    stats?.statuses?.find((s) => s.status === statusName)?._count?.id ?? 0;
 
   const completed = getCount("COMPLETED");
   const jekCompleted = getCount("JEK_COMPLETED");
@@ -62,17 +75,17 @@ export default function InspectionDashboard() {
     {
       name: t("idashboard.idashboard.bajarilgan"),
       value: completed + jekCompleted,
-      color: "#22C55E",
+      color: "var(--chakra-colors-success)",
     },
     {
       name: t("idashboard.idashboard.jarayonda"),
       value: pending + inProgress,
-      color: "#3B82F6",
+      color: "var(--chakra-colors-info)",
     },
     {
       name: t("idashboard.idashboard.rad_etilgan"),
       value: rejected,
-      color: "#EF4444",
+      color: "var(--chakra-colors-danger)",
     },
   ];
 
@@ -82,13 +95,15 @@ export default function InspectionDashboard() {
 
   // 🚀 FETCH
   useEffect(() => {
+    if (!debouncedYear) return;
+
     const getDashboard = async () => {
       setLoading(true);
       try {
         const res = await Requests.getDashboardAll(
-          year,
+          Number(debouncedYear),
           district || undefined,
-          neighborhood || undefined
+          neighborhood || undefined,
         );
         setStats(res.data);
       } catch (err) {
@@ -99,7 +114,15 @@ export default function InspectionDashboard() {
     };
 
     getDashboard();
-  }, [year, district, neighborhood]);
+  }, [debouncedYear, district, neighborhood]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedYear(year);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [year]);
 
   function AnimatedCounter({ value, duration = 1200 }) {
     const [count, setCount] = useState(0);
@@ -138,8 +161,11 @@ export default function InspectionDashboard() {
         borderTop="3px solid"
         borderTopColor={accent}
         p={5}
-        _hover={{ transform: "translateY(-2px)", shadow: "md" }}
-        transition="all 0.2s"
+        _hover={{
+          transform: "translateY(-2px)",
+          boxShadow: "lg",
+        }}
+        transition="all 0.25s ease"
       >
         <Flex justify="space-between" align="flex-start">
           <Box>
@@ -159,11 +185,10 @@ export default function InspectionDashboard() {
   }
 
   return (
-    <Box p={6} bg="bg" minH="100vh">
-
-      {/* 🔥 HEADER */}
+    <Box bg="bg" minH="100vh" p={{ base: 4, md: 6 }}>
+      {/*  HEADER */}
       <Flex align="center" gap={3} mb={6}>
-        <Circle size="40px" bg="primaryBg">
+        <Circle size="40px" bg="surface">
           <Icon as={CheckCircle} color="primary" />
         </Circle>
         <Box>
@@ -176,20 +201,21 @@ export default function InspectionDashboard() {
         </Box>
       </Flex>
 
-      {/* 🎯 FILTER */}
-      <Grid templateColumns="repeat(3, 1fr)" gap={4} mb={6}>
-        <Box>
+      {/*  FILTER */}
+      <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={4} mb={6}>
+        <Box >
           <Text fontSize="sm">{t("idashboard.idashboard.yil")}</Text>
-          <Select
+          <Input
+         
             value={year}
-            onChange={(e) => setYear(Number(e.target.value))}
-            bg="surface"
-            borderColor="border"
-          >
-            {[2026, 2025, 2024, 2023].map((y) => (
-              <option key={y} value={y}>{y}</option>
-            ))}
-          </Select>
+            onChange={(e) => {
+              const val = e.target.value;
+
+              if (/^\d*$/.test(val)) {
+                setYear(val);
+              }
+            }}
+          />
         </Box>
 
         <Box>
@@ -205,7 +231,9 @@ export default function InspectionDashboard() {
           >
             <option value="">{t("idashboard.idashboard.barchasi")}</option>
             {tumanlar.map((t) => (
-              <option key={t} value={t}>{t}</option>
+              <option key={t} value={t}>
+                {t}
+              </option>
             ))}
           </Select>
         </Box>
@@ -221,7 +249,9 @@ export default function InspectionDashboard() {
           >
             <option value="">{t("idashboard.idashboard.barchasi")}</option>
             {mahallalar[district]?.map((m) => (
-              <option key={m} value={m}>{m}</option>
+              <option key={m} value={m}>
+                {m}
+              </option>
             ))}
           </Select>
         </Box>
@@ -235,38 +265,37 @@ export default function InspectionDashboard() {
       ) : (
         <>
           {/* 📊 STATS */}
-          <Grid templateColumns="repeat(3, 1fr)" gap={4} mb={6}>
+          <Grid templateColumns={{ base: "1fr", md: "repeat(3, 1fr)" }} gap={4} mb={6}>
             <StatCard
               label={t("idashboard.idashboard.bajarilgan")}
               value={(completed || 0) + (jekCompleted || 0)}
               icon={CheckCircle}
-              iconBg="green.100"
-              iconColor="green.500"
-              accent="green.500"
+              iconBg="successBg"
+              iconColor="success"
+              accent="success"
             />
 
             <StatCard
               label={t("idashboard.idashboard.jarayonda")}
               value={(pending || 0) + (inProgress || 0)}
               icon={Clock}
-              iconBg="yellow.100"
-              iconColor="yellow.500"
-              accent="yellow.500"
+              iconBg="warningBg"
+              iconColor="warning"
+              accent="warning"
             />
 
             <StatCard
               label={t("idashboard.idashboard.rad_etilgan")}
               value={rejected || 0}
               icon={XCircle}
-              iconBg="red.100"
-              iconColor="red.500"
-              accent="red.500"
+              iconBg="dangerBg"
+              iconColor="danger"
+              accent="danger"
             />
           </Grid>
 
           {/* 📈 CHARTS */}
-          <Grid templateColumns="2fr 1fr" gap={4}>
-
+          <Grid templateColumns={{ base: "1fr", lg: "2fr 1fr" }} gap={4}>
             {/* LINE */}
             <Box
               bg="surface"
@@ -275,11 +304,16 @@ export default function InspectionDashboard() {
               border="1px solid"
               borderColor="border"
             >
-              <Text mb={3}>{t("idashboard.idashboard.yillik_murojaatlar")}</Text>
+              <Text mb={3}>
+                {t("idashboard.idashboard.yillik_murojaatlar")}
+              </Text>
 
               <ResponsiveContainer width="100%" height={250}>
                 <LineChart data={lineData}>
-                  <CartesianGrid stroke="var(--chakra-colors-border)" strokeDasharray="3 3" />
+                  <CartesianGrid
+                    stroke="var(--chakra-colors-border)"
+                    strokeDasharray="3 3"
+                  />
                   <XAxis dataKey="month" axisLine={false} tickLine={false} />
                   <YAxis axisLine={false} tickLine={false} />
                   <Tooltip />
@@ -341,7 +375,6 @@ export default function InspectionDashboard() {
     </Box>
   );
 }
-
 
 function Stat({ title, value, icon, color }) {
   return (

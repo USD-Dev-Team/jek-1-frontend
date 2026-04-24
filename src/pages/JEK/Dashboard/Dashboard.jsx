@@ -69,8 +69,15 @@ function StatCard({ label, value, icon, iconBg, iconColor, accent }) {
       borderTop="3px solid"
       borderTopColor={accent}
       p={5}
-      _hover={{ transform: "translateY(-2px)", shadow: "md" }}
-      transition="all 0.2s"
+     _hover={{
+
+  transform: "translateY(-2px)",
+
+  boxShadow: "lg",
+
+}}
+
+transition="all 0.25s ease"
     >
       <Flex justify="space-between" align="flex-start">
         <Box>
@@ -207,17 +214,17 @@ export default function Dashboard() {
   {
  name: t("dashboard.done"),
     value: completed + jekCompleted,
-    color: "#48BB78",
+   color: "var(--chakra-colors-success)",
   },
   {
     name: t("dashboard.processing"),
     value: inProgress,
-    color: "#4299E1",
+  color: "var(--chakra-colors-info)"
   },
   {
    name: t("dashboard.rejected_short"),
     value: rejected,
-    color: "#FC8181",
+    color: "var(--chakra-colors-danger)"
   },
 ];
 
@@ -226,10 +233,10 @@ const efficiency = stats?.totalRequests
   : 0;
 
   return (
-    <Box bg="bg" minH="100vh" p={6}>
+   <Box bg="bg" minH="100vh" p={{ base: 6, md: 6 }}>
       {/* ── Header ── */}
       <Flex align="center" gap={3} mb={8} mt={2}>
-        <Circle size="40px" bg="primaryBg">
+        <Circle size="40px" bg="surface">
           <Icon as={Sun} color="primary" boxSize={5} />
         </Circle>
         <Box>
@@ -243,7 +250,15 @@ const efficiency = stats?.totalRequests
       </Flex>
 
       {/* ── TOP STAT CARDS ── */}
-      <Grid templateColumns="repeat(4, 1fr)" gap={4} mb={6}>
+      <Grid
+  templateColumns={{
+    base: "1fr",
+    md: "repeat(2, 1fr)",
+    lg: "repeat(4, 1fr)",
+  }}
+  gap={4}
+  mb={6}
+>
         <StatCard
           label={t("dashboard.total_requests")}
           value={stats?.totalRequests || 0}
@@ -299,7 +314,7 @@ const efficiency = stats?.totalRequests
             </Box>
             <Flex gap={4}>
               <Flex align="center" gap={1}>
-                <Box w={3} h={1} bg="primary" borderRadius="full" />
+                <Box w={3} h={1} bg="surface" borderRadius="full" />
                 <Text fontSize="xs" color="textSecondary">
                   2026
                 </Text>

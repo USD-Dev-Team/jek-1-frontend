@@ -7,6 +7,7 @@ import {
   Select,
   Circle,
   Spinner,
+  Input,
 } from "@chakra-ui/react";
 import { useEffect, useRef, useState } from "react";
 import { CheckCircle, Clock, XCircle } from "lucide-react";
@@ -40,7 +41,11 @@ export default function InspectionDashboard() {
   const [district, setDistrict] = useState("");
   const [neighborhood, setNeighborhood] = useState("");
 
-  // ✅ STATUS PARSE (REAL DATA)
+const [debouncedYear, setDebouncedYear] = useState("");
+
+
+
+
   const getCount = (statusName) =>
     stats?.statuses?.find(s => s.status === statusName)?._count?.id ?? 0;
 
@@ -50,7 +55,7 @@ export default function InspectionDashboard() {
   const pending = getCount("PENDING");
   const inProgress = getCount("IN_PROGRESS");
 
-  // 📊 LINE DATA
+
   const lineData =
     stats?.yearlyDynamics?.map((v, i) => ({
       month: months[i],
@@ -76,30 +81,32 @@ export default function InspectionDashboard() {
     },
   ];
 
-  // 📍 ADDRESS DATA
+  //  ADDRESS DATA
   const tumanlar = manzil?.uz?.addresses || [];
   const mahallalar = manzil?.uz?.mahallas || {};
 
-  // 🚀 FETCH
-  useEffect(() => {
-    const getDashboard = async () => {
-      setLoading(true);
-      try {
-        const res = await Requests.getDashboardAll(
-          year,
-          district || undefined,
-          neighborhood || undefined
-        );
-        setStats(res.data);
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  //  FETCH
+useEffect(() => {
+  if (!debouncedYear) return;
 
-    getDashboard();
-  }, [year, district, neighborhood]);
+  const getDashboard = async () => {
+    setLoading(true);
+    try {
+      const res = await Requests.getDashboardAll(
+        Number(debouncedYear),
+        district || undefined,
+        neighborhood || undefined
+      );
+      setStats(res.data);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  getDashboard();
+}, [debouncedYear, district, neighborhood]);
 
   function AnimatedCounter({ value, duration = 1200 }) {
     const [count, setCount] = useState(0);
@@ -158,6 +165,15 @@ export default function InspectionDashboard() {
     );
   }
 
+
+  useEffect(() => {
+  const timer = setTimeout(() => {
+    setDebouncedYear(year);
+  }, 500);
+
+  return () => clearTimeout(timer);
+}, [year]);
+
   return (
     <Box p={6} bg="bg" minH="100vh">
 
@@ -178,19 +194,17 @@ export default function InspectionDashboard() {
 
       {/* 🎯 FILTER */}
       <Grid templateColumns="repeat(3, 1fr)" gap={4} mb={6}>
-        <Box>
-          <Text fontSize="sm">{t("idashboard.idashboard.yil")}</Text>
-          <Select
-            value={year}
-            onChange={(e) => setYear(Number(e.target.value))}
-            bg="surface"
-            borderColor="border"
-          >
-            {[2026, 2025, 2024, 2023].map((y) => (
-              <option key={y} value={y}>{y}</option>
-            ))}
-          </Select>
-        </Box>
+    <Input
+  placeholder="Masalan: 2026"
+  value={year}
+  onChange={(e) => {
+    const val = e.target.value;
+
+    if (/^\d*$/.test(val)) {
+      setYear(val);
+    }
+  }}
+/>
 
         <Box>
           <Text fontSize="sm">{t("idashboard.idashboard.tuman")}</Text>

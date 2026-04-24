@@ -14,7 +14,7 @@ export default function InLayout() {
      {
       label: "Boshqaruv paneli",
       to: "/inseksiya/dashboard",
-      icon: EqualApproximatelyIcon,
+      icon: BookDashed,
     },
    
     {
@@ -27,11 +27,7 @@ export default function InLayout() {
       to: "/inseksiya/hodim",
       icon: User2Icon,
     },
-     {
-      label: t("idashboard.idashboard.dashboard"),
-      to: "/inseksiya/dashboard",
-      icon: EqualApproximatelyIcon,
-    },
+   
   ];
 
   return (

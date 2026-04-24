@@ -2,7 +2,7 @@
 import DashboardGv from "../pages/GOVERENMENT/DashboardGv";
 import Hodimlari from "../pages/GOVERENMENT/HodimlarGv";
 import MurojatGv from "../pages/GOVERENMENT/MurojatGv";
-import Hodimlariinseksiya from "../pages/INSEKSIYA/HodimlarInseksiya";
+import Hodimlariinseksiya from "../pages/GOVERENMENT/HodimlarInseksiya";
 
 
 import Problem from "../pages/JEK/Murojat/Problem";
